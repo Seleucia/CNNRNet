@@ -1,63 +1,59 @@
-import os
-import sys
-import timeit
-import cPickle
 import numpy
-
 import theano
 import theano.tensor as T
 import  model_saver
-import convTest
-
-from logistic_depth_sgd import LogisticRegression,dataset_loader
+import dataset_loader
+from CNN_RegressionV3 import CNNRNet
 
 theano.config.exception_verbosity='high'
 
+def predict(test_set_x,model_name,batch_size,size):
+    Fx = T.matrix(name='Fx_input')  # the data is presented as rasterized images
+    Sx = T.matrix(name='Sx_input')  # the data is presented as rasterized images
+    Fx_inp = T.matrix(name='Fx_inp')  # the data is presented as rasterized images
+    Sx_inp = T.matrix(name='Sx_inp')  # the data is presented as rasterized images
+    rng = numpy.random.RandomState(23455)
+    # size = [480,640] orijinal size,[height,width]
+    nc = 1  # number of channcels
+    nkerns = [30, 40]
+    nkern1_size = [5, 5]
+    nkern2_size = [5, 5]
 
+    npool1_size = [2, 2]
+    npool2_size = [2, 2]
 
-def predict():
-    """
-    An example of how to load a trained model and use it
-    to predict labels.
-    """
+    print '... building the model'
 
-    # load the saved model
+    cnnr = CNNRNet(rng, input, batch_size, nc, size, nkerns,
+                   nkern1_size, nkern2_size,
+                   npool1_size, npool2_size,
+                   Fx, Sx)
 
+    cnnr.load(model_name)
+    #cnnr.set_params(model_saver.load_model(model_name))
+    print "Model parameters loaded"
 
-    #This must be loaded also
-    # allocate symbolic variables for the data
-    index = T.lscalar()  # index to a [mini]batch
-    x = T.matrix('x')  # the data is presented as rasterized images
-    y = T.matrix('y')  # labels, presented as 1D vector of [int] labels
-                        # [int] labels
-    n_hidden=500
-    rng = numpy.random.RandomState(1234)
-    size = 32, 24
-    classifier = convTest.MLP(
-        rng=rng,
-        input=x,
-        n_in=size[0]*size[1],
-        n_hidden=n_hidden,
-        n_out=3
-    )
-    classifier.set_model_params(model_saver.load_model("3"))
-
-    # compile a predictor function
+     # create a function to compute the mistakes that are made by the model
     predict_model = theano.function(
-        inputs=[classifier.input],
-        outputs=classifier.logRegressionLayer.y_pred)
+        [Fx_inp, Sx_inp],
+        cnnr.y_pred,
+        givens={
+            Fx: Fx_inp,
+            Sx: Sx_inp,
+        }
+    )
 
-    datasets = dataset_loader.load_tum_data()
-    test_set_x, test_set_y = datasets[2]
-    test_set_x = test_set_x.get_value()
-    test_set_y=test_set_y.get_value()
+    n_test_batches = len(test_set_x)
+    n_test_batches /= batch_size
+    y_pred=[]
+    print "Prediction on test images"
+    for i in xrange(n_test_batches):
+        Fx = test_set_x[i * batch_size: (i + 1) * batch_size]
+        data_Fx = dataset_loader.load_batch_images(size, nc, "F", Fx)
+        data_Sx = dataset_loader.load_batch_images(size, nc, "S", Fx)
+        if(len(y_pred)==0):
+            y_pred= predict_model(data_Fx, data_Sx)
+        else:
+            y_pred=numpy.concatenate((y_pred,predict_model(data_Fx, data_Sx)))
 
-    predicted_values = predict_model(test_set_x[:10])
-    actual_values = test_set_y[:10]
-    res=T.dot(test_set_x[:1], classifier.params[0]) + classifier.params[1]
-    print ("Predicted values for the first 10 examples in test set:")
-    print predicted_values
-    print actual_values
-
-
-predict()
+    return y_pred

@@ -1,12 +1,9 @@
-import os
-import sys
-import timeit
 import numpy
 import theano
 import theano.tensor as T
-from theano.tensor.signal import downsample
-from theano.tensor.nnet import conv
-import dataset_loader
+import os
+import glob
+from PIL import Image
 
 def init_W_b(W, b, rng, n_in, n_out):
     # for a discussion of the initialization, see
@@ -71,3 +68,23 @@ def rescale_weights(params, incoming_max):
         w_sum = (w**2).sum(axis=0)
         w[:, w_sum>incoming_max] = w[:, w_sum>incoming_max] * numpy.sqrt(incoming_max) / w_sum[w_sum>incoming_max]
         p.set_value(w)
+
+def up_sample(overlaps,data_y,step_size):
+    data_yy=[]
+    for index in range(len(overlaps)):
+        value= sum(data_y[overlaps[index]]) / (step_size * len(overlaps[index]))
+        data_yy.append(value)
+    return numpy.asarray(data_yy)
+
+def convert_to_grayscale():
+    dataset="/home/coskun/PycharmProjects/data/rgbd_dataset_freiburg3_large_cabinet/"
+    im_type='rgb'
+    im_type_to='gray'
+    new_dir=dataset+im_type_to+"/"
+    full_path=dataset+'/'+im_type+'/*.png'
+    lst=glob.glob(full_path)
+    for f in lst:
+        img = Image.open(f).convert('L')
+        img.save(new_dir+os.path.basename(f))
+
+

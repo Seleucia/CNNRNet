@@ -3,10 +3,9 @@ import gzip
 import os
 import numpy
 import theano
-import theano.tensor as T
+from numpy.random import RandomState
 import glob
 from theano import config
-from sklearn.cross_validation import train_test_split
 from PIL import Image
 import pickle
 import model_saver
@@ -20,12 +19,15 @@ def shared_dataset(data_xx, data_yy, borrow=True):
                                  borrow=borrow)
         return shared_x, shared_y
 
-def load_batch_images(size,nc,dir, x):
+def load_batch_images(size,nc,dir, x,im_type):
     #We should modify this function to load images with different number of channels
     fl_size=size[0]*size[1]
     m_size = (len(x), fl_size)
     data_x = numpy.empty(m_size, float)
     i = 0
+    normalizer=5000
+    if(im_type=="gray"):
+        normalizer=255
     for (dImg1, dImg2) in x:
         dImg=""
         if dir=="F":
@@ -34,7 +36,7 @@ def load_batch_images(size,nc,dir, x):
             dImg=dImg2
         img = Image.open(dImg)
         img=img.resize(size)
-        arr1= numpy.array(img,float)/5000
+        arr1= numpy.array(img,float)/normalizer
         v_1 = numpy.transpose(numpy.reshape(arr1, (fl_size, 1)))
         data_x[i, :] = v_1
         i = i + 1;
@@ -72,14 +74,9 @@ def associate(first_list, second_list,offset,max_difference):
     matches=numpy.array(matches)
     return matches
 
-def load_tum_dataV2(dataset,rn_id,multi):
-    offset=0
-    max_difference=0.2
-    test_size=0.20
-    val_size=0.20
-
-    dir_f=dataset+'/depth/'
-    full_path=dataset+'/depth/*.png'
+def load_data(dataset,im_type,offset,max_difference):
+    dir_f=dataset+im_type+'/'
+    full_path=dataset+im_type+'/*.png'
     lst=glob.glob(full_path)
     n_lst = [l.replace(dir_f, '') for l in lst]
     lst = [l.replace('.png', '') for l in n_lst]
@@ -90,65 +87,167 @@ def load_tum_dataV2(dataset,rn_id,multi):
     #Find closes trajectry for depth image
     matches=associate(first_list, second_list.keys(),offset,max_difference)
     data_y=numpy.matrix([[float(value) for value in second_list[b][0:3]] for a,b in matches])
-    dir_list=[["%s%f%s" %(dir_f,a,".png")] for a,b in matches]
-    data_x=[]
-    delta_y=[]
+    data_x=[["%s%f%s" %(dir_f,a,".png")] for a,b in matches]
+    rval=[(data_x),(data_y)]
+    return rval
+
+def prepare_data(step_size,data_x,data_y):
+    _data_x=[]
+    _data_y=[]
+    overlaps = [[] for i in range(len(data_x)-1)]
+    for i in range(len(data_x)):
+        fImage1=data_x[i][0]
+        new_i=(i+step_size)
+        if(new_i<len(data_x)):
+            fImage2=data_x[new_i][0]
+            _data_x.append([fImage2,fImage1])
+            _data_y.append(data_y[new_i,:]-data_y[i,:])
+            for k in range(i,new_i):
+                overlaps[k].append(i)
+    rval = [(_data_x), (_data_y), (overlaps)]
+    return rval
+
+def split_test_data(dir_list, data_y,test_size):
+    tmp_data_x = dir_list
+    tmp_delta_y = data_y
+
+    e_ind = int(round(len(tmp_delta_y) * test_size))
+    test_inds = range(len(tmp_delta_y) - e_ind, len(tmp_delta_y))
+    train_inds = range(0, len(tmp_delta_y) - e_ind)
+    tmp_y_test = numpy.array(tmp_delta_y)[test_inds, :]
+    tmp_y_train = numpy.array(tmp_delta_y)[train_inds, :]
+    tmp_y_train = tmp_y_train.reshape(len(tmp_y_train), 3)
+
+    tmp_X_test = numpy.array(tmp_data_x)[test_inds, :]
+    tmp_X_train = numpy.array(tmp_data_x)[train_inds, :]
+
+
+    rVal=[(tmp_X_train,tmp_y_train),(tmp_X_test,tmp_y_test)]
+    return rVal
+
+def split_data(test_size,val_size,data_x,data_y):
+        e_ind=int(round(len(data_x)*test_size))
+        test_inds=range(len(data_x)-e_ind,len(data_x))
+        train_inds=range(0,len(data_x)-e_ind)
+
+        y_test=numpy.array(data_y)[test_inds,:]
+        y_data=numpy.array(data_y)[train_inds,:]
+
+        X_test=numpy.array(data_x)[test_inds,:]
+        X_data=numpy.array(data_x)[train_inds,:]
+        X_train, X_val, y_train, y_val= train_test_split(X_data, y_data, test_size=val_size, random_state=42)
+        rval = [(X_train, y_train), (X_val, y_val), (X_test, y_test)]
+        return rval
+
+def  train_test_split(X, y, test_size, random_state):
+        indices=numpy.arange(len(X))
+        prng = RandomState(random_state)
+        prng.shuffle(indices)
+        e_ind=int(round(len(X)*test_size))
+        training_idx = indices[e_ind:len(X)]
+        test_idx = indices[0:e_ind]
+        X_training, X_test = X[training_idx,:], X[test_idx,:]
+        y_training, y_test = y[training_idx,:], y[test_idx,:]
+        rVal=[X_training,X_test,y_training,y_test]
+        return rVal
+
+def load_tum_dataV2(dataset,rn_id,multi,step_size=[],im_type='depth'):
+    if(len(step_size)==0):
+        step_size=[1,2,5,7,10,12,13,15,16,18,20,21,23,24,25]
+    offset=0
+    max_difference=0.2
+    test_size=0.20
+    val_size=0.20
+
+    dsRawData=load_data(dataset,im_type,offset,max_difference)
+    dir_list=dsRawData[0]
+    data_y=dsRawData[1]
+
+    X_val_train=[]
+    y_delta_val_train=[]
     X_test=[]
-    y_test=[]
-    step_size=[2,5,10,13,15,18,20,23,25,27,30,32,38,35,40,45,50]
+    y_delta_test=[]
+    overlaps_test=[]
+    overlaps_train=[]
+
     for s in step_size:
-        i=0
-        tmp_data_x=[]
-        tmp_delta_y=[]
-        for i in range(len(dir_list)):
-            fImage1=dir_list[i][0]
-            new_i=(i+s)
-            if(new_i<len(dir_list)):
-                fImage2=dir_list[new_i][0]
-                tmp_data_x.append([fImage1,fImage2])
-                tmp_delta_y.append(data_y[i,:]-data_y[new_i,:])
+        dsSplits=split_test_data(dir_list, data_y,test_size)
+        tmp_X_train,tmp_y_train=dsSplits[0]
+        tmp_X_test,tmp_y_test=dsSplits[1]
 
-        e_ind=int(round(len(tmp_delta_y)*test_size))
-        test_inds=range(len(tmp_delta_y)-e_ind,len(tmp_delta_y))
-        train_inds=range(0,len(tmp_delta_y)-e_ind)
-        tmp_y_test=numpy.array(tmp_delta_y)[test_inds,:]
-        tmp_X_test=numpy.array(tmp_data_x)[test_inds,:]
-        tmp_train_y=numpy.array(tmp_delta_y)[train_inds,:]
-        tmp_train_x=numpy.array(tmp_data_x)[train_inds,:]
+        tmp_X_train,tmp_y_train,tmp_overlaps_train=prepare_data(s,tmp_X_train,tmp_y_train)
+        tmp_X_test,tmp_y_test,tmp_overlaps_test=prepare_data(s,tmp_X_test,tmp_y_test)
 
-        tmp_train_y=tmp_train_y.reshape(len(tmp_train_y),3)
-        tmp_train_x=tmp_train_x.reshape(len(tmp_train_x),2)
-        if(len(data_x)==0):
-            data_x=tmp_train_x
-            delta_y=tmp_train_y
+        if(len(X_val_train)==0):
+            X_val_train=tmp_X_train
+            y_delta_val_train=tmp_y_train
             X_test=tmp_X_test
-            y_test=tmp_y_test
+            y_delta_test=tmp_y_test
+            if len(numpy.shape(tmp_overlaps_test))>1:
+                overlaps_test=numpy.asarray(tmp_overlaps_test).reshape(len(tmp_overlaps_test))
+            else:
+                overlaps_test=tmp_overlaps_test
+            if len(numpy.shape(tmp_overlaps_train))>1:
+                overlaps_train=numpy.asarray(tmp_overlaps_train).reshape(len(tmp_overlaps_train))
+            else:
+                overlaps_train=tmp_overlaps_train
         else:
-            data_x=numpy.concatenate((data_x,tmp_train_x))
-            delta_y=numpy.concatenate((delta_y,tmp_train_y))
+            X_val_train=numpy.concatenate((X_val_train,tmp_X_train))
+            y_delta_val_train=numpy.concatenate((y_delta_val_train,tmp_y_train))
             X_test=numpy.concatenate((X_test,tmp_X_test))
-            y_test=numpy.concatenate((y_test,tmp_y_test))
+            y_delta_test=numpy.concatenate((y_delta_test,tmp_y_test))
+            overlaps_test=numpy.concatenate((overlaps_test,tmp_overlaps_test))
+            overlaps_train=numpy.concatenate((overlaps_train,tmp_overlaps_train))
 
-    y_test=numpy.asarray(y_test)
+    y_delta_test=numpy.asarray(y_delta_test)
     X_test=numpy.asarray(X_test)
-    y_test=y_test*multi
-    y_test=y_test.reshape(len(y_test),3)
+    y_delta_test=y_delta_test*multi
+    y_delta_test=y_delta_test.reshape(len(y_delta_test),3)
 
-    delta_y=numpy.asarray(delta_y)
-    data_x=numpy.asarray(data_x)
-    delta_y=delta_y*multi
-    delta_y=delta_y.reshape(len(delta_y),3)
+    y_delta_val_train=numpy.asarray(y_delta_val_train)
+    X_val_train=numpy.asarray(X_val_train)
+    y_delta_val_train=y_delta_val_train*multi
+    y_delta_val_train=y_delta_val_train.reshape(len(y_delta_val_train),3)
 
     print("Data loaded split started")
-    X_train, X_val, y_train, y_val= train_test_split(data_x, delta_y, test_size=val_size, random_state=42)
-    del data_x
-    del delta_y
+    X_train, X_val, y_train, y_val= train_test_split(X_val_train, y_delta_val_train, test_size=val_size, random_state=42)
+    del X_val_train
+    del y_delta_val_train
 
+    overlaps_train=[]
+    overlaps_val=[]
     (X_train,y_train)= shuffle_in_unison_inplace(numpy.asarray(X_train),numpy.asarray(y_train))
-    rval = [(X_train, y_train), (X_val, y_val),
-            (X_test, y_test)]
+    rval = [(X_train, y_train,overlaps_train), (X_val, y_val,overlaps_val),
+            (X_test, y_delta_test,overlaps_test)]
     model_saver.save_partitions(rn_id,rval)
     return rval
+
+def load_pairs(dataset,step_size=[]):
+    if(len(step_size)==0):
+        step_size=[1,2,5,7,10,12,13,15,16,18,20,21,23,24,25]
+    offset=0
+    max_difference=0.2
+    random_state=42
+    dsRawData=load_depth_data(dataset,offset,max_difference)
+    dir_list=dsRawData[0]
+    data_y=dsRawData[1]
+
+    X_Pairs=[]
+
+    for s in step_size:
+        tmp_X_train,tmp_y_train,tmp_overlaps_train=prepare_data(s,dir_list,data_y)
+
+        if(len(X_Pairs)==0):
+            X_Pairs=tmp_X_train
+        else:
+            X_Pairs=numpy.concatenate((X_Pairs,tmp_X_train))
+
+    X_Pairs=numpy.asarray(X_Pairs)
+    prng = RandomState(random_state)
+    prng.shuffle(X_Pairs)
+
+    print("Data loaded split started")
+    return X_Pairs
 
 def load_tum_data_valid(dataset,step_size,multi):
 
@@ -228,3 +327,17 @@ def save_batches(datasets,batch_size,fl_size):
             pickle.dump( x+y, open("batches/te_"+str(index)+".p", "wb" ) )
 
         print("Batch saving ended")
+
+def load_splits(dataset,offset,max_difference):
+    test_size=0.2
+    val_size=0.2
+    dsRawData=load_data(dataset,offset,max_difference)
+    data_x=dsRawData[0]
+    data_y=dsRawData[1]
+    data_y=data_y.reshape(len(data_y),3)
+    dsSplit=split_data(test_size,val_size,data_x,data_y)
+    X_train, y_train = dsSplit[0]
+    X_val, y_val = dsSplit[1]
+    X_test, y_test = dsSplit[2]
+    rVal=[(X_train, y_train),(X_val, y_val),(X_test, y_test),(data_x, data_y)]
+    return rVal
