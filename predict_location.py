@@ -3,7 +3,7 @@ import theano
 import theano.tensor as T
 import  model_saver
 import dataset_loader
-from CNN_RegressionV3 import CNNRNet
+from cnnr import CNNRNet
 
 theano.config.exception_verbosity='high'
 
