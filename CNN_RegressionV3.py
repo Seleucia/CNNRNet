@@ -421,7 +421,7 @@ def train_model():
             Fx: Fx_inp,
             Sx: Sx_inp,
             y: y_inp,
-        }
+        },allow_input_downcast=True
 
     )
 
@@ -432,7 +432,7 @@ def train_model():
             Fx: Fx_inp,
             Sx: Sx_inp,
             y: y_inp,
-        }
+        },allow_input_downcast=True
     )
 
     cost = cnnr.mse(y) + lambda_1 * cnnr.L1 + lambda_2 * cnnr.L2_sqr
@@ -504,7 +504,7 @@ def train_model():
             Fx: Fx_inp,
             Sx: Sx_inp,
             y: y_inp,
-        }
+        },allow_input_downcast=True
 
     )
     # create a function to compute the mistakes that are made by the model
@@ -514,7 +514,7 @@ def train_model():
         givens={
             Fx: Fx_inp,
             Sx: Sx_inp,
-        }
+        },allow_input_downcast=True
     )
     decay_learning_rate = theano.function(inputs=[], outputs=learning_rate,
                                           updates={learning_rate: learning_rate * learning_rate_decay})
