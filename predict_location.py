@@ -47,7 +47,7 @@ def predict(test_set_x,params):
         givens={
             Fx: Fx_inp,
             Sx: Sx_inp,
-        }
+        },allow_input_downcast=True
     )
 
     n_test_batches = len(test_set_x)
