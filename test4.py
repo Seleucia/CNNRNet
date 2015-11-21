@@ -8,7 +8,7 @@ import model_saver
 params={}
 params["rn_id"]=1 #running id
 params['batch_size']=120
-params['model_name']="models/1_2_model_numpy.npy"
+params['model_name']="models/1_0_model_numpy.npy"
 
 # dataset parameters
 params['dataset']="/home/coskun/PycharmProjects/data/rgbd_dataset_freiburg3_large_cabinet/"

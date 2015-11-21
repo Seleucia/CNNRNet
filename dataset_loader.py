@@ -317,7 +317,7 @@ def save_batches(datasets,batch_size,fl_size):
         print("Batch saving ended")
 
 def load_splits(params):
-    dsRawData=load_data(params["dataset"])
+    dsRawData=load_data(params["dataset"],params["im_type"])
     data_x=dsRawData[0]
     data_y=dsRawData[1]
     data_y=data_y.reshape(len(data_y),3)
