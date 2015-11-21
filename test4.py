@@ -8,12 +8,13 @@ import model_saver
 params={}
 params["rn_id"]=1 #running id
 params['batch_size']=120
-params['model_name']="models/1_0_model_numpy.npy"
+params['model_name']="models/1_1_model_numpy.npy"
 
 # dataset parameters
 params['dataset']="/home/coskun/PycharmProjects/data/rgbd_dataset_freiburg3_large_cabinet/"
 params['im_type']="gray"
-params['step_size']=[1,2,5,7,10,12,13,15,16,18,20,21,23,24,25]
+#params['step_size']=[1,2,5,7,10,12,13,15,16,18,20,21,23,24,25]
+params['step_size']=[15]
 params['size']=[160, 120] #[width,height]
 params['nc']=1 #number of dimensions
 params['multi']=10 #ground truth location differences will be multiplied with this number
@@ -25,7 +26,7 @@ params['kern_mat']=[(5, 5), (5, 5)] #shape of kernel
 params['nkerns']= [30, 40] #number of kernel
 params['pool_mat']=  [(2, 2), (2, 2)] #shape of pooling
 
-step=params['step_size'][5]
+step=params['step_size'][0]
 
 prediction_name= params['model_name'].replace("/", " ").split()[-1] .replace(".npy","")
 ext_raw_data=prediction_name+"raw_data"+"_"+str(step)+".pkl"
