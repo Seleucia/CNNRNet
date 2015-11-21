@@ -3,6 +3,12 @@
   <component name="ChangeListManager">
     <list default="true" id="3ae84cf3-0629-4c8e-b528-32aa5b1789b1" name="Default" comment="">
       <change type="DELETED" beforePath="$PROJECT_DIR$/data/3wolfmoon.jpg" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/predictions/1_1_model_numpy_153d.png" afterPath="$PROJECT_DIR$/predictions/1_1_model_numpy_153d.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/predictions/1_1_model_numpy_15xyz.png" afterPath="$PROJECT_DIR$/predictions/1_1_model_numpy_15xyz.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataset_loader.py" afterPath="$PROJECT_DIR$/dataset_loader.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test4.py" afterPath="$PROJECT_DIR$/test4.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/utils.py" afterPath="$PROJECT_DIR$/utils.py" />
     </list>
     <ignored path="TheanoExamples.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -57,7 +63,7 @@
         <entry file="file://$PROJECT_DIR$/predict_location.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="54" column="13" selection-start-line="54" selection-start-column="12" selection-end-line="54" selection-end-column="13" />
+              <caret line="33" column="23" selection-start-line="33" selection-start-column="23" selection-end-line="33" selection-end-column="23" />
               <folding>
                 <element signature="e#0#12#0" expanded="true" />
               </folding>
@@ -65,21 +71,31 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="dataset_loader.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="dataset_loader.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/dataset_loader.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="318" column="4" selection-start-line="318" selection-start-column="4" selection-end-line="318" selection-end-column="4" />
-              <folding />
+            <state vertical-scroll-proportion="0.9315069">
+              <caret line="281" column="42" selection-start-line="281" selection-start-column="42" selection-end-line="281" selection-end-column="42" />
+              <folding>
+                <element signature="e#254#667#0" expanded="false" />
+                <element signature="e#720#1340#0" expanded="false" />
+                <element signature="e#1383#1469#0" expanded="false" />
+                <element signature="e#1505#1811#0" expanded="false" />
+                <element signature="e#2508#3117#0" expanded="false" />
+                <element signature="e#4340#4876#0" expanded="false" />
+                <element signature="e#4939#5357#0" expanded="false" />
+                <element signature="e#9947#11603#0" expanded="false" />
+                <element signature="e#11634#12047#0" expanded="false" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="test4.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="test4.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/test4.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.6641791">
-              <caret line="105" column="33" selection-start-line="105" selection-start-column="26" selection-end-line="105" selection-end-column="33" />
+            <state vertical-scroll-proportion="-3.3333333">
+              <caret line="83" column="30" selection-start-line="83" selection-start-column="30" selection-end-line="83" selection-end-column="30" />
               <folding />
             </state>
           </provider>
@@ -99,9 +115,9 @@
         <entry file="file://$PROJECT_DIR$/utils.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="74" column="0" selection-start-line="74" selection-start-column="0" selection-end-line="74" selection-end-column="0" />
+              <caret line="76" column="6" selection-start-line="76" selection-start-column="6" selection-end-line="76" selection-end-column="6" />
               <folding>
-                <marker date="1448113174625" expanded="false" signature="0:7" placeholder="import ..." />
+                <marker date="1448138540464" expanded="false" signature="0:7" placeholder="import ..." />
               </folding>
             </state>
           </provider>
@@ -139,13 +155,13 @@
         <option value="$PROJECT_DIR$/test.py" />
         <option value="$PROJECT_DIR$/test3.py" />
         <option value="$PROJECT_DIR$/plot_data.py" />
-        <option value="$PROJECT_DIR$/utils.py" />
         <option value="$PROJECT_DIR$/test2.py" />
         <option value="$PROJECT_DIR$/CNN_RegressionV3.py" />
         <option value="$PROJECT_DIR$/.gitignore" />
-        <option value="$PROJECT_DIR$/dataset_loader.py" />
         <option value="$PROJECT_DIR$/predict_location.py" />
+        <option value="$PROJECT_DIR$/utils.py" />
         <option value="$PROJECT_DIR$/test4.py" />
+        <option value="$PROJECT_DIR$/dataset_loader.py" />
       </list>
     </option>
   </component>
@@ -481,14 +497,14 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="65" y="24" width="1535" height="876" extended-state="6" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3264516" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32516128" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24801587" sideWeight="0.5" order="1" side_tool="false" content_ui="combo" />
-      <window_info id="Debug" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.39612904" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.39612904" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.35354838" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="true" content_ui="tabs" />
@@ -518,6 +534,23 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/test4.py</url>
+          <line>87</line>
+          <option name="timeStamp" value="276" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/test4.py</url>
+          <line>70</line>
+          <option name="timeStamp" value="278" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/dataset_loader.py</url>
+          <line>66</line>
+          <option name="timeStamp" value="280" />
+        </line-breakpoint>
+      </breakpoints>
       <breakpoints-dialog>
         <breakpoints-dialog />
       </breakpoints-dialog>
@@ -528,7 +561,7 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="274" />
+      <option name="time" value="281" />
     </breakpoint-manager>
     <watches-manager>
       <configuration name="PythonConfigurationType">
@@ -550,7 +583,7 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#0#12#0" expanded="true" />
+            <element signature="e#0#12#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -890,17 +923,7 @@
         <state vertical-scroll-proportion="0.79452056">
           <caret line="55" column="13" selection-start-line="55" selection-start-column="13" selection-end-line="55" selection-end-column="13" />
           <folding>
-            <element signature="e#0#12#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/utils.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="74" column="0" selection-start-line="74" selection-start-column="0" selection-end-line="74" selection-end-column="0" />
-          <folding>
-            <marker date="1448113174625" expanded="false" signature="0:7" placeholder="import ..." />
+            <element signature="e#0#12#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -916,20 +939,30 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/utils.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="76" column="6" selection-start-line="76" selection-start-column="6" selection-end-line="76" selection-end-column="6" />
+          <folding>
+            <marker date="1448138540464" expanded="false" signature="0:7" placeholder="import ..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/predict_location.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="54" column="13" selection-start-line="54" selection-start-column="12" selection-end-line="54" selection-end-column="13" />
+          <caret line="33" column="23" selection-start-line="33" selection-start-column="23" selection-end-line="33" selection-end-column="23" />
           <folding>
             <element signature="e#0#12#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/dataset_loader.py">
+    <entry file="file://$PROJECT_DIR$/test4.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="318" column="4" selection-start-line="318" selection-start-column="4" selection-end-line="318" selection-end-column="4" />
+        <state vertical-scroll-proportion="-3.3333333">
+          <caret line="83" column="30" selection-start-line="83" selection-start-column="30" selection-end-line="83" selection-end-column="30" />
           <folding />
         </state>
       </provider>
@@ -942,11 +975,21 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test4.py">
+    <entry file="file://$PROJECT_DIR$/dataset_loader.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.6641791">
-          <caret line="105" column="33" selection-start-line="105" selection-start-column="26" selection-end-line="105" selection-end-column="33" />
-          <folding />
+        <state vertical-scroll-proportion="0.9315069">
+          <caret line="281" column="42" selection-start-line="281" selection-start-column="42" selection-end-line="281" selection-end-column="42" />
+          <folding>
+            <element signature="e#254#667#0" expanded="false" />
+            <element signature="e#720#1340#0" expanded="false" />
+            <element signature="e#1383#1469#0" expanded="false" />
+            <element signature="e#1505#1811#0" expanded="false" />
+            <element signature="e#2508#3117#0" expanded="false" />
+            <element signature="e#4340#4876#0" expanded="false" />
+            <element signature="e#4939#5357#0" expanded="false" />
+            <element signature="e#9947#11603#0" expanded="false" />
+            <element signature="e#11634#12047#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>

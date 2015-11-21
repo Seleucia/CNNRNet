@@ -98,9 +98,9 @@ def prepare_data(step_size,data_x,data_y):
     _data_y=[]
     overlaps = [[] for i in range(len(data_x)-1)]
     for i in range(len(data_x)):
-        fImage1=data_x[i][0]
         new_i=(i+step_size)
         if(new_i<len(data_x)):
+            fImage1=data_x[i][0]
             fImage2=data_x[new_i][0]
             _data_x.append([fImage2,fImage1])
             _data_y.append(data_y[new_i,:]-data_y[i,:])
@@ -141,7 +141,7 @@ def split_data(test_size,val_size,data_x,data_y):
         rval = [(X_train, y_train), (X_val, y_val), (X_test, y_test)]
         return rval
 
-def  train_test_split(X, y, test_size, random_state):
+def train_test_split(X, y, test_size, random_state):
         indices=numpy.arange(len(X))
         prng = RandomState(random_state)
         prng.shuffle(indices)

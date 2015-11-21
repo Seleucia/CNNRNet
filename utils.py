@@ -72,7 +72,7 @@ def rescale_weights(params, incoming_max):
 def up_sample(overlaps,data_y,step_size):
     data_yy=[]
     for index in range(len(overlaps)):
-        value= sum(data_y[overlaps[index]]) / (step_size * len(overlaps[index]))
+        value= sum(numpy.asarray(data_y)[overlaps[index]]) / (step_size * len(overlaps[index]))
         data_yy.append(value)
     return numpy.asarray(data_yy)
 
