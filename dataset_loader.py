@@ -55,7 +55,9 @@ def read_file_list(filename):
     list = [(float(l[0]),l[1:]) for l in list if len(l)>1]
     return dict(list)
 
-def associate(first_list, second_list,offset,max_difference):
+def associate(first_list, second_list):
+    offset=0
+    max_difference=0.2
     first_keys = first_list
     second_keys = second_list
     potential_matches = [(abs(a - (b + offset)), a, b)
@@ -74,7 +76,7 @@ def associate(first_list, second_list,offset,max_difference):
     matches=numpy.array(matches)
     return matches
 
-def load_data(dataset,im_type,offset,max_difference):
+def load_data(dataset,im_type):
     dir_f=dataset+im_type+'/'
     full_path=dataset+im_type+'/*.png'
     lst=glob.glob(full_path)
@@ -85,7 +87,7 @@ def load_data(dataset,im_type,offset,max_difference):
     second_list=read_file_list(filename)
 
     #Find closes trajectry for depth image
-    matches=associate(first_list, second_list.keys(),offset,max_difference)
+    matches=associate(first_list, second_list.keys())
     data_y=numpy.matrix([[float(value) for value in second_list[b][0:3]] for a,b in matches])
     data_x=[["%s%f%s" %(dir_f,a,".png")] for a,b in matches]
     rval=[(data_x),(data_y)]
@@ -151,15 +153,9 @@ def  train_test_split(X, y, test_size, random_state):
         rVal=[X_training,X_test,y_training,y_test]
         return rVal
 
-def load_tum_dataV2(dataset,rn_id,multi,step_size=[],im_type='depth'):
-    if(len(step_size)==0):
-        step_size=[1,2,5,7,10,12,13,15,16,18,20,21,23,24,25]
-    offset=0
-    max_difference=0.2
-    test_size=0.20
-    val_size=0.20
+def load_tum_dataV2(params):
 
-    dsRawData=load_data(dataset,im_type,offset,max_difference)
+    dsRawData=load_data(params["dataset"],params["im_type"])
     dir_list=dsRawData[0]
     data_y=dsRawData[1]
 
@@ -170,8 +166,8 @@ def load_tum_dataV2(dataset,rn_id,multi,step_size=[],im_type='depth'):
     overlaps_test=[]
     overlaps_train=[]
 
-    for s in step_size:
-        dsSplits=split_test_data(dir_list, data_y,test_size)
+    for s in params["step_size"]:
+        dsSplits=split_test_data(dir_list, data_y,params["test_size"])
         tmp_X_train,tmp_y_train=dsSplits[0]
         tmp_X_test,tmp_y_test=dsSplits[1]
 
@@ -201,16 +197,16 @@ def load_tum_dataV2(dataset,rn_id,multi,step_size=[],im_type='depth'):
 
     y_delta_test=numpy.asarray(y_delta_test)
     X_test=numpy.asarray(X_test)
-    y_delta_test=y_delta_test*multi
+    y_delta_test=y_delta_test*params["multi"]
     y_delta_test=y_delta_test.reshape(len(y_delta_test),3)
 
     y_delta_val_train=numpy.asarray(y_delta_val_train)
     X_val_train=numpy.asarray(X_val_train)
-    y_delta_val_train=y_delta_val_train*multi
+    y_delta_val_train=y_delta_val_train*params["multi"]
     y_delta_val_train=y_delta_val_train.reshape(len(y_delta_val_train),3)
 
     print("Data loaded split started")
-    X_train, X_val, y_train, y_val= train_test_split(X_val_train, y_delta_val_train, test_size=val_size, random_state=42)
+    X_train, X_val, y_train, y_val= train_test_split(X_val_train, y_delta_val_train, test_size=params["val_size"], random_state=42)
     del X_val_train
     del y_delta_val_train
 
@@ -219,21 +215,18 @@ def load_tum_dataV2(dataset,rn_id,multi,step_size=[],im_type='depth'):
     (X_train,y_train)= shuffle_in_unison_inplace(numpy.asarray(X_train),numpy.asarray(y_train))
     rval = [(X_train, y_train,overlaps_train), (X_val, y_val,overlaps_val),
             (X_test, y_delta_test,overlaps_test)]
-    model_saver.save_partitions(rn_id,rval)
+    model_saver.save_partitions(params["rn_id"],rval)
     return rval
 
-def load_pairs(dataset,step_size=[]):
-    if(len(step_size)==0):
-        step_size=[1,2,5,7,10,12,13,15,16,18,20,21,23,24,25]
+def load_pairs(dataset,im_type,step_size=[]):
     offset=0
     max_difference=0.2
     random_state=42
-    dsRawData=load_depth_data(dataset,offset,max_difference)
+    dsRawData=load_data(dataset,offset,max_difference)
     dir_list=dsRawData[0]
     data_y=dsRawData[1]
 
     X_Pairs=[]
-
     for s in step_size:
         tmp_X_train,tmp_y_train,tmp_overlaps_train=prepare_data(s,dir_list,data_y)
 
@@ -250,11 +243,6 @@ def load_pairs(dataset,step_size=[]):
     return X_Pairs
 
 def load_tum_data_valid(dataset,step_size,multi):
-
-    offset=0
-    max_difference=0.2
-
-
     dir_f=dataset+'/depth/'
     full_path=dataset+'/depth/*.png'
     lst=glob.glob(full_path)
@@ -265,7 +253,7 @@ def load_tum_data_valid(dataset,step_size,multi):
     second_list=read_file_list(filename)
 
     #Find closes trajectry for depth image
-    matches=associate(first_list, second_list.keys(),offset,max_difference)
+    matches=associate(first_list, second_list.keys())
     data_y=numpy.matrix([[float(value) for value in second_list[b][0:3]] for a,b in matches])
     dir_list=[["%s%f%s" %(dir_f,a,".png")] for a,b in matches]
     data_x=[]
@@ -328,14 +316,12 @@ def save_batches(datasets,batch_size,fl_size):
 
         print("Batch saving ended")
 
-def load_splits(dataset,offset,max_difference):
-    test_size=0.2
-    val_size=0.2
-    dsRawData=load_data(dataset,offset,max_difference)
+def load_splits(params):
+    dsRawData=load_data(params["dataset"])
     data_x=dsRawData[0]
     data_y=dsRawData[1]
     data_y=data_y.reshape(len(data_y),3)
-    dsSplit=split_data(test_size,val_size,data_x,data_y)
+    dsSplit=split_data(params["test_size"],params["val_size"],data_x,data_y)
     X_train, y_train = dsSplit[0]
     X_val, y_val = dsSplit[1]
     X_test, y_test = dsSplit[2]

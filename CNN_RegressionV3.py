@@ -343,74 +343,69 @@ class CNNRNet(object):
 
 
 
-def train_model():
-    dataset="/home/coskun/PycharmProjects/data/rgbd_dataset_freiburg3_large_cabinet/"
-    rng = numpy.random.RandomState(23455)
-    im_type='gray'
-    step_size=[1,2,5,7,10,12,13,15,16,18,20,21,23,24,25]
-    # size = [480,640] orijinal size,[height,width]
-    rn_id=1
-    size = [160, 120] #[width,height]
-    nc = 1  # number of channcels
-    nkerns = [30, 40]
-    nkern1_size = [5, 5]
-    nkern2_size = [5, 5]
+def train_model(params):
+    rn_id=params["rn_id"]
+    im_type=params["im_type"]
+    nc =params["nc"]  # number of channcels
+    size =params["size"]  # size = [480,640] orijinal size,[height,width]
 
-    npool1_size = [2, 2]
-    npool2_size = [2, 2]
+    # Conv an Pooling parameters
+    nkerns =params["nkerns"]
+    kern_mat =params["kern_mat"]
+    pool_mat =params["pool_mat"]
 
-    batch_size = 30
-
-    multi = 10
-
-    initial_learning_rate = 0.0005
-    learning_rate_decay = 0.998
-    squared_filter_length_limit = 15.0
-    n_epochs = 3000
+    # learning parameters
+    batch_size =params["batch_size"]
+    n_epochs =params["n_epochs"]
+    initial_learning_rate =params["initial_learning_rate"]
+    learning_rate_decay =params["learning_rate_decay"]
+    squared_filter_length_limit =params["squared_filter_length_limit"]
     learning_rate = theano.shared(numpy.asarray(initial_learning_rate, dtype=theano.config.floatX))
+    lambda_1 = params["lambda_1"]  # regulizer param
+    lambda_2 = params["lambda_2"]
 
     #### the params for momentum
-    mom_start = 0.5
-    mom_end = 0.99
+    mom_start =params["mom_start"]
+    mom_end = params["mom_end"]
     # for epoch in [0, mom_epoch_interval], the momentum increases linearly
     # from mom_start to mom_end. After mom_epoch_interval, it stay at mom_end
-    mom_epoch_interval = 500
-    mom_params = {"start": mom_start,
-                  "end": mom_end,
-                  "interval": mom_epoch_interval}
+    mom_epoch_interval =params["mom_epoch_interval"]
 
-    lambda_1 = 0.01  # regulizer param
-    lambda_2 = 0.01
+    # early-stopping parameters
+    patience = params["patience"]  # look as this many examples regardless
+    patience_increase = params["patience_increase"]  # wait this much longer when a new best is
+    # found
+    improvement_threshold = params["improvement_threshold"]  # a relative improvement of this much is
 
-    datasets = dataset_loader.load_tum_dataV2(dataset,rn_id,multi,step_size,im_type)
 
+    #Loading dataset
+    datasets = dataset_loader.load_tum_dataV2(params)
     X_train, y_train,overlaps_train = datasets[0]
     X_val, y_val,overlaps_val = datasets[1]
     X_test, y_test,overlaps_test = datasets[2]
-
     # compute number of minibatches for training, validation and testing
     n_train_batches = len(X_train)
     n_valid_batches = len(X_val)
     n_test_batches = len(X_test)
-
     n_train_batches /= batch_size
     n_valid_batches /= batch_size
     n_test_batches /= batch_size
 
+    #Parameters to be passed net
     epoch = T.scalar()
     Fx = T.matrix(name='Fx_input')  # the data is presented as rasterized images
     Sx = T.matrix(name='Sx_input')  # the data is presented as rasterized images
     y = T.matrix('y')  # the output are presented as matrix 1*3.
-
     Fx_inp = T.matrix(name='Fx_inp')  # the data is presented as rasterized images
     Sx_inp = T.matrix(name='Sx_inp')  # the data is presented as rasterized images
     y_inp = T.matrix('y_inp')
 
     print '... building the model'
 
+    rng = numpy.random.RandomState(23455)
     cnnr = CNNRNet(rng, input, batch_size, nc, size, nkerns,
-                   nkern1_size, nkern2_size,
-                   npool1_size, npool2_size,
+                   kern_mat[0], kern_mat[1],
+                   pool_mat[0],pool_mat[1],
                    Fx, Sx)
 
     # create a function to compute the mistakes that are made by the model
@@ -524,11 +519,6 @@ def train_model():
     # TRAIN MODEL #
     ###############
     print '... training'
-    # early-stopping parameters
-    patience = 10000  # look as this many examples regardless
-    patience_increase = 2  # wait this much longer when a new best is
-    # found
-    improvement_threshold = 0.995  # a relative improvement of this much is
     # considered significant
     validation_frequency = min(n_train_batches, patience / 2)
     # go through this many
@@ -635,4 +625,39 @@ def train_model():
                           ' ran for %.2fm' % ((end_time - start_time) / 60.))
 
 
-train_model()
+if __name__ == "__main__":
+
+    params={}
+    params["rn_id"]=1 #running id
+    # early-stopping parameters
+    params['patience']= 10000  # look as this many examples regardless
+    params['patience_increase']=2  # wait this much longer when a new best is
+    params['improvement_threshold']=0.995  # a relative improvement of this much is
+
+    # learning parameters
+    params['lambda_1']= 0.01  # regulizer param
+    params['lambda_2']=0.01  # regulizer param
+    params['mom_start']=0.0005  # the params for momentum
+    params['mom_end']=0.0005    # the params for momentum
+    params['mom_epoch_interval']=500 #for epoch in [0, mom_epoch_interval], the momentum increases linearly from mom_start to mom_end. After mom_epoch_interval, it stay at mom_end
+    params['initial_learning_rate']=0.0005
+    params['learning_rate_decay']= 0.998
+    params['squared_filter_length_limit']=15.0
+    params['batch_size']=120
+    params['n_epochs']=3000
+
+    # dataset parameters
+    params['dataset']="/home/coskun/PycharmProjects/data/rgbd_dataset_freiburg3_large_cabinet/"
+    params['im_type']="gray"
+    params['step_size']=[1,2,5,7,10,12,13,15,16,18,20,21,23,24,25]
+    params['size']=[160, 120] #[width,height]
+    params['nc']=1 #number of dimensions
+    params['multi']=10 #ground truth location differences will be multiplied with this number
+    params['test_size']=0.20 #Test size
+    params['val_size']=0.20 #Test size
+
+    # Conv an Pooling parameters
+    params['kern_mat']=[(5, 5), (5, 5)] #shape of kernel
+    params['nkerns']= [30, 40] #number of kernel
+    params['pool_mat']=  [(2, 2), (2, 2)] #shape of pooling
+    train_model(params)
