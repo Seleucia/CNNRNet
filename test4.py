@@ -69,7 +69,7 @@ datasets= dataset_loader.load_tum_dataV2(params)
 
 
 #orijinal locations of camera
-partitions=dataset_loader.load_splits(params['dataset'])
+partitions=dataset_loader.load_splits(params)
 (X_train_gt, y_train_gt)=partitions[0]
 (X_val_gt, y_val_gt)=partitions[1]
 (X_test_gt, y_test_gt)=partitions[2]

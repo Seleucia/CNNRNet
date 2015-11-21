@@ -3,7 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="3ae84cf3-0629-4c8e-b528-32aa5b1789b1" name="Default" comment="">
       <change type="DELETED" beforePath="$PROJECT_DIR$/data/3wolfmoon.jpg" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/predict_location.py" afterPath="$PROJECT_DIR$/predict_location.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test4.py" afterPath="$PROJECT_DIR$/test4.py" />
     </list>
     <ignored path="TheanoExamples.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -41,11 +41,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="predict_location.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="predict_location.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/predict_location.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.26751593">
-              <caret line="49" column="35" selection-start-line="49" selection-start-column="35" selection-end-line="49" selection-end-column="35" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="54" column="13" selection-start-line="54" selection-start-column="12" selection-end-line="54" selection-end-column="13" />
               <folding>
                 <element signature="e#0#12#0" expanded="true" />
               </folding>
@@ -57,17 +57,17 @@
         <entry file="file://$PROJECT_DIR$/dataset_loader.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="314" column="39" selection-start-line="314" selection-start-column="39" selection-end-line="314" selection-end-column="39" />
+              <caret line="318" column="4" selection-start-line="318" selection-start-column="4" selection-end-line="318" selection-end-column="4" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="test4.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="test4.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/test4.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="80" column="32" selection-start-line="80" selection-start-column="32" selection-end-line="80" selection-end-column="32" />
+            <state vertical-scroll-proportion="0.26436782">
+              <caret line="69" column="0" selection-start-line="69" selection-start-column="0" selection-end-line="69" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -109,9 +109,9 @@
         <option value="$PROJECT_DIR$/test2.py" />
         <option value="$PROJECT_DIR$/CNN_RegressionV3.py" />
         <option value="$PROJECT_DIR$/.gitignore" />
-        <option value="$PROJECT_DIR$/test4.py" />
         <option value="$PROJECT_DIR$/dataset_loader.py" />
         <option value="$PROJECT_DIR$/predict_location.py" />
+        <option value="$PROJECT_DIR$/test4.py" />
       </list>
     </option>
   </component>
@@ -865,29 +865,29 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test4.py">
+    <entry file="file://$PROJECT_DIR$/predict_location.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="80" column="32" selection-start-line="80" selection-start-column="32" selection-end-line="80" selection-end-column="32" />
-          <folding />
+          <caret line="54" column="13" selection-start-line="54" selection-start-column="12" selection-end-line="54" selection-end-column="13" />
+          <folding>
+            <element signature="e#0#12#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/dataset_loader.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="314" column="39" selection-start-line="314" selection-start-column="39" selection-end-line="314" selection-end-column="39" />
+          <caret line="318" column="4" selection-start-line="318" selection-start-column="4" selection-end-line="318" selection-end-column="4" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/predict_location.py">
+    <entry file="file://$PROJECT_DIR$/test4.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.26751593">
-          <caret line="49" column="35" selection-start-line="49" selection-start-column="35" selection-end-line="49" selection-end-column="35" />
-          <folding>
-            <element signature="e#0#12#0" expanded="true" />
-          </folding>
+        <state vertical-scroll-proportion="0.26436782">
+          <caret line="69" column="0" selection-start-line="69" selection-start-column="0" selection-end-line="69" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
