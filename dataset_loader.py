@@ -215,7 +215,7 @@ def load_tum_dataV2(params):
     (X_train,y_train)= shuffle_in_unison_inplace(numpy.asarray(X_train),numpy.asarray(y_train))
     rval = [(X_train, y_train,overlaps_train), (X_val, y_val,overlaps_val),
             (X_test, y_delta_test,overlaps_test)]
-    model_saver.save_partitions(params["rn_id"],rval)
+    #    model_saver.save_partitions(params["rn_id"],rval)
     return rval
 
 def load_pairs(dataset,im_type,step_size=[]):

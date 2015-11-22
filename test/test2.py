@@ -2,19 +2,182 @@ import os
 import sys
 import timeit
 import numpy
+import utils
 import theano
 import theano.tensor as T
 from theano import shared
+from theano.tensor.signal import downsample
+from theano.tensor.nnet import conv
 import dataset_loader
 import model_saver
 from collections import OrderedDict
-from layers.ConvPoolLayer import ConvPoolLayer
-from layers.HiddenLayer import HiddenLayer
-from layers.OutputLayer import OutputLayer
 
 # start-snippet-1
 
 theano.config.exception_verbosity = 'high'
+
+
+class OutputLayer(object):
+    def __init__(self, input, n_in, n_out):
+        self.W = theano.shared(
+            value=numpy.zeros(
+                (n_in, n_out),
+                dtype=theano.config.floatX
+            ),
+            name='W',
+            borrow=True
+        )
+        # initialize the biases b as a vector of n_out 0s
+        self.b = theano.shared(
+            value=numpy.zeros(
+                (n_out,),
+                dtype=theano.config.floatX
+            ),
+            name='b',
+            borrow=True
+
+        )
+
+        self.p_y_given_x = T.dot(input, self.W) + self.b
+        self.y_pred = self.p_y_given_x
+
+        self.params = [self.W, self.b]
+        self.input = input
+
+    def mse(self, y):
+        return T.mean((self.y_pred - y) ** 2)
+
+    def errors(self, y):
+        if y.ndim != self.y_pred.ndim:
+            raise TypeError(
+                'y should have the same shape as self.y_pred',
+                ('y', y.type, 'y_pred', self.y_pred.type)
+            )
+        return T.mean(T.abs_(self.y_pred - y))
+
+
+class DropoutHiddenLayer(object):
+    def __init__(self, rng, input, n_in, n_out, W=None, b=None, p=0.5, is_train=0):
+        self.input = input
+        W, b = utils.init_W_b(W, b, rng, n_in, n_out)
+
+        self.W = W
+        self.b = b
+
+        lin_output = T.dot(input, self.W) + self.b
+        output = T.maximum(lin_output, 0)
+
+        # multiply output and drop -> in an approximation the scaling effects cancel out
+        train_output = utils.drop(numpy.cast[theano.config.floatX](1. / p) * output)
+
+        # is_train is a pseudo boolean theano variable for switching between training and prediction
+        self.output = T.switch(T.neq(is_train, 0), train_output, output)
+
+        # parameters of the model
+        self.params = [self.W, self.b]
+
+
+class FHiddenLayer(object):
+    def __init__(self, rng, input, n_in, n_out, W=None, b=None):
+        self.input = input
+
+        W, b = utils.init_W_b(W, b, rng, n_in, n_out)
+        self.W = W
+        self.b = b
+
+        lin_output = T.dot(input, self.W) + self.b
+        self.output = T.maximum(lin_output, 0)
+        # parameters of the model
+        self.params = [self.W, self.b]
+
+
+class FConvPoolLayer(object):
+    """Pool Layer of a convolutional network """
+
+    def __init__(self, rng, input, filter_shape, image_shape, poolsize=(2, 2), W=None, b=None):
+        """
+        Allocate a LeNetConvPoolLayer with shared variable internal parameters.
+
+        :type rng: numpy.random.RandomState
+        :param rng: a random number generator used to initialize weights
+
+        :type input: theano.tensor.dtensor4
+        :param input: symbolic image tensor, of shape image_shape
+
+        :type filter_shape: tuple or list of length 4
+        :param filter_shape: (number of filters, num input feature maps,
+                              filter height, filter width)
+
+        :type image_shape: tuple or list of length 4
+        :param image_shape: (batch size, num input feature maps,
+                             image height, image width)
+
+        :type poolsize: tuple or list of length 2
+        :param poolsize: the downsampling (pooling) factor (#rows, #cols)
+        """
+
+        assert image_shape[1] == filter_shape[1]
+        self.input = input
+
+        # there are "num input feature maps * filter height * filter width"
+        # inputs to each hidden unit
+        n_in = numpy.prod(filter_shape[1:])
+        # each unit in the lower layer receives a gradient from:
+        # "num output feature maps * filter height * filter width" /
+        #   pooling size
+        n_out = (filter_shape[0] * numpy.prod(filter_shape[2:]) /
+                 numpy.prod(poolsize))
+
+        # there are "num input feature maps * filter height * filter width"
+        # inputs to each hidden unit
+        fan_in = numpy.prod(filter_shape[1:])
+        # each unit in the lower layer receives a gradient from:
+        # "num output feature maps * filter height * filter width" /
+        #   pooling size
+        fan_out = (filter_shape[0] * numpy.prod(filter_shape[2:]) /
+                   numpy.prod(poolsize))
+        # initialize weights with random weights
+        W_bound = numpy.sqrt(6. / (fan_in + fan_out))
+        self.W = theano.shared(
+            numpy.asarray(
+                rng.uniform(low=-W_bound, high=W_bound, size=filter_shape),
+                dtype=theano.config.floatX
+            ),
+            borrow=True
+        )
+
+        # init biases to positive values, so we should be initially in the linear regime of the linear rectified function
+        b_values = numpy.ones((filter_shape[0],), dtype=theano.config.floatX) * numpy.cast[theano.config.floatX](0.01)
+
+        self.b = theano.shared(value=b_values, name='b', borrow=True)
+
+        # convolve input feature maps with filters
+        conv_out = conv.conv2d(
+            input=input,
+            filters=self.W,
+            filter_shape=filter_shape,
+            image_shape=image_shape
+        )
+
+        # downsample each feature map individually, using maxpooling
+        pooled_out = downsample.max_pool_2d(
+            input=conv_out,
+            ds=poolsize,
+            ignore_border=True
+        )
+
+        # add the bias term. Since the bias is a vector (1D array), we first
+        # reshape it to a tensor of shape (1, n_filters, 1, 1). Each bias will
+        # thus be broadcasted across mini-batches and feature map
+        # width & height
+        self.output = theano.tensor.maximum(pooled_out + self.b.dimshuffle('x', 0, 'x', 'x'), 0)
+
+        # store parameters of this layer
+        self.params = [self.W, self.b]
+
+        # keep track of model input
+        self.input = input
+
 
 class CNNRNet(object):
     def __init__(self,
@@ -40,7 +203,7 @@ class CNNRNet(object):
         # filtering reduces the image size to (640-5+1 , 480-5+1) = (636, 476)
         # maxpooling reduces this further to (636/2, 476/2) = (318, 238)
         # 4D output tensor is thus of shape (batch_size, nkerns[0], size[0], size[1])
-        Flayer0 = ConvPoolLayer(
+        Flayer0 = FConvPoolLayer(
             rng,
             input=Flayer0_input,
             image_shape=(batch_size, nc, size[0], size[1]),
@@ -49,7 +212,7 @@ class CNNRNet(object):
         )
         Fl0out = ((size[0] - nkern1_size[0] + 1) / npool1_size[0], (size[1] - nkern1_size[0] + 1) / npool1_size[1])
 
-        Slayer0 = ConvPoolLayer(
+        Slayer0 = FConvPoolLayer(
             rng,
             input=Slayer0_input,
             image_shape=(batch_size, nc, size[0], size[1]),
@@ -65,7 +228,7 @@ class CNNRNet(object):
         # maxpooling reduces this further to (314/2, 234/2) = (157, 117)
         # 4D output tensor is thus of shape (batch_size, nkerns[1], 157, 117)
 
-        Flayer1 = ConvPoolLayer(
+        Flayer1 = FConvPoolLayer(
             rng,
             input=Flayer0.output,
             image_shape=(batch_size, nkerns[0]) + Fl0out,
@@ -74,7 +237,7 @@ class CNNRNet(object):
         )
         Fl1out = ((Fl0out[0] - nkern2_size[0] + 1) / npool2_size[0], (Fl0out[1] - nkern2_size[0] + 1) / npool2_size[0])
 
-        Slayer1 = ConvPoolLayer(
+        Slayer1 = FConvPoolLayer(
             rng,
             input=Slayer0.output,
             image_shape=(batch_size, nkerns[0]) + Sl0out,
@@ -94,7 +257,7 @@ class CNNRNet(object):
         Slayer2_input = Slayer1.output.flatten(2)
 
         # construct a fully-connected relu layer
-        Flayer2 = HiddenLayer(
+        Flayer2 = FHiddenLayer(
             rng,
             input=Flayer2_input,
             n_in=nkerns[1] * Fl1out[0] * Fl1out[1],
@@ -102,7 +265,7 @@ class CNNRNet(object):
         )
 
         # construct a fully-connected relu layer
-        Slayer2 = HiddenLayer(
+        Slayer2 = FHiddenLayer(
             rng,
             input=Slayer2_input,
             n_in=nkerns[1] * Sl1out[0] * Sl1out[1],
@@ -113,24 +276,24 @@ class CNNRNet(object):
         self.layers.append(Slayer2)
 
         # construct a fully-connected sigmoidal layer
-        layer3 = HiddenLayer(
+        layer3 = FHiddenLayer(
             rng,
-            input=T.mul(Flayer2.output, Slayer2.output),
+            input=T.mul([Flayer2.output, Slayer2.output]),
             n_in=250,
-            n_out=250
+            n_out=500
         )
         self.layers.append(layer3)
 
         # construct a fully-connected sigmoidal layer
-        layer4 = HiddenLayer(
+        layer4 = FHiddenLayer(
             rng,
             input=layer3.output,
-            n_in=250,
-            n_out=250
+            n_in=500,
+            n_out=500
         )
         self.layers.append(layer4)
 
-        layerOutput = OutputLayer(input=layer4.output, n_in=250, n_out=3)
+        layerOutput = OutputLayer(input=layer4.output, n_in=500, n_out=3)
         self.layers.append(layerOutput)
 
         for layer in zip(reversed(self.layers)):
@@ -177,6 +340,8 @@ class CNNRNet(object):
 
     def load(self, filename):
         self.updateparams(numpy.load(filename))
+
+
 
 def train_model(params):
     rn_id=params["rn_id"]
@@ -459,6 +624,7 @@ def train_model(params):
                           os.path.split(__file__)[1] +
                           ' ran for %.2fm' % ((end_time - start_time) / 60.))
 
+
 if __name__ == "__main__":
 
     params={}
@@ -490,7 +656,7 @@ if __name__ == "__main__":
     params['test_size']=0.20 #Test size
     params['val_size']=0.20 #Test size
 
-    # c an Pooling parameters
+    # Conv an Pooling parameters
     params['kern_mat']=[(5, 5), (5, 5)] #shape of kernel
     params['nkerns']= [30, 40] #number of kernel
     params['pool_mat']=  [(2, 2), (2, 2)] #shape of pooling
