@@ -124,11 +124,10 @@ def train_model(params):
                     data_y = y_val[i * batch_size: (i + 1) * batch_size]
                     val_mean+=np.mean(data_y)
                     val_abs_mean+=np.mean(np.abs(data_y))
-                    test_losses +=  model.test_on_batch([data_Fx, data_Sx],data_y)
                     this_validation_loss += model.test_on_batch([data_Fx, data_Sx],data_y)
         this_validation_loss /=n_valid_batches
-        val_abs_mean/=n_test_batches
-        val_mean/=n_test_batches
+        val_abs_mean/=n_valid_batches
+        val_mean/=n_valid_batches
         s ='VAL--> epoch %i, validation error %f val data mean %f prediction mean %f prediction abs mean %%' %(epoch_counter, this_validation_loss,val_mean,val_abs_mean)
         utils.log_write(s)
         if this_validation_loss < best_validation_loss:
