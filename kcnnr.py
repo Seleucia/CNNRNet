@@ -57,11 +57,15 @@ def build_model(params):
     model.add(Merge([lmodel, rmodel], mode='mul'))
 
     model.add(Dense(512))
-    model.add(Activation('relu'))
+    model.add(Activation('tanh'))
+    model.add(Dropout(0.5))
+
+    model.add(Dense(512))
+    model.add(Activation('linear'))
     model.add(Dropout(0.5))
 
     model.add(Dense(3))
-    model.add(Activation('relu'))
+
     sgd = SGD(lr=params['initial_learning_rate'], decay=params['learning_rate_decay'], momentum=params['momentum'], nesterov=True)
     adagrad=Adagrad(lr=params['initial_learning_rate'], epsilon=1e-6)
     model.compile(loss='mean_squared_error', optimizer=adagrad)
@@ -88,6 +92,10 @@ def train_model(params):
     n_train_batches /= batch_size
     n_valid_batches /= batch_size
     n_test_batches /= batch_size
+
+    # n_train_batches = 3
+    # n_valid_batches = 1
+    # n_test_batches = 1
 
     model=  build_model(params)
     print("Model builded")
@@ -128,7 +136,7 @@ def train_model(params):
         this_validation_loss /=n_valid_batches
         val_abs_mean/=n_valid_batches
         val_mean/=n_valid_batches
-        s ='VAL--> epoch %i, validation error %f val data mean %f prediction mean %f prediction abs mean %%' %(epoch_counter, this_validation_loss,val_mean,val_abs_mean)
+        s ='VAL--> epoch %i, validation error %f prediction mean %f prediction abs mean %f %%' %(epoch_counter, this_validation_loss,val_mean,val_abs_mean)
         utils.log_write(s)
         if this_validation_loss < best_validation_loss:
             best_validation_loss = this_validation_loss
@@ -148,7 +156,7 @@ def train_model(params):
             test_mean/=n_test_batches
             ext=params["models"]+str(rn_id)+"_"+str(epoch_counter % 3)+".h5"
             model.save_weights(ext, overwrite=True)
-            s ='TEST--> epoch %i, test error %f test data mean %f prediction mean %f prediction abs mean %%' %(epoch_counter, test_losses,test_mean,test_abs_mean)
+            s ='TEST--> epoch %i, test error %f prediction mean %f prediction abs mean %f %%' %(epoch_counter, test_losses,test_mean,test_abs_mean)
             utils.log_write(s)
 
 
@@ -166,7 +174,7 @@ if __name__ == "__main__":
     params['lambda_1']= 0.01  # regulizer param
     params['lambda_2']=0.01  # regulizer param
     params['momentum']=0.9    # the params for momentum
-    params['initial_learning_rate']=0.001
+    params['initial_learning_rate']=0.0001
     params['learning_rate_decay']= 0.998
     params['squared_filter_length_limit']=15.0
     params['batch_size']=30
@@ -177,6 +185,7 @@ if __name__ == "__main__":
     params['dataset']="/home/cmp/projects/data/rgbd_dataset_freiburg3_large_cabinet/" #test computer
     params['im_type']="gray"
     params['step_size']=[1,2,5,7,10,12,13,14,15,16,18,20,21,23,24,25]
+    #params['step_size']=[10]
     params['size']=[160, 120] #[width,height]
     params['nc']=1 #number of dimensions
     params['multi']=10 #ground truth location differences will be multiplied with this number
