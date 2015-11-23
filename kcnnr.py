@@ -152,7 +152,7 @@ if __name__ == "__main__":
     params['initial_learning_rate']=0.001
     params['learning_rate_decay']= 0.998
     params['squared_filter_length_limit']=15.0
-    params['batch_size']=600
+    params['batch_size']=60
     params['n_epochs']=3000
 
     # dataset parameters
