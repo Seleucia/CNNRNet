@@ -122,8 +122,8 @@ def train_model(params):
                     data_Fx = dataset_loader.load_batch_images(size, nc, "F", Fx,im_type)
                     data_Sx = dataset_loader.load_batch_images(size, nc, "S", Fx,im_type)
                     data_y = y_val[i * batch_size: (i + 1) * batch_size]
-                    test_mean+=np.mean(data_y)
-                    test_abs_mean+=np.mean(np.abs(data_y))
+                    val_mean+=np.mean(data_y)
+                    val_abs_mean+=np.mean(np.abs(data_y))
                     test_losses +=  model.test_on_batch([data_Fx, data_Sx],data_y)
                     this_validation_loss += model.test_on_batch([data_Fx, data_Sx],data_y)
         this_validation_loss /=n_valid_batches
