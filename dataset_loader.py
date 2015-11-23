@@ -89,7 +89,7 @@ def load_data(dataset,im_type):
     n_lst = [l.replace(dir_f, '') for l in lst]
     lst = [l.replace('.png', '') for l in n_lst]
     first_list=[float(i) for i in lst]
-    filename=dataset+'/groundtruth.txt';
+    filename=dataset+'groundtruth.txt';
     second_list=read_file_list(filename)
 
     #Find closes trajectry for depth image
@@ -255,7 +255,7 @@ def load_tum_data_valid(dataset,step_size,multi):
     n_lst = [l.replace(dir_f, '') for l in lst]
     lst = [l.replace('.png', '') for l in n_lst]
     first_list=[float(i) for i in lst]
-    filename=dataset+'/groundtruth.txt'
+    filename=dataset+'groundtruth.txt'
     second_list=read_file_list(filename)
 
     #Find closes trajectry for depth image

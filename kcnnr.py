@@ -74,12 +74,11 @@ def train_model(params):
     nc =params["nc"]  # number of channcels
     size =params["size"]  # size = [480,640] orijinal size,[height,width]
 
-    model=  build_model(params)
     datasets = dataset_loader.load_tum_dataV2(params)
     X_train, y_train,overlaps_train = datasets[0]
     X_val, y_val,overlaps_val = datasets[1]
     X_test, y_test,overlaps_test = datasets[2]
-
+    print("Database loaded")
     # compute number of minibatches for training, validation and testing
     n_train_batches = len(X_train)
     n_valid_batches = len(X_val)
@@ -88,11 +87,14 @@ def train_model(params):
     n_valid_batches /= batch_size
     n_test_batches /= batch_size
 
+    model=  build_model(params)
+    print("Model builded")
     done_looping = False
     epoch_counter = 0
     best_validation_loss=np.inf
     while (epoch_counter < n_epochs) and (not done_looping):
         epoch_counter = epoch_counter + 1
+        print("Training model...")
         for minibatch_index in xrange(n_train_batches):
             iter = (epoch_counter - 1) * n_train_batches + minibatch_index
             if iter % 100 == 0:
@@ -154,7 +156,8 @@ if __name__ == "__main__":
     params['n_epochs']=3000
 
     # dataset parameters
-    params['dataset']="/home/coskun/PycharmProjects/data/rgbd_dataset_freiburg3_large_cabinet/"
+    #params['dataset']="/home/coskun/PycharmProjects/data/rgbd_dataset_freiburg3_large_cabinet/"
+    params['dataset']="/home/cmp/projects/data/rgbd_dataset_freiburg3_large_cabinet/" #test computer
     params['im_type']="gray"
     params['step_size']=[1,2,5,7,10,12,13,14,15,16,18,20,21,23,24,25]
     params['size']=[160, 120] #[width,height]
