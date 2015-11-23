@@ -87,9 +87,6 @@ def train_model(params):
     n_train_batches /= batch_size
     n_valid_batches /= batch_size
     n_test_batches /= batch_size
-    n_train_batches=3
-    n_valid_batches=3
-    n_test_batches=3
 
     done_looping = False
     epoch_counter = 0
@@ -132,7 +129,7 @@ def train_model(params):
             test_losses/=n_test_batches
             ext=params["models"]+str(rn_id)+"_"+str(epoch_counter % 3)+".h5"
             model.save_weights(ext, overwrite=True)
-            s ='VAL--> epoch %i, validation error %f %%' %(epoch_counter, test_losses)
+            s ='TEST--> epoch %i, validation error %f %%' %(epoch_counter, test_losses)
             utils.log_write(s)
 
 
@@ -153,14 +150,13 @@ if __name__ == "__main__":
     params['initial_learning_rate']=0.001
     params['learning_rate_decay']= 0.998
     params['squared_filter_length_limit']=15.0
-    params['batch_size']=10
+    params['batch_size']=600
     params['n_epochs']=3000
 
     # dataset parameters
     params['dataset']="/home/coskun/PycharmProjects/data/rgbd_dataset_freiburg3_large_cabinet/"
     params['im_type']="gray"
-    params['step_size']=[1,2,5,7,10,12,13,15,16,18,20,21,23,24,25]
-    params['step_size']=[10]
+    params['step_size']=[1,2,5,7,10,12,13,14,15,16,18,20,21,23,24,25]
     params['size']=[160, 120] #[width,height]
     params['nc']=1 #number of dimensions
     params['multi']=10 #ground truth location differences will be multiplied with this number

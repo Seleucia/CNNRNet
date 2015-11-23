@@ -2,14 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3ae84cf3-0629-4c8e-b528-32aa5b1789b1" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/kcnnr.py" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/data/3wolfmoon.jpg" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/test/test2.py" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gitignore" afterPath="$PROJECT_DIR$/.gitignore" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataset_loader.py" afterPath="$PROJECT_DIR$/dataset_loader.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test/test.py" afterPath="$PROJECT_DIR$/test/test.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/utils.py" afterPath="$PROJECT_DIR$/utils.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/kcnnr.py" afterPath="$PROJECT_DIR$/kcnnr.py" />
     </list>
     <ignored path="TheanoExamples.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -57,8 +51,8 @@
       <file leaf-file-name="kcnnr.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/kcnnr.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.77707005">
-              <caret line="111" column="13" selection-start-line="111" selection-start-column="13" selection-end-line="111" selection-end-column="13" />
+            <state vertical-scroll-proportion="0.031847134">
+              <caret line="94" column="20" selection-start-line="94" selection-start-column="20" selection-end-line="94" selection-end-column="20" />
               <folding>
                 <element signature="e#0#35#0" expanded="true" />
               </folding>
@@ -176,8 +170,8 @@
         <option value="$PROJECT_DIR$/cnnr.py" />
         <option value="$PROJECT_DIR$/utils.py" />
         <option value="$PROJECT_DIR$/test/kcnnr.py" />
-        <option value="$PROJECT_DIR$/kcnnr.py" />
         <option value="$PROJECT_DIR$/.gitignore" />
+        <option value="$PROJECT_DIR$/kcnnr.py" />
       </list>
     </option>
   </component>
@@ -478,7 +472,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/kcnnr.py</url>
-          <line>108</line>
+          <line>105</line>
           <option name="timeStamp" value="310" />
         </line-breakpoint>
       </breakpoints>
@@ -876,8 +870,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/kcnnr.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.77707005">
-          <caret line="111" column="13" selection-start-line="111" selection-start-column="13" selection-end-line="111" selection-end-column="13" />
+        <state vertical-scroll-proportion="0.031847134">
+          <caret line="94" column="20" selection-start-line="94" selection-start-column="20" selection-end-line="94" selection-end-column="20" />
           <folding>
             <element signature="e#0#35#0" expanded="true" />
           </folding>
