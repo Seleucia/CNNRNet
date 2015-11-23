@@ -26,8 +26,10 @@ def load_batch_images(size,nc,dir, x,im_type):
     data_x = numpy.empty(m_size, float)
     i = 0
     normalizer=5000
+    img_arr=[]
     if(im_type=="gray"):
         normalizer=255
+    batch_l=[]
     for (dImg1, dImg2) in x:
         dImg=""
         if dir=="F":
@@ -37,10 +39,14 @@ def load_batch_images(size,nc,dir, x,im_type):
         img = Image.open(dImg)
         img=img.resize(size)
         arr1= numpy.array(img,float)/normalizer
-        v_1 = numpy.transpose(numpy.reshape(arr1, (fl_size, 1)))
-        data_x[i, :] = v_1
-        i = i + 1;
-    return data_x
+        l=[]
+        l.append([])
+        l[0]=arr1
+        n_l=numpy.array(l)
+        batch_l.append([])
+        batch_l[i]=n_l
+        i+=1
+    return numpy.array(batch_l)
 
 def shuffle_in_unison_inplace(a, b):
     assert len(a) == len(b)

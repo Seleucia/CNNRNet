@@ -88,3 +88,5 @@ def convert_to_grayscale():
         img.save(new_dir+os.path.basename(f))
 
 
+def log_write(str):
+    print(str)

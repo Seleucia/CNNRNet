@@ -2,13 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3ae84cf3-0629-4c8e-b528-32aa5b1789b1" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/kcnnr.py" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/data/3wolfmoon.jpg" afterPath="" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/test/utils.py" afterPath="$PROJECT_DIR$/test/utils2.py" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/test/test2.py" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gitignore" afterPath="$PROJECT_DIR$/.gitignore" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CNN_RegressionV4.py" afterPath="$PROJECT_DIR$/CNN_RegressionV4.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cnnr.py" afterPath="$PROJECT_DIR$/cnnr.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataset_loader.py" afterPath="$PROJECT_DIR$/dataset_loader.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/predict_location.py" afterPath="$PROJECT_DIR$/predict_location.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test/test.py" afterPath="$PROJECT_DIR$/test/test.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/utils.py" afterPath="$PROJECT_DIR$/utils.py" />
     </list>
     <ignored path="TheanoExamples.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -29,40 +30,13 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="cnnr.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="cnnr.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/cnnr.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.7241379">
-              <caret line="132" column="63" selection-start-line="132" selection-start-column="63" selection-end-line="132" selection-end-column="63" />
-              <folding>
-                <element signature="e#0#9#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="OutputLayer.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/layers/OutputLayer.py">
-          <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="40" column="31" selection-start-line="40" selection-start-column="31" selection-end-line="40" selection-end-column="31" />
-              <folding>
-                <element signature="e#0#10#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="test2.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/test/test2.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-4.5833335">
-              <caret line="280" column="58" selection-start-line="280" selection-start-column="18" selection-end-line="280" selection-end-column="58" />
+              <caret line="440" column="86" selection-start-line="440" selection-start-column="20" selection-end-line="440" selection-end-column="86" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
-                <element signature="e#380#1398#0" expanded="false" />
-                <element signature="e#1439#2156#0" expanded="false" />
-                <element signature="e#2580#6032#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -72,9 +46,53 @@
         <entry file="file://$PROJECT_DIR$/mlpr.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="171" column="0" selection-start-line="171" selection-start-column="0" selection-end-line="171" selection-end-column="0" />
+              <caret line="174" column="33" selection-start-line="174" selection-start-column="33" selection-end-line="174" selection-end-column="33" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="kcnnr.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/kcnnr.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.77707005">
+              <caret line="111" column="13" selection-start-line="111" selection-start-column="13" selection-end-line="111" selection-end-column="13" />
+              <folding>
+                <element signature="e#0#35#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name=".gitignore" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/.gitignore">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="4" column="4" selection-start-line="4" selection-start-column="4" selection-end-line="4" selection-end-column="4" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="utils.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/utils.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="90" column="13" selection-start-line="90" selection-start-column="4" selection-end-line="90" selection-end-column="13" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="test.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/test/test.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="119" column="56" selection-start-line="119" selection-start-column="49" selection-end-line="119" selection-end-column="56" />
+              <folding>
+                <element signature="e#0#38#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -84,17 +102,16 @@
         <entry file="file://$PROJECT_DIR$/dataset_loader.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="217" column="5" selection-start-line="217" selection-start-column="5" selection-end-line="217" selection-end-column="5" />
+              <caret line="48" column="20" selection-start-line="48" selection-start-column="20" selection-end-line="48" selection-end-column="20" />
               <folding>
                 <element signature="e#254#667#0" expanded="false" />
-                <element signature="e#720#1340#0" expanded="false" />
-                <element signature="e#1383#1469#0" expanded="false" />
-                <element signature="e#1505#1811#0" expanded="false" />
-                <element signature="e#2508#3117#0" expanded="false" />
-                <element signature="e#4340#4876#0" expanded="false" />
-                <element signature="e#4939#5357#0" expanded="false" />
-                <element signature="e#9952#11608#0" expanded="false" />
-                <element signature="e#11639#12052#0" expanded="false" />
+                <element signature="e#1458#1544#0" expanded="false" />
+                <element signature="e#1580#1886#0" expanded="false" />
+                <element signature="e#2583#3192#0" expanded="false" />
+                <element signature="e#4415#4951#0" expanded="false" />
+                <element signature="e#5014#5432#0" expanded="false" />
+                <element signature="e#10027#11683#0" expanded="false" />
+                <element signature="e#11714#12127#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -128,7 +145,6 @@
         <option value="$PROJECT_DIR$/LogisticRegression.py" />
         <option value="$PROJECT_DIR$/load_depth_data.py" />
         <option value="$PROJECT_DIR$/logistic_sgd.py" />
-        <option value="$PROJECT_DIR$/test/test.py" />
         <option value="$PROJECT_DIR$/mlp.py" />
         <option value="$PROJECT_DIR$/convolutional_depth_mlp.py" />
         <option value="$PROJECT_DIR$/mlp_depth.py" />
@@ -144,8 +160,6 @@
         <option value="$PROJECT_DIR$/plot_data.py" />
         <option value="$PROJECT_DIR$/test2.py" />
         <option value="$PROJECT_DIR$/CNN_RegressionV3.py" />
-        <option value="$PROJECT_DIR$/.gitignore" />
-        <option value="$PROJECT_DIR$/utils.py" />
         <option value="$PROJECT_DIR$/test4.py" />
         <option value="$PROJECT_DIR$/predict_location.py" />
         <option value="$PROJECT_DIR$/layers/HiddenLayer.py" />
@@ -155,17 +169,23 @@
         <option value="$PROJECT_DIR$/CNN_RegressionV4.py" />
         <option value="$PROJECT_DIR$/mlpr.py" />
         <option value="$PROJECT_DIR$/layers/OutputLayer.py" />
-        <option value="$PROJECT_DIR$/dataset_loader.py" />
+        <option value="$PROJECT_DIR$/test/cnnr.py" />
         <option value="$PROJECT_DIR$/test/test2.py" />
+        <option value="$PROJECT_DIR$/test/test.py" />
+        <option value="$PROJECT_DIR$/dataset_loader.py" />
         <option value="$PROJECT_DIR$/cnnr.py" />
+        <option value="$PROJECT_DIR$/utils.py" />
+        <option value="$PROJECT_DIR$/test/kcnnr.py" />
+        <option value="$PROJECT_DIR$/kcnnr.py" />
+        <option value="$PROJECT_DIR$/.gitignore" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
     <option name="x" value="65" />
-    <option name="y" value="-4" />
+    <option name="y" value="24" />
     <option name="width" value="1535" />
-    <option name="height" value="904" />
+    <option name="height" value="876" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -192,7 +212,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scratches" />
       <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
@@ -230,31 +249,33 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="layers" />
+              <option name="myItemId" value="models" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
         </subPane>
       </pane>
+      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="settings.editor.selected.configurable" value="configurable.group.appearance" />
     <property name="settings.editor.splitter.proportion" value="0.2" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../CNNRNet-master3" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
   </component>
   <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/models" />
+    </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/test" />
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/data" />
     </key>
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/models" />
-      <recent name="$PROJECT_DIR$" />
-    </key>
   </component>
-  <component name="RunManager" selected="Python.CNN_RegressionV3">
-    <configuration default="false" name="test3" type="PythonConfigurationType" factoryName="Python" temporary="true">
+  <component name="RunManager" selected="Python.kcnnr">
+    <configuration default="false" name="kcnnr" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
@@ -266,75 +287,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="TheanoExamples" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/test3.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <method />
-    </configuration>
-    <configuration default="false" name="CNN_RegressionV3" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="TheanoExamples" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/cnnr.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <method />
-    </configuration>
-    <configuration default="false" name="test2" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="TheanoExamples" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/test2.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <method />
-    </configuration>
-    <configuration default="false" name="test4" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="TheanoExamples" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/test4.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <method />
-    </configuration>
-    <configuration default="false" name="test2 (1)" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/test" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="TheanoExamples" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/test/test2.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/kcnnr.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <method />
@@ -461,20 +414,12 @@
       <option name="USE_KEYWORD" value="false" />
       <method />
     </configuration>
-    <list size="5">
-      <item index="0" class="java.lang.String" itemvalue="Python.test3" />
-      <item index="1" class="java.lang.String" itemvalue="Python.CNN_RegressionV3" />
-      <item index="2" class="java.lang.String" itemvalue="Python.test2" />
-      <item index="3" class="java.lang.String" itemvalue="Python.test4" />
-      <item index="4" class="java.lang.String" itemvalue="Python.test2 (1)" />
+    <list size="1">
+      <item index="0" class="java.lang.String" itemvalue="Python.kcnnr" />
     </list>
     <recent_temporary>
-      <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Python.CNN_RegressionV3" />
-        <item index="1" class="java.lang.String" itemvalue="Python.test2 (1)" />
-        <item index="2" class="java.lang.String" itemvalue="Python.test4" />
-        <item index="3" class="java.lang.String" itemvalue="Python.test2" />
-        <item index="4" class="java.lang.String" itemvalue="Python.test3" />
+      <list size="1">
+        <item index="0" class="java.lang.String" itemvalue="Python.kcnnr" />
       </list>
     </recent_temporary>
   </component>
@@ -492,8 +437,8 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="65" y="-4" width="1535" height="904" extended-state="6" />
-    <editor active="false" />
+    <frame x="65" y="24" width="1535" height="876" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
@@ -530,6 +475,13 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/kcnnr.py</url>
+          <line>108</line>
+          <option name="timeStamp" value="310" />
+        </line-breakpoint>
+      </breakpoints>
       <breakpoints-dialog>
         <breakpoints-dialog />
       </breakpoints-dialog>
@@ -540,7 +492,7 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="291" />
+      <option name="time" value="313" />
     </breakpoint-manager>
     <watches-manager>
       <configuration name="PythonConfigurationType">
@@ -549,27 +501,6 @@
     </watches-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$USER_HOME$/anaconda/lib/python2.7/site-packages/theano/compile/function.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.3325893">
-          <caret line="40" column="28" selection-start-line="40" selection-start-column="21" selection-end-line="40" selection-end-column="28" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/anaconda/lib/python2.7/site-packages/theano/compile/debugmode.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.036057692">
-          <caret line="1864" column="0" selection-start-line="1864" selection-start-column="0" selection-end-line="1864" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/anaconda/lib/python2.7/copy_reg.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.3325893">
-          <caret line="69" column="0" selection-start-line="69" selection-start-column="0" selection-end-line="69" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/anaconda/lib/python2.7/site-packages/numpy/core/_methods.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.3325893">
@@ -707,7 +638,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.33333334">
           <caret line="290" column="4" selection-start-line="290" selection-start-column="4" selection-end-line="290" selection-end-column="4" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -739,13 +669,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/.gitignore">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0955414">
-          <caret line="3" column="5" selection-start-line="3" selection-start-column="5" selection-end-line="3" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/test.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.06369427">
@@ -764,10 +687,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="5" column="11" selection-start-line="5" selection-start-column="11" selection-end-line="5" selection-end-column="11" />
-          <folding>
-            <element signature="e#0#18#0" expanded="false" />
-            <marker date="1448110362301" expanded="true" signature="0:7" placeholder="import ..." />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -775,9 +694,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="34" column="41" selection-start-line="34" selection-start-column="31" selection-end-line="34" selection-end-column="41" />
-          <folding>
-            <element signature="e#0#12#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -785,18 +701,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="18" column="15" selection-start-line="18" selection-start-column="15" selection-end-line="18" selection-end-column="15" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/layers/ConvPoolLayer.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#12#0" expanded="false" />
-            <element signature="e#141#3593#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -804,18 +708,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/layers/DropoutHiddenLayer.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#12#0" expanded="false" />
-            <element signature="e#105#822#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -823,14 +715,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.32214764">
           <caret line="93" column="11" selection-start-line="93" selection-start-column="11" selection-end-line="93" selection-end-column="11" />
-          <folding>
-            <element signature="e#380#1398#0" expanded="false" />
-            <element signature="e#1439#2156#0" expanded="false" />
-            <element signature="e#2191#2543#0" expanded="false" />
-            <element signature="e#2580#6032#0" expanded="false" />
-            <element signature="e#6062#11722#0" expanded="false" />
-            <element signature="e#11747#23145#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -838,27 +722,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.020134227">
           <caret line="16" column="25" selection-start-line="16" selection-start-column="25" selection-end-line="16" selection-end-column="25" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/utils.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.59731543">
-          <caret line="76" column="6" selection-start-line="76" selection-start-column="6" selection-end-line="76" selection-end-column="6" />
-          <folding>
-            <marker date="1448138540464" expanded="false" signature="0:7" placeholder="import ..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/mlpr.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="171" column="0" selection-start-line="171" selection-start-column="0" selection-end-line="171" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#9#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -866,7 +729,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.08053691">
           <caret line="20" column="18" selection-start-line="20" selection-start-column="12" selection-end-line="20" selection-end-column="18" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -874,9 +736,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.24161074">
           <caret line="12" column="13" selection-start-line="12" selection-start-column="13" selection-end-line="12" selection-end-column="13" />
-          <folding>
-            <element signature="e#0#12#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -884,7 +743,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.33333334">
           <caret line="506" column="0" selection-start-line="506" selection-start-column="0" selection-end-line="506" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -892,25 +750,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-11.25">
           <caret line="3746" column="0" selection-start-line="3746" selection-start-column="0" selection-end-line="3746" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/dataset_loader.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="217" column="5" selection-start-line="217" selection-start-column="5" selection-end-line="217" selection-end-column="5" />
-          <folding>
-            <element signature="e#254#667#0" expanded="false" />
-            <element signature="e#720#1340#0" expanded="false" />
-            <element signature="e#1383#1469#0" expanded="false" />
-            <element signature="e#1505#1811#0" expanded="false" />
-            <element signature="e#2508#3117#0" expanded="false" />
-            <element signature="e#4340#4876#0" expanded="false" />
-            <element signature="e#4939#5357#0" expanded="false" />
-            <element signature="e#9952#11608#0" expanded="false" />
-            <element signature="e#11639#12052#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -918,17 +757,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/layers/OutputLayer.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="40" column="31" selection-start-line="40" selection-start-column="31" selection-end-line="40" selection-end-column="31" />
-          <folding>
-            <element signature="e#0#10#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -936,20 +764,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.33333334">
           <caret line="513" column="0" selection-start-line="513" selection-start-column="0" selection-end-line="513" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test/test2.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-4.5833335">
-          <caret line="280" column="58" selection-start-line="280" selection-start-column="18" selection-end-line="280" selection-end-column="58" />
-          <folding>
-            <element signature="e#0#9#0" expanded="true" />
-            <element signature="e#380#1398#0" expanded="false" />
-            <element signature="e#1439#2156#0" expanded="false" />
-            <element signature="e#2580#6032#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -961,12 +775,111 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/cnnr.py">
+    <entry file="file://$PROJECT_DIR$/layers/ConvPoolLayer.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.7241379">
-          <caret line="132" column="63" selection-start-line="132" selection-start-column="63" selection-end-line="132" selection-end-column="63" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="1" column="0" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/layers/DropoutHiddenLayer.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0955414">
+          <caret line="6" column="83" selection-start-line="6" selection-start-column="16" selection-end-line="6" selection-end-column="83" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/cnnr.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.43524417">
+          <caret line="33" column="13" selection-start-line="33" selection-start-column="13" selection-end-line="33" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/layers/OutputLayer.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.522293">
+          <caret line="40" column="31" selection-start-line="40" selection-start-column="31" selection-end-line="40" selection-end-column="31" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/dataset_loader.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="48" column="20" selection-start-line="48" selection-start-column="20" selection-end-line="48" selection-end-column="20" />
+          <folding>
+            <element signature="e#254#667#0" expanded="false" />
+            <element signature="e#1458#1544#0" expanded="false" />
+            <element signature="e#1580#1886#0" expanded="false" />
+            <element signature="e#2583#3192#0" expanded="false" />
+            <element signature="e#4415#4951#0" expanded="false" />
+            <element signature="e#5014#5432#0" expanded="false" />
+            <element signature="e#10027#11683#0" expanded="false" />
+            <element signature="e#11714#12127#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/utils.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="90" column="13" selection-start-line="90" selection-start-column="4" selection-end-line="90" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/test.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="119" column="56" selection-start-line="119" selection-start-column="49" selection-end-line="119" selection-end-column="56" />
+          <folding>
+            <element signature="e#0#38#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/mlpr.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="174" column="33" selection-start-line="174" selection-start-column="33" selection-end-line="174" selection-end-column="33" />
           <folding>
             <element signature="e#0#9#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cnnr.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="440" column="86" selection-start-line="440" selection-start-column="20" selection-end-line="440" selection-end-column="86" />
+          <folding>
+            <element signature="e#0#9#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/anaconda/lib/python2.7/site-packages/h5py/_hl/files.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.93630576">
+          <caret line="153" column="0" selection-start-line="153" selection-start-column="0" selection-end-line="153" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="4" column="4" selection-start-line="4" selection-start-column="4" selection-end-line="4" selection-end-column="4" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kcnnr.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.77707005">
+          <caret line="111" column="13" selection-start-line="111" selection-start-column="13" selection-end-line="111" selection-end-column="13" />
+          <folding>
+            <element signature="e#0#35#0" expanded="true" />
           </folding>
         </state>
       </provider>
