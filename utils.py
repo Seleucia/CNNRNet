@@ -77,7 +77,7 @@ def up_sample(overlaps,data_y,step_size):
     return numpy.asarray(data_yy)
 
 def convert_to_grayscale():
-    dataset="/home/coskun/PycharmProjects/data/rgbd_dataset_freiburg3_large_cabinet/"
+    dataset="/home/cmp/projects/data/rgbd_dataset_freiburg3_large_cabinet/" #test computer
     im_type='rgb'
     im_type_to='gray'
     new_dir=dataset+im_type_to+"/"
