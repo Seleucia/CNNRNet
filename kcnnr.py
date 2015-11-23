@@ -3,6 +3,7 @@ from keras.models import Sequential
 from keras.layers.core import Dense, Dropout, Activation, Flatten
 from keras.layers.convolutional import Convolution2D, MaxPooling2D
 from keras.optimizers import SGD
+from keras.optimizers import Adagrad
 import dataset_loader
 import utils
 import numpy as np
@@ -62,7 +63,8 @@ def build_model(params):
     model.add(Dense(3))
     model.add(Activation('relu'))
     sgd = SGD(lr=params['initial_learning_rate'], decay=params['learning_rate_decay'], momentum=params['momentum'], nesterov=True)
-    model.compile(loss='mean_absolute_error', optimizer=sgd)
+    adagrad=Adagrad(lr=params['initial_learning_rate'], epsilon=1e-6)
+    model.compile(loss='mean_squared_error', optimizer=adagrad)
     return model
 
 
@@ -113,28 +115,41 @@ def train_model(params):
 
         print("Validating model...")
         this_validation_loss = 0
+        val_mean = 0
+        val_abs_mean=0
         for i in xrange(n_valid_batches):
                     Fx = X_val[i * batch_size: (i + 1) * batch_size]
                     data_Fx = dataset_loader.load_batch_images(size, nc, "F", Fx,im_type)
                     data_Sx = dataset_loader.load_batch_images(size, nc, "S", Fx,im_type)
                     data_y = y_val[i * batch_size: (i + 1) * batch_size]
+                    test_mean+=np.mean(data_y)
+                    test_abs_mean+=np.mean(np.abs(data_y))
+                    test_losses +=  model.test_on_batch([data_Fx, data_Sx],data_y)
                     this_validation_loss += model.test_on_batch([data_Fx, data_Sx],data_y)
         this_validation_loss /=n_valid_batches
-        s ='VAL--> epoch %i, validation error %f %%' %(epoch_counter, this_validation_loss)
+        val_abs_mean/=n_test_batches
+        val_mean/=n_test_batches
+        s ='VAL--> epoch %i, validation error %f val data mean %f prediction mean %f prediction abs mean %%' %(epoch_counter, this_validation_loss,val_mean,val_abs_mean)
         utils.log_write(s)
         if this_validation_loss < best_validation_loss:
             best_validation_loss = this_validation_loss
             test_losses = 0
+            test_mean = 0
+            test_abs_mean=0
             for i in xrange(n_test_batches):
                 Fx = X_test[i * batch_size: (i + 1) * batch_size]
                 data_Fx = dataset_loader.load_batch_images(size, nc, "F", Fx,im_type)
                 data_Sx = dataset_loader.load_batch_images(size, nc, "S", Fx,im_type)
                 data_y = y_test[i * batch_size: (i + 1) * batch_size]
+                test_mean+=np.mean(data_y)
+                test_abs_mean+=np.mean(np.abs(data_y))
                 test_losses +=  model.test_on_batch([data_Fx, data_Sx],data_y)
             test_losses/=n_test_batches
+            test_abs_mean/=n_test_batches
+            test_mean/=n_test_batches
             ext=params["models"]+str(rn_id)+"_"+str(epoch_counter % 3)+".h5"
             model.save_weights(ext, overwrite=True)
-            s ='TEST--> epoch %i, validation error %f %%' %(epoch_counter, test_losses)
+            s ='TEST--> epoch %i, test error %f test data mean %f prediction mean %f prediction abs mean %%' %(epoch_counter, test_losses,test_mean,test_abs_mean)
             utils.log_write(s)
 
 
