@@ -92,9 +92,9 @@ def train_model(params):
     done_looping = False
     epoch_counter = 0
     best_validation_loss=np.inf
-    print("Mean of training data:%f, abs mean",np.mean(y_train),np.abs(y_train))
-    print("Mean of val data:%f, abs mean: ",np.mean(y_val),np.abs(y_val))
-    print("Mean of test data:%f, abs mean",np.mean(y_test),np.abs(y_test))
+    print("Mean of training data:%f, abs mean",np.mean(y_train),np.mean(np.abs(y_train)))
+    print("Mean of val data:%f, abs mean: ",np.mean(y_val),np.mean(np.abs(y_val)))
+    print("Mean of test data:%f, abs mean",np.mean(y_test),np.mean(np.abs(y_test)))
     while (epoch_counter < n_epochs) and (not done_looping):
         epoch_counter = epoch_counter + 1
         print("Training model...")
