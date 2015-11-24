@@ -44,7 +44,3 @@ def load_data(params):
     rval = [(X_train, Y_train,Overlaps_train), (X_val, Y_val,Overlaps_val),
             (X_test, Y_test,Overlaps_test)]
     return rval
-
-
-params=config.get_params("home")
-dataset=load_data(params)
