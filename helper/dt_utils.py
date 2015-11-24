@@ -19,8 +19,6 @@ def shared_dataset(data_xx, data_yy, borrow=True):
                                  borrow=borrow)
         return shared_x, shared_y
 
-
-
 def load_batch_images(size,nc,dir, x,im_type):
     #We should modify this function to load images with different number of channels
     fl_size=size[0]*size[1]

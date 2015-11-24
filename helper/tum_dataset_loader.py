@@ -197,7 +197,6 @@ def load_tum_data(params,ds_dir):
     y_delta_val_train=y_delta_val_train*params["multi"]
     y_delta_val_train=y_delta_val_train.reshape(len(y_delta_val_train),3)
 
-    print("Data loaded split started")
     X_train, X_val, y_train, y_val= train_test_split(X_val_train, y_delta_val_train, test_size=params["val_size"], random_state=42)
     del X_val_train
     del y_delta_val_train
@@ -231,7 +230,6 @@ def load_pairs(dataset,im_type,step_size=[]):
     prng = RandomState(random_state)
     prng.shuffle(X_Pairs)
 
-    print("Data loaded split started")
     return X_Pairs
 
 def load_tum_data_valid(dataset,step_size,multi):

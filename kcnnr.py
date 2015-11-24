@@ -1,4 +1,5 @@
 import helper.data_loader as data_loader
+import helper.dt_utils as dt_utils
 import numpy as np
 from keras.layers.convolutional import Convolution2D, MaxPooling2D
 from keras.layers.core import Dense, Dropout, Activation, Flatten
@@ -85,7 +86,6 @@ def build_model(params):
     model.compile(loss='mean_squared_error', optimizer=adagrad)
     return model
 
-
 def train_model(params):
     rn_id=params["rn_id"]
     im_type=params["im_type"]
@@ -95,10 +95,12 @@ def train_model(params):
     size =params["size"]  # size = [480,640] orijinal size,[height,width]
 
     datasets = data_loader.load_data(params)
+    utils.start_log(datasets,params)
+
     X_train, y_train,overlaps_train = datasets[0]
     X_val, y_val,overlaps_val = datasets[1]
     X_test, y_test,overlaps_test = datasets[2]
-    print("Database loaded")
+
     # compute number of minibatches for training, validation and testing
     n_train_batches = len(X_train)
     n_valid_batches = len(X_val)
@@ -115,18 +117,16 @@ def train_model(params):
     done_looping = False
     epoch_counter = 0
     best_validation_loss=np.inf
-    y_train_mean=np.mean(y_train)
-    y_train_abs_mean=np.mean(np.abs(y_train))
+
     y_val_mean=np.mean(y_val)
     y_val_abs_mean=np.mean(np.abs(y_val))
     y_test_mean=np.mean(y_test)
     y_test_abs_mean=np.mean(np.abs(y_test))
 
-    print("Mean of training data:%f, abs mean: %f"%(y_train_mean,y_train_abs_mean))
-    print("Mean of val data:%f, abs mean: %f"%(y_val_mean,y_val_abs_mean))
-    print("Mean of test data:%f, abs mean: %f"%(y_test_mean,y_test_abs_mean))
     model=  build_model(params)
-    print("Model builded")
+    check_mode=params["check_mode"]
+    utils.log_write("Model builded",params)
+    utils.log_write("Training started",params)
     while (epoch_counter < n_epochs) and (not done_looping):
         epoch_counter = epoch_counter + 1
         print("Training model...")
@@ -136,45 +136,52 @@ def train_model(params):
                 print 'training @ iter = ', iter
 
             Fx = X_train[minibatch_index * batch_size: (minibatch_index + 1) * batch_size]
-            data_Fx = data_loader.load_batch_images(size, nc, "F", Fx,im_type)
-            data_Sx = data_loader.load_batch_images(size, nc, "S", Fx,im_type)
+            data_Fx = dt_utils.load_batch_images(size, nc, "F", Fx,im_type)
+            data_Sx = dt_utils.load_batch_images(size, nc, "S", Fx,im_type)
             data_y = y_train[minibatch_index * batch_size: (minibatch_index + 1) * batch_size]
             loss =model.train_on_batch([data_Fx, data_Sx], data_y)
             s='TRAIN--> epoch %i, minibatch %i/%i, training cost %f '%(epoch_counter, minibatch_index + 1, n_train_batches,  loss)
-            utils.log_write(s)
+            utils.log_write(s,params)
+            if(check_mode==1):
+                break
 
         print("Validating model...")
         this_validation_loss = 0
         for i in xrange(n_valid_batches):
             Fx = X_train[i * batch_size: (i + 1) * batch_size]
-            data_Fx = data_loader.load_batch_images(size, nc, "F", Fx,im_type)
-            data_Sx = data_loader.load_batch_images(size, nc, "S", Fx,im_type)
+            data_Fx = dt_utils.load_batch_images(size, nc, "F", Fx,im_type)
+            data_Sx = dt_utils.load_batch_images(size, nc, "S", Fx,im_type)
             data_y = y_train[i * batch_size: (i + 1) * batch_size]
             this_validation_loss += model.test_on_batch([data_Fx, data_Sx],data_y)
+            if(check_mode==1):
+                break
         this_validation_loss /=n_valid_batches
 
         s ='VAL--> epoch %i, validation error %f validation data mean/abs %f/%f'%(epoch_counter, this_validation_loss,y_val_mean,y_val_abs_mean)
-        utils.log_write(s)
+        utils.log_write(s,params)
         if this_validation_loss < best_validation_loss:
             best_validation_loss = this_validation_loss
             test_losses = 0
-            test_mean = 0
-            test_abs_mean=0
             for i in xrange(n_test_batches):
                 Fx = X_test[i * batch_size: (i + 1) * batch_size]
-                data_Fx = data_loader.load_batch_images(size, nc, "F", Fx,im_type)
-                data_Sx = data_loader.load_batch_images(size, nc, "S", Fx,im_type)
+                data_Fx = dt_utils.load_batch_images(size, nc, "F", Fx,im_type)
+                data_Sx = dt_utils.load_batch_images(size, nc, "S", Fx,im_type)
                 data_y = y_test[i * batch_size: (i + 1) * batch_size]
-                test_mean+=np.mean(data_y)
-                test_abs_mean+=np.mean(np.abs(data_y))
                 test_losses +=  model.test_on_batch([data_Fx, data_Sx],data_y)
+                if(check_mode==1):
+                    break
             test_losses/=n_test_batches
             ext=params["models"]+str(rn_id)+"_"+str(epoch_counter % 3)+".h5"
             model.save_weights(ext, overwrite=True)
             s ='TEST--> epoch %i, test error %f test data mean/abs %f / %f' %(epoch_counter, test_losses,y_test_mean,y_test_abs_mean)
-            utils.log_write(s)
-
+            utils.log_write(s,params)
+        if(check_mode==1):
+                break
+    ext=params["models"]+"last_"+utils.get_time()+".h5"
+    model.save_weights(ext, overwrite=True)
+    s ="Training ended"
+    utils.log_write(s,params)
 
 if __name__ == "__main__":
-    params= config.get_params("std")
+    params= config.get_params("home")
     train_model(params)

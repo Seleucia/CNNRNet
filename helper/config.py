@@ -1,4 +1,5 @@
 import os
+import utils
 
 def get_params(location):
     params={}
@@ -13,7 +14,7 @@ def get_params(location):
     params['initial_learning_rate']=0.0001
     params['learning_rate_decay']= 0.998
     params['squared_filter_length_limit']=15.0
-    params['batch_size']=60
+    params['batch_size']=10
     params['n_epochs']=3000
     params['dataset']=[]
     # dataset parameters
@@ -32,6 +33,14 @@ def get_params(location):
         params['dataset'][1]="/home/coskun/PycharmProjects/data/rgbd_dataset_freiburg3_teddy/"
         params['dataset'].append([])
         params['dataset'][2]="/home/coskun/PycharmProjects/data/rgbd_dataset_freiburg3_cabinet/"
+        params['dataset'].append([])
+        params['dataset'][3]="/home/coskun/PycharmProjects/data/rgbd_dataset_freiburg3_coke/"
+        params['dataset'].append([])
+        params['dataset'][4]="/home/coskun/PycharmProjects/data/rgbd_dataset_freiburg2_flowerbouquet/"
+        params['dataset'].append([])
+        params['dataset'][5]="/home/coskun/PycharmProjects/data/freiburg2_flowerbouquet_brownbackground/"
+        params['dataset'].append([])
+        params['dataset'][6]="/home/coskun/PycharmProjects/data/freiburg2_flowerbouquet_dishes/"
     if(location=="std"):
         params['dataset'].append([])
         params['dataset'][0]="/home/cmp/projects/data/rgbd_dataset_freiburg3_large_cabinet/"
@@ -40,7 +49,7 @@ def get_params(location):
         params['dataset'].append([])
         params['dataset'][2]="/home/cmp/projects/data/rgbd_dataset_freiburg3_cabinet/"
 
-    params['im_type']="gray"
+    params['im_type']="depth"
     params['step_size']=[1,2,5,7,10,12,13,14,15,16,18,20,21,23,24,25]
     #params['step_size']=[10]
     params['size']=[160, 120] #[width,height]
@@ -58,7 +67,10 @@ def get_params(location):
     wd=os.getcwd()
     params['wd']=wd
     params['models']=wd+"/models/"
-    params['logs']=wd+"/logs/"
+    params['log_file']=wd+"/logs/log_"+utils.get_time()+".txt"
     params['model_name']=wd+"models/1_2.h5"
+
+    params['check_mode']=1 #process checking
+
     return params
 
