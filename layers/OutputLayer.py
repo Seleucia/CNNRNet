@@ -1,14 +1,7 @@
-import sys
-import timeit
 import numpy
 import theano
 import theano.tensor as T
-from theano import shared
-from theano.tensor.signal import downsample
-from theano.tensor.nnet import conv
-import dataset_loader
-import model_saver
-from collections import OrderedDict
+
 
 class OutputLayer(object):
     def __init__(self, input, n_in, n_out):

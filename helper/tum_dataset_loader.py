@@ -9,44 +9,7 @@ from theano import config
 from PIL import Image
 import pickle
 import model_saver
-
-def shared_dataset(data_xx, data_yy, borrow=True):
-        shared_x = theano.shared(numpy.asarray(data_xx,
-                                               dtype=theano.config.floatX),config.floatX,
-                                 borrow=borrow)
-        shared_y = theano.shared(numpy.asarray(data_yy,
-                                               dtype=theano.config.floatX),config.floatX,
-                                 borrow=borrow)
-        return shared_x, shared_y
-
-def load_batch_images(size,nc,dir, x,im_type):
-    #We should modify this function to load images with different number of channels
-    fl_size=size[0]*size[1]
-    m_size = (len(x), fl_size)
-    data_x = numpy.empty(m_size, theano.config.floatX)
-    i = 0
-    normalizer=5000
-    img_arr=[]
-    if(im_type=="gray"):
-        normalizer=255
-    batch_l=[]
-    for (dImg1, dImg2) in x:
-        dImg=""
-        if dir=="F":
-            dImg=dImg1
-        else:
-            dImg=dImg2
-        img = Image.open(dImg)
-        img=img.resize(size)
-        arr1= numpy.array(img,theano.config.floatX)/normalizer
-        l=[]
-        l.append([])
-        l[0]=arr1
-        n_l=numpy.array(l)
-        batch_l.append([])
-        batch_l[i]=n_l
-        i+=1
-    return numpy.array(batch_l)
+import dt_utils
 
 def load_batch_imagesV2(size,nc,dir, x,im_type):
     #This code must be modified for theano version of model
@@ -76,11 +39,6 @@ def load_batch_imagesV2(size,nc,dir, x,im_type):
         batch_l[i]=n_l
         i+=1
     return numpy.array(batch_l)
-
-def shuffle_in_unison_inplace(a, b):
-    assert len(a) == len(b)
-    p = numpy.random.permutation(len(a))
-    return a[p], b[p]
 
 def read_file_list(filename):
     file = open(filename)
@@ -188,9 +146,8 @@ def train_test_split(X, y, test_size, random_state):
         rVal=[X_training,X_test,y_training,y_test]
         return rVal
 
-def load_tum_dataV2(params):
-
-    dsRawData=load_data(params["dataset"],params["im_type"])
+def load_tum_data(params,ds_dir):
+    dsRawData=load_data(ds_dir,params["im_type"])
     dir_list=dsRawData[0]
     data_y=dsRawData[1]
 
@@ -247,7 +204,7 @@ def load_tum_dataV2(params):
 
     overlaps_train=[]
     overlaps_val=[]
-    (X_train,y_train)= shuffle_in_unison_inplace(numpy.asarray(X_train),numpy.asarray(y_train))
+    (X_train,y_train)= dt_utils.shuffle_in_unison_inplace(numpy.asarray(X_train),numpy.asarray(y_train))
     rval = [(X_train, y_train,overlaps_train), (X_val, y_val,overlaps_val),
             (X_test, y_delta_test,overlaps_test)]
     #    model_saver.save_partitions(params["rn_id"],rval)
@@ -313,43 +270,6 @@ def load_tum_data_valid(dataset,step_size,multi):
 
     rval=[data_x,delta_y,data_y,overlaps]
     return rval
-
-def save_batches(datasets,batch_size,fl_size):
-        print("Batch saving started")
-        X_train, y_train = datasets[0]
-        X_val, y_val = datasets[1]
-        X_test, y_test = datasets[2]
-
-        # compute number of minibatches for training, validation and testing
-        n_train_batches = len(X_train)
-        n_valid_batches = len(X_val)
-        n_test_batches = len(X_test)
-        n_total=n_train_batches+n_valid_batches+n_test_batches
-        n_train_batches /= batch_size
-        n_valid_batches /= batch_size
-        n_test_batches /= batch_size
-        for index in xrange(n_train_batches):
-            x=X_train[index * batch_size: (index + 1) * batch_size]
-            data_x=load_batch_images(batch_size, fl_size, x)
-            data_y=y_train[index * batch_size: (index + 1) * batch_size]
-            (x,y)= shared_dataset(data_x,data_y)
-            pickle.dump( x+y, open("batches/tr_"+str(index)+".p", "wb" ) )
-
-        for index in xrange(n_valid_batches):
-            x=X_val[index * batch_size: (index + 1) * batch_size]
-            data_x=load_batch_images(batch_size, fl_size, x)
-            data_y=y_val[index * batch_size: (index + 1) * batch_size]
-            (x,y)= shared_dataset(data_x,data_y)
-            pickle.dump( x+y, open("batches/val_"+str(index)+".p", "wb" ) )
-
-        for index in xrange(n_test_batches):
-            x=X_test[index * batch_size: (index + 1) * batch_size]
-            data_x=load_batch_images(batch_size, fl_size, x)
-            data_y=y_test[index * batch_size: (index + 1) * batch_size]
-            (x,y)= shared_dataset(data_x,data_y)
-            pickle.dump( x+y, open("batches/te_"+str(index)+".p", "wb" ) )
-
-        print("Batch saving ended")
 
 def load_splits(params):
     dsRawData=load_data(params["dataset"],params["im_type"])

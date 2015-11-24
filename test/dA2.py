@@ -1,15 +1,15 @@
 import os
 import sys
 import timeit
+
 import dataset_loader
 import numpy
-
 import theano
 import theano.tensor as T
 from theano.tensor.shared_randomstreams import RandomStreams
 
 theano.config.exception_verbosity = 'high'
-from utils import tile_raster_images
+from helper.utils import tile_raster_images
 
 try:
     import PIL.Image as Image

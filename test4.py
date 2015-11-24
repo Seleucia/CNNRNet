@@ -1,14 +1,12 @@
-import numpy
-import os
 import dataset_loader
-import model_saver
-import plot_data
-import utils
-import kcnnr
-import predict_location
-import config
+import numpy
 
-params=config.get_params("home")
+import kcnnr
+import plot_data
+import predict_location
+from helper import config, model_saver, utils
+
+params= config.get_params("home")
 params['step_size']=[10]
 step=params['step_size'][0]
 
@@ -53,14 +51,14 @@ print "Mean of gt values:"+str(numpy.mean(pred_y_delta_test_aug))
 print "Mean of pred values:"+str(numpy.mean(y_delta_pred))
 
 #camera location restored from augmented data
-yy_test_aug=utils.up_sample(overlaps_test_aug, y_delta_test_aug, step)
+yy_test_aug= utils.up_sample(overlaps_test_aug, y_delta_test_aug, step)
 yy_test_aug=numpy.vstack([y_test_gt[0,:],yy_test_aug])
 yy_test_aug=numpy.cumsum(yy_test_aug,axis=0)
 
 
 #camera location restored from predicted data
 pred_overlaps_test_aug=overlaps_test_aug[0:n_test_batches*params['batch_size']]
-yy_pred=utils.up_sample(pred_overlaps_test_aug, y_delta_pred, step)
+yy_pred= utils.up_sample(pred_overlaps_test_aug, y_delta_pred, step)
 yy_pred=numpy.vstack([y_test_gt[0,:],yy_pred])
 yy_pred=numpy.cumsum(yy_pred,axis=0)
 
@@ -70,12 +68,12 @@ yy_test=numpy.vstack([y_test_gt[0,:], y_delta_test])
 yy_test=numpy.cumsum(yy_test,axis=0)
 
 #save generated data
-model_saver.save_pred(ext_raw_data,data_y)
-model_saver.save_pred(ext_err,err)
-model_saver.save_pred(ext_y_pred,yy_pred)
-model_saver.save_pred(ext_yy_test,yy_test)
-model_saver.save_pred(ext_yy_test_aug,yy_test_aug)
-model_saver.save_pred(ext_y_test_gt,y_test_gt)
+model_saver.save_pred(ext_raw_data, data_y)
+model_saver.save_pred(ext_err, err)
+model_saver.save_pred(ext_y_pred, yy_pred)
+model_saver.save_pred(ext_yy_test, yy_test)
+model_saver.save_pred(ext_yy_test_aug, yy_test_aug)
+model_saver.save_pred(ext_y_test_gt, y_test_gt)
 
 
 plot_data.plot_y([y_test_gt,yy_test], fig_name3d)

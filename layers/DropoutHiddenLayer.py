@@ -1,7 +1,9 @@
 import numpy
-import utils
 import theano
 import theano.tensor as T
+
+from helper import utils
+
 
 class DropoutHiddenLayer(object):
     def __init__(self, rng, input, n_in, n_out, W=None, b=None, p=0.5, is_train=0):

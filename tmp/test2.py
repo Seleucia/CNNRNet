@@ -1,8 +1,7 @@
-import numpy
-import dataset_loader
 import matplotlib.pyplot as plt
-import model_saver
-from mpl_toolkits.mplot3d import Axes3D
+import numpy
+
+from helper import model_saver
 
 multi=1
 step_size=1
@@ -12,7 +11,7 @@ dataset="/home/coskun/PycharmProjects/data/rgbd_dataset_freiburg3_large_cabinet/
 #datasets = dataset_loader.load_tum_data_valid(dataset,step_size,multi)
 #datasets =  dataset_loader.load_tum_dataV2(dataset,rn_id,multi)
 
-params =model_saver.load_model("1_2_best_model.pkl")
+params = model_saver.load_model("1_2_best_model.pkl")
 
 data_x=datasets[0]
 delta_y10=datasets[1]

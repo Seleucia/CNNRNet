@@ -1,13 +1,15 @@
 import os
 import sys
 import timeit
+from collections import OrderedDict
+
+import dataset_loader
 import numpy
 import theano
 import theano.tensor as T
 from theano import shared
-import dataset_loader
-import model_saver
-from collections import OrderedDict
+
+from helper import model_saver
 from layers.ConvPoolLayer import ConvPoolLayer
 from layers.HiddenLayer import HiddenLayer
 from layers.OutputLayer import OutputLayer

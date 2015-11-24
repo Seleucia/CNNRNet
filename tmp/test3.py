@@ -1,6 +1,6 @@
-import model_saver
-import plot_data
-import utils
+from helper import utils
+import helper.config as config
 
-utils.convert_to_grayscale()
-print "okk"
+params=config.get_params("home")
+utils.convert_to_grayscale(params)
+print "Images are converted to gray scale"

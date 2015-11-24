@@ -1,14 +1,8 @@
-import os
-import sys
-import timeit
 import numpy
 import theano
 import theano.tensor as T
 from theano import shared
-import dataset_loader
-import model_saver
-from collections import OrderedDict
-from layers.ConvPoolLayer import ConvPoolLayer
+
 from layers.HiddenLayer import HiddenLayer
 from layers.OutputLayer import OutputLayer
 

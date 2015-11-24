@@ -76,16 +76,21 @@ def up_sample(overlaps,data_y,step_size):
         data_yy.append(value)
     return numpy.asarray(data_yy)
 
-def convert_to_grayscale():
-    dataset="/home/cmp/projects/data/rgbd_dataset_freiburg3_large_cabinet/" #test computer
-    im_type='rgb'
-    im_type_to='gray'
-    new_dir=dataset+im_type_to+"/"
-    full_path=dataset+'/'+im_type+'/*.png'
-    lst=glob.glob(full_path)
-    for f in lst:
-        img = Image.open(f).convert('L')
-        img.save(new_dir+os.path.basename(f))
+def convert_to_grayscale(params):
+    for dir in params["dataset"]:
+        im_type='rgb'
+        im_type_to='gray'
+        new_dir=dir+im_type_to+"/"
+        if not os.path.exists(new_dir):
+            os.makedirs(new_dir)
+            full_path=dir+'/'+im_type+'/*.png'
+            lst=glob.glob(full_path)
+            for f in lst:
+                img = Image.open(f).convert('L')
+                img.save(new_dir+os.path.basename(f))
+            print("data set converted %s"%(dir))
+        else:
+            print("data set has already converted %s"%(dir))
 
 
 def log_write(str):

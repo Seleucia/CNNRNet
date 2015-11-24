@@ -1,5 +1,7 @@
-import utils
 import theano.tensor as T
+
+from helper import utils
+
 
 class HiddenLayer(object):
     def __init__(self, rng, input, n_in, n_out, W=None, b=None):

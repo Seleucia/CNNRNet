@@ -15,14 +15,30 @@ def get_params(location):
     params['squared_filter_length_limit']=15.0
     params['batch_size']=60
     params['n_epochs']=3000
-
+    params['dataset']=[]
     # dataset parameters
+
     if(location=="home"):
-        params['dataset']="/home/coskun/PycharmProjects/data/rgbd_dataset_freiburg3_large_cabinet/"
+        params['dataset'].append([])
+        params['dataset'][0]="/home/coskun/PycharmProjects/data/rgbd_dataset_freiburg3_large_cabinet/"
+        params['dataset'].append([])
+        params['dataset'][1]="/home/coskun/PycharmProjects/data/rgbd_dataset_freiburg3_teddy/"
+        params['dataset'].append([])
+        params['dataset'][2]="/home/coskun/PycharmProjects/data/rgbd_dataset_freiburg3_cabinet/"
     if(location=="tesla"):
-        params['dataset']="/home/cmp/projects/data/rgbd_dataset_freiburg3_large_cabinet/" #test computer
+        params['dataset'].append([])
+        params['dataset'][0]="/home/coskun/PycharmProjects/data/rgbd_dataset_freiburg3_large_cabinet/"
+        params['dataset'].append([])
+        params['dataset'][1]="/home/coskun/PycharmProjects/data/rgbd_dataset_freiburg3_teddy/"
+        params['dataset'].append([])
+        params['dataset'][2]="/home/coskun/PycharmProjects/data/rgbd_dataset_freiburg3_cabinet/"
     if(location=="std"):
-        params['dataset']="/home/cmp/projects/data/rgbd_dataset_freiburg3_large_cabinet/" #test computer
+        params['dataset'].append([])
+        params['dataset'][0]="/home/cmp/projects/data/rgbd_dataset_freiburg3_large_cabinet/"
+        params['dataset'].append([])
+        params['dataset'][1]="/home/cmp/projects/data/rgbd_dataset_freiburg3_teddy/"
+        params['dataset'].append([])
+        params['dataset'][2]="/home/cmp/projects/data/rgbd_dataset_freiburg3_cabinet/"
 
     params['im_type']="gray"
     params['step_size']=[1,2,5,7,10,12,13,14,15,16,18,20,21,23,24,25]

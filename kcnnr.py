@@ -1,14 +1,14 @@
+import helper.data_loader as data_loader
+import numpy as np
+from keras.layers.convolutional import Convolution2D, MaxPooling2D
+from keras.layers.core import Dense, Dropout, Activation, Flatten
 from keras.layers.core import Merge
 from keras.models import Sequential
-from keras.layers.core import Dense, Dropout, Activation, Flatten
-from keras.layers.convolutional import Convolution2D, MaxPooling2D
-from keras.optimizers import SGD
 from keras.optimizers import Adagrad
-import dataset_loader
-import utils
-import numpy as np
-import os
-import config
+from keras.optimizers import SGD
+
+from helper import config, utils
+
 
 def build_model(params):
 
@@ -17,15 +17,15 @@ def build_model(params):
     # input: 100x100 images with 3 channels -> (3, 100, 100) tensors.
     # this applies 32 convolution filters of size 3x3 each.
     lmodel.add(Convolution2D(params["nkerns"][0], 3, 3, border_mode='full', input_shape=(params["nc"], params["size"][1], params["size"][0])))
-    lmodel.add(Activation('relu'))
+    lmodel.add(Activation('tanh'))
     lmodel.add(MaxPooling2D(pool_size=(2, 2)))
     lmodel.add(Dropout(0.5))
     lmodel.add(Convolution2D(params["nkerns"][1], 3, 3))
-    lmodel.add(Activation('relu'))
+    lmodel.add(Activation('tanh'))
     lmodel.add(MaxPooling2D(pool_size=(2, 2)))
     lmodel.add(Dropout(0.5))
     lmodel.add(Convolution2D(params["nkerns"][2], 3, 3))
-    lmodel.add(Activation('relu'))
+    lmodel.add(Activation('tanh'))
     lmodel.add(MaxPooling2D(pool_size=(2, 2)))
     lmodel.add(Dropout(0.5))
 
@@ -33,38 +33,38 @@ def build_model(params):
     lmodel.add(Flatten())
     # Note: Keras does automatic shape inference.
     lmodel.add(Dense(200))
-    lmodel.add(Activation('relu'))
+    lmodel.add(Activation('tanh'))
     lmodel.add(Dropout(0.5))
 
     lmodel.add(Dense(200))
-    lmodel.add(Activation('relu'))
+    lmodel.add(Activation('tanh'))
 
     rmodel = Sequential()
     # input: 100x100 images with 3 channels -> (3, 100, 100) tensors.
     # this applies 32 convolution filters of size 3x3 each.
     rmodel.add(Convolution2D(params["nkerns"][0], 3, 3, border_mode='full', input_shape=(params["nc"], params["size"][1], params["size"][0])))
-    rmodel.add(Activation('relu'))
+    rmodel.add(Activation('tanh'))
     rmodel.add(MaxPooling2D(pool_size=(2, 2)))
     rmodel.add(Dropout(0.5))
     rmodel.add(Convolution2D(params["nkerns"][1], 3, 3))
-    rmodel.add(Activation('relu'))
+    rmodel.add(Activation('tanh'))
     rmodel.add(MaxPooling2D(pool_size=(2, 2)))
     rmodel.add(Dropout(0.5))
-    
+
 
     rmodel.add(Convolution2D(params["nkerns"][3], 3, 3))
-    rmodel.add(Activation('relu'))
+    rmodel.add(Activation('tanh'))
     rmodel.add(MaxPooling2D(pool_size=(2, 2)))
     rmodel.add(Dropout(0.5))
 
     rmodel.add(Flatten())
     # Note: Keras does automatic shape inference.
     rmodel.add(Dense(200))
-    rmodel.add(Activation('relu'))
+    rmodel.add(Activation('tanh'))
     rmodel.add(Dropout(0.5))
 
     rmodel.add(Dense(200))
-    rmodel.add(Activation('relu'))
+    rmodel.add(Activation('tanh'))
 
     model = Sequential()
     model.add(Merge([lmodel, rmodel], mode='mul'))
@@ -94,7 +94,7 @@ def train_model(params):
     nc =params["nc"]  # number of channcels
     size =params["size"]  # size = [480,640] orijinal size,[height,width]
 
-    datasets = dataset_loader.load_tum_dataV2(params)
+    datasets = data_loader.load_data(params)
     X_train, y_train,overlaps_train = datasets[0]
     X_val, y_val,overlaps_val = datasets[1]
     X_test, y_test,overlaps_test = datasets[2]
@@ -136,8 +136,8 @@ def train_model(params):
                 print 'training @ iter = ', iter
 
             Fx = X_train[minibatch_index * batch_size: (minibatch_index + 1) * batch_size]
-            data_Fx = dataset_loader.load_batch_images(size, nc, "F", Fx,im_type)
-            data_Sx = dataset_loader.load_batch_images(size, nc, "S", Fx,im_type)
+            data_Fx = data_loader.load_batch_images(size, nc, "F", Fx,im_type)
+            data_Sx = data_loader.load_batch_images(size, nc, "S", Fx,im_type)
             data_y = y_train[minibatch_index * batch_size: (minibatch_index + 1) * batch_size]
             loss =model.train_on_batch([data_Fx, data_Sx], data_y)
             s='TRAIN--> epoch %i, minibatch %i/%i, training cost %f '%(epoch_counter, minibatch_index + 1, n_train_batches,  loss)
@@ -147,8 +147,8 @@ def train_model(params):
         this_validation_loss = 0
         for i in xrange(n_valid_batches):
             Fx = X_train[i * batch_size: (i + 1) * batch_size]
-            data_Fx = dataset_loader.load_batch_images(size, nc, "F", Fx,im_type)
-            data_Sx = dataset_loader.load_batch_images(size, nc, "S", Fx,im_type)
+            data_Fx = data_loader.load_batch_images(size, nc, "F", Fx,im_type)
+            data_Sx = data_loader.load_batch_images(size, nc, "S", Fx,im_type)
             data_y = y_train[i * batch_size: (i + 1) * batch_size]
             this_validation_loss += model.test_on_batch([data_Fx, data_Sx],data_y)
         this_validation_loss /=n_valid_batches
@@ -162,8 +162,8 @@ def train_model(params):
             test_abs_mean=0
             for i in xrange(n_test_batches):
                 Fx = X_test[i * batch_size: (i + 1) * batch_size]
-                data_Fx = dataset_loader.load_batch_images(size, nc, "F", Fx,im_type)
-                data_Sx = dataset_loader.load_batch_images(size, nc, "S", Fx,im_type)
+                data_Fx = data_loader.load_batch_images(size, nc, "F", Fx,im_type)
+                data_Sx = data_loader.load_batch_images(size, nc, "S", Fx,im_type)
                 data_y = y_test[i * batch_size: (i + 1) * batch_size]
                 test_mean+=np.mean(data_y)
                 test_abs_mean+=np.mean(np.abs(data_y))
@@ -176,5 +176,5 @@ def train_model(params):
 
 
 if __name__ == "__main__":
-    params=config.get_params("std")
+    params= config.get_params("std")
     train_model(params)

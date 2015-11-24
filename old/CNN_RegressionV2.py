@@ -1,14 +1,15 @@
 import os
 import sys
 import timeit
+
+import dataset_loader
 import numpy
-import cPickle
 import theano
 import theano.tensor as T
-from theano.tensor.signal import downsample
 from theano.tensor.nnet import conv
-import dataset_loader
-import model_saver
+from theano.tensor.signal import downsample
+
+from helper import model_saver
 
 # start-snippet-1
 
