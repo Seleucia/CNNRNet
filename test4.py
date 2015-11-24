@@ -1,31 +1,15 @@
-import  plot_data
-import utils
-import dataset_loader
 import numpy
-import predict_location
+import os
+import dataset_loader
 import model_saver
+import plot_data
+import utils
+import kcnnr
+import predict_location
+import config
 
-params={}
-params["rn_id"]=1 #running id
-params['batch_size']=120
-params['model_name']="models/1_1_model_numpy.npy"
-
-# dataset parameters
-params['dataset']="/home/coskun/PycharmProjects/data/rgbd_dataset_freiburg3_large_cabinet/"
-params['im_type']="gray"
-#params['step_size']=[1,2,5,7,10,12,13,15,16,18,20,21,23,24,25]
-params['step_size']=[15]
-params['size']=[160, 120] #[width,height]
-params['nc']=1 #number of dimensions
-params['multi']=10 #ground truth location differences will be multiplied with this number
-params['test_size']=0.20 #Test size
-params['val_size']=0.20 #Test size
-
-# Conv an Pooling parameters
-params['kern_mat']=[(5, 5), (5, 5)] #shape of kernel
-params['nkerns']= [30, 40] #number of kernel
-params['pool_mat']=  [(2, 2), (2, 2)] #shape of pooling
-
+params=config.get_params("home")
+params['step_size']=[10]
 step=params['step_size'][0]
 
 prediction_name= params['model_name'].replace("/", " ").split()[-1] .replace(".npy","")
@@ -44,6 +28,7 @@ partitions=dataset_loader.load_splits(params)
 (X_test_gt, y_test_gt)=partitions[2]
 (data_x, data_y)=partitions[3]
 
+kcnnr.build_model(params)
 #location differences with orijinal, step_size=1 setted this means only looking consequtive locations
 X_test,y_delta_test,overlaps_test=dataset_loader.prepare_data(1,X_test_gt,y_test_gt)
 
@@ -52,7 +37,7 @@ X_test,y_delta_test,overlaps_test=dataset_loader.prepare_data(1,X_test_gt,y_test
 X_test_aug, y_delta_test_aug, overlaps_test_aug=dataset_loader.prepare_data(step,X_test_gt,y_test_gt)
 
 #location prediction over augmented data
-y_delta_pred=predict_location.predict(X_test_aug, params)
+y_delta_pred= predict_location.predict(X_test_aug, params)
 n_test_batches = len(X_test_aug)
 n_test_batches /= params['batch_size']
 

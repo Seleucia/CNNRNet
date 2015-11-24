@@ -378,8 +378,8 @@ def train_model(params):
                 print 'training @ iter = ', iter
 
             Fx = X_train[minibatch_index * batch_size: (minibatch_index + 1) * batch_size]
-            data_Fx = dataset_loader.load_batch_images(size, nc, "F", Fx,im_type)
-            data_Sx = dataset_loader.load_batch_images(size, nc, "S", Fx,im_type)
+            data_Fx = dataset_loader.load_batch_imagesV2(size, nc, "F", Fx,im_type)
+            data_Sx = dataset_loader.load_batch_imagesV2(size, nc, "S", Fx,im_type)
             data_y = y_train[minibatch_index * batch_size: (minibatch_index + 1) * batch_size]
             cost_ij = train_model(data_Fx, data_Sx, data_y, epoch)
             # model_saver.save_model(epoch % 3, params)
@@ -393,8 +393,8 @@ def train_model(params):
                 validation_losses = 0
                 for i in xrange(n_valid_batches):
                     Fx = X_val[i * batch_size: (i + 1) * batch_size]
-                    data_Fx = dataset_loader.load_batch_images(size, nc, "F", Fx,im_type)
-                    data_Sx = dataset_loader.load_batch_images(size, nc, "S", Fx,im_type)
+                    data_Fx = dataset_loader.load_batch_imagesV2(size, nc, "F", Fx,im_type)
+                    data_Sx = dataset_loader.load_batch_imagesV2(size, nc, "S", Fx,im_type)
                     data_y = y_val[i * batch_size: (i + 1) * batch_size]
                     validation_losses = validation_losses + validate_model(data_Fx, data_Sx, data_y)
 
@@ -421,8 +421,8 @@ def train_model(params):
                     test_losses = 0
                     for i in xrange(n_test_batches):
                         Fx = X_test[i * batch_size: (i + 1) * batch_size]
-                        data_Fx = dataset_loader.load_batch_images(size, nc, "F", Fx,im_type)
-                        data_Sx = dataset_loader.load_batch_images(size, nc, "S", Fx,im_type)
+                        data_Fx = dataset_loader.load_batch_imagesV2(size, nc, "F", Fx,im_type)
+                        data_Sx = dataset_loader.load_batch_imagesV2(size, nc, "S", Fx,im_type)
                         data_y = y_test[i * batch_size: (i + 1) * batch_size]
                         err= test_model(data_Fx, data_Sx, data_y)
                         test_losses = test_losses + err

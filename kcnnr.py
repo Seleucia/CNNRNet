@@ -8,7 +8,7 @@ import dataset_loader
 import utils
 import numpy as np
 import os
-
+import config
 
 def build_model(params):
 
@@ -18,49 +18,69 @@ def build_model(params):
     # this applies 32 convolution filters of size 3x3 each.
     lmodel.add(Convolution2D(params["nkerns"][0], 3, 3, border_mode='full', input_shape=(params["nc"], params["size"][1], params["size"][0])))
     lmodel.add(Activation('relu'))
+    lmodel.add(MaxPooling2D(pool_size=(2, 2)))
+    lmodel.add(Dropout(0.5))
     lmodel.add(Convolution2D(params["nkerns"][1], 3, 3))
     lmodel.add(Activation('relu'))
     lmodel.add(MaxPooling2D(pool_size=(2, 2)))
-    lmodel.add(Dropout(0.25))
+    lmodel.add(Dropout(0.5))
+    lmodel.add(Convolution2D(params["nkerns"][2], 3, 3))
+    lmodel.add(Activation('relu'))
+    lmodel.add(MaxPooling2D(pool_size=(2, 2)))
+    lmodel.add(Dropout(0.5))
+    lmodel.add(Convolution2D(params["nkerns"][3], 3, 3))
+    lmodel.add(Activation('relu'))
+    lmodel.add(MaxPooling2D(pool_size=(2, 2)))
+    lmodel.add(Dropout(0.5))
 
     lmodel.add(Flatten())
     # Note: Keras does automatic shape inference.
-    lmodel.add(Dense(256))
+    lmodel.add(Dense(200))
     lmodel.add(Activation('relu'))
     lmodel.add(Dropout(0.5))
 
-    lmodel.add(Dense(256))
+    lmodel.add(Dense(200))
     lmodel.add(Activation('relu'))
-    lmodel.add(Dropout(0.5))
 
     rmodel = Sequential()
     # input: 100x100 images with 3 channels -> (3, 100, 100) tensors.
     # this applies 32 convolution filters of size 3x3 each.
     rmodel.add(Convolution2D(params["nkerns"][0], 3, 3, border_mode='full', input_shape=(params["nc"], params["size"][1], params["size"][0])))
     rmodel.add(Activation('relu'))
+    rmodel.add(MaxPooling2D(pool_size=(2, 2)))
+    rmodel.add(Dropout(0.5))
     rmodel.add(Convolution2D(params["nkerns"][1], 3, 3))
     rmodel.add(Activation('relu'))
     rmodel.add(MaxPooling2D(pool_size=(2, 2)))
-    rmodel.add(Dropout(0.25))
+    rmodel.add(Dropout(0.5))
+    rmodel.add(Convolution2D(params["nkerns"][2], 3, 3))
+    rmodel.add(Activation('relu'))
+    rmodel.add(MaxPooling2D(pool_size=(2, 2)))
+    rmodel.add(Dropout(0.5))
+
+    rmodel.add(Convolution2D(params["nkerns"][3], 3, 3))
+    rmodel.add(Activation('relu'))
+    rmodel.add(MaxPooling2D(pool_size=(2, 2)))
+    rmodel.add(Dropout(0.5))
 
     rmodel.add(Flatten())
     # Note: Keras does automatic shape inference.
-    rmodel.add(Dense(256))
+    rmodel.add(Dense(200))
     rmodel.add(Activation('relu'))
     rmodel.add(Dropout(0.5))
 
-    rmodel.add(Dense(256))
+    rmodel.add(Dense(200))
     rmodel.add(Activation('relu'))
-    rmodel.add(Dropout(0.5))
 
     model = Sequential()
     model.add(Merge([lmodel, rmodel], mode='mul'))
+    model.add(Dropout(0.5))
 
-    model.add(Dense(512))
+    model.add(Dense(400))
     model.add(Activation('tanh'))
     model.add(Dropout(0.5))
 
-    model.add(Dense(512))
+    model.add(Dense(400))
     model.add(Activation('linear'))
     model.add(Dropout(0.5))
 
@@ -98,13 +118,21 @@ def train_model(params):
     # n_test_batches = 1
 
     model=  build_model(params)
+    model.count_params()
     print("Model builded")
     done_looping = False
     epoch_counter = 0
     best_validation_loss=np.inf
-    print("Mean of training data:%f, abs mean",np.mean(y_train),np.mean(np.abs(y_train)))
-    print("Mean of val data:%f, abs mean: ",np.mean(y_val),np.mean(np.abs(y_val)))
-    print("Mean of test data:%f, abs mean",np.mean(y_test),np.mean(np.abs(y_test)))
+    y_train_mean=np.mean(y_train)
+    y_train_abs_mean=np.mean(np.abs(y_train))
+    y_val_mean=np.mean(y_train)
+    y_val_abs_mean=np.mean(np.abs(y_train))
+    y_test_mean=np.mean(y_train)
+    y_test_abs_mean=np.mean(np.abs(y_train))
+
+    print("Mean of training data:%f, abs mean: %f"%(y_train_mean,y_train_abs_mean))
+    print("Mean of val data:%f, abs mean: %f"%(y_val_mean,y_val_abs_mean))
+    print("Mean of test data:%f, abs mean: %f"%(y_test_mean,y_test_abs_mean))
     while (epoch_counter < n_epochs) and (not done_looping):
         epoch_counter = epoch_counter + 1
         print("Training model...")
@@ -118,25 +146,20 @@ def train_model(params):
             data_Sx = dataset_loader.load_batch_images(size, nc, "S", Fx,im_type)
             data_y = y_train[minibatch_index * batch_size: (minibatch_index + 1) * batch_size]
             loss =model.train_on_batch([data_Fx, data_Sx], data_y)
-            s='TRAIN--> epoch %i, minibatch %i/%i, training cost %f ' % (epoch_counter, minibatch_index + 1, n_train_batches,  loss)
+            s='TRAIN--> epoch %i, minibatch %i/%i, training cost %f '%(epoch_counter, minibatch_index + 1, n_train_batches,  loss)
             utils.log_write(s)
 
         print("Validating model...")
         this_validation_loss = 0
-        val_mean = 0
-        val_abs_mean=0
         for i in xrange(n_valid_batches):
                     Fx = X_val[i * batch_size: (i + 1) * batch_size]
                     data_Fx = dataset_loader.load_batch_images(size, nc, "F", Fx,im_type)
                     data_Sx = dataset_loader.load_batch_images(size, nc, "S", Fx,im_type)
                     data_y = y_val[i * batch_size: (i + 1) * batch_size]
-                    val_mean+=np.mean(data_y)
-                    val_abs_mean+=np.mean(np.abs(data_y))
                     this_validation_loss += model.test_on_batch([data_Fx, data_Sx],data_y)
         this_validation_loss /=n_valid_batches
-        val_abs_mean/=n_valid_batches
-        val_mean/=n_valid_batches
-        s ='VAL--> epoch %i, validation error %f prediction mean %f prediction abs mean %f %%' %(epoch_counter, this_validation_loss,val_mean,val_abs_mean)
+
+        s ='VAL--> epoch %i, validation error %f validation data mean/abs %f/%f'%(epoch_counter, this_validation_loss,y_val_mean,y_val_abs_mean)
         utils.log_write(s)
         if this_validation_loss < best_validation_loss:
             best_validation_loss = this_validation_loss
@@ -156,51 +179,10 @@ def train_model(params):
             test_mean/=n_test_batches
             ext=params["models"]+str(rn_id)+"_"+str(epoch_counter % 3)+".h5"
             model.save_weights(ext, overwrite=True)
-            s ='TEST--> epoch %i, test error %f prediction mean %f prediction abs mean %f %%' %(epoch_counter, test_losses,test_mean,test_abs_mean)
+            s ='TEST--> epoch %i, test error %f test data mean/abs %f / %f' %(epoch_counter, test_losses,y_test_mean,y_test_abs_mean)
             utils.log_write(s)
 
 
-
 if __name__ == "__main__":
-
-    params={}
-    params["rn_id"]=1 #running id
-    # early-stopping parameters
-    params['patience']= 10000  # look as this many examples regardless
-    params['patience_increase']=2  # wait this much longer when a new best is
-    params['improvement_threshold']=0.995  # a relative improvement of this much is
-
-    # learning parameters
-    params['lambda_1']= 0.01  # regulizer param
-    params['lambda_2']=0.01  # regulizer param
-    params['momentum']=0.9    # the params for momentum
-    params['initial_learning_rate']=0.0001
-    params['learning_rate_decay']= 0.998
-    params['squared_filter_length_limit']=15.0
-    params['batch_size']=30
-    params['n_epochs']=3000
-
-    # dataset parameters
-    #params['dataset']="/home/coskun/PycharmProjects/data/rgbd_dataset_freiburg3_large_cabinet/"
-    params['dataset']="/home/cmp/projects/data/rgbd_dataset_freiburg3_large_cabinet/" #test computer
-    params['im_type']="gray"
-    params['step_size']=[1,2,5,7,10,12,13,14,15,16,18,20,21,23,24,25]
-    #params['step_size']=[10]
-    params['size']=[160, 120] #[width,height]
-    params['nc']=1 #number of dimensions
-    params['multi']=10 #ground truth location differences will be multiplied with this number
-    params['test_size']=0.20 #Test size
-    params['val_size']=0.20 #Test size
-
-    # c an Pooling parameters
-    params['kern_mat']=[(5, 5), (5, 5)] #shape of kernel
-    params['nkerns']= [30, 40] #number of kernel
-    params['pool_mat']=  [(2, 2), (2, 2)] #shape of pooling
-
-    # os
-    wd=os.getcwd()
-    params['wd']=wd
-    params['models']=wd+"/models/"
-    params['logs']=wd+"/logs/"
-
+    params=config.get_params("std")
     train_model(params)

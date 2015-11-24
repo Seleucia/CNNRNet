@@ -23,7 +23,7 @@ def load_batch_images(size,nc,dir, x,im_type):
     #We should modify this function to load images with different number of channels
     fl_size=size[0]*size[1]
     m_size = (len(x), fl_size)
-    data_x = numpy.empty(m_size, float)
+    data_x = numpy.empty(m_size, theano.config.floatX)
     i = 0
     normalizer=5000
     img_arr=[]
@@ -38,7 +38,36 @@ def load_batch_images(size,nc,dir, x,im_type):
             dImg=dImg2
         img = Image.open(dImg)
         img=img.resize(size)
-        arr1= numpy.array(img,float)/normalizer
+        arr1= numpy.array(img,theano.config.floatX)/normalizer
+        l=[]
+        l.append([])
+        l[0]=arr1
+        n_l=numpy.array(l)
+        batch_l.append([])
+        batch_l[i]=n_l
+        i+=1
+    return numpy.array(batch_l)
+
+def load_batch_imagesV2(size,nc,dir, x,im_type):
+    #This code must be modified for theano version of model
+    fl_size=size[0]*size[1]
+    m_size = (len(x), fl_size)
+    data_x = numpy.empty(m_size, theano.config.floatX)
+    i = 0
+    normalizer=5000
+    img_arr=[]
+    if(im_type=="gray"):
+        normalizer=255
+    batch_l=[]
+    for (dImg1, dImg2) in x:
+        dImg=""
+        if dir=="F":
+            dImg=dImg1
+        else:
+            dImg=dImg2
+        img = Image.open(dImg)
+        img=img.resize(size)
+        arr1= numpy.array(img,theano.config.floatX)/normalizer
         l=[]
         l.append([])
         l[0]=arr1
