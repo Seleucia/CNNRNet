@@ -28,10 +28,7 @@ def build_model(params):
     lmodel.add(Activation('relu'))
     lmodel.add(MaxPooling2D(pool_size=(2, 2)))
     lmodel.add(Dropout(0.5))
-    lmodel.add(Convolution2D(params["nkerns"][3], 3, 3))
-    lmodel.add(Activation('relu'))
-    lmodel.add(MaxPooling2D(pool_size=(2, 2)))
-    lmodel.add(Dropout(0.5))
+
 
     lmodel.add(Flatten())
     # Note: Keras does automatic shape inference.
@@ -53,10 +50,7 @@ def build_model(params):
     rmodel.add(Activation('relu'))
     rmodel.add(MaxPooling2D(pool_size=(2, 2)))
     rmodel.add(Dropout(0.5))
-    rmodel.add(Convolution2D(params["nkerns"][2], 3, 3))
-    rmodel.add(Activation('relu'))
-    rmodel.add(MaxPooling2D(pool_size=(2, 2)))
-    rmodel.add(Dropout(0.5))
+    
 
     rmodel.add(Convolution2D(params["nkerns"][3], 3, 3))
     rmodel.add(Activation('relu'))
@@ -117,22 +111,22 @@ def train_model(params):
     # n_valid_batches = 1
     # n_test_batches = 1
 
-    model=  build_model(params)
-    model.count_params()
-    print("Model builded")
+
     done_looping = False
     epoch_counter = 0
     best_validation_loss=np.inf
     y_train_mean=np.mean(y_train)
     y_train_abs_mean=np.mean(np.abs(y_train))
-    y_val_mean=np.mean(y_train)
-    y_val_abs_mean=np.mean(np.abs(y_train))
-    y_test_mean=np.mean(y_train)
-    y_test_abs_mean=np.mean(np.abs(y_train))
+    y_val_mean=np.mean(y_val)
+    y_val_abs_mean=np.mean(np.abs(y_val))
+    y_test_mean=np.mean(y_test)
+    y_test_abs_mean=np.mean(np.abs(y_test))
 
     print("Mean of training data:%f, abs mean: %f"%(y_train_mean,y_train_abs_mean))
     print("Mean of val data:%f, abs mean: %f"%(y_val_mean,y_val_abs_mean))
     print("Mean of test data:%f, abs mean: %f"%(y_test_mean,y_test_abs_mean))
+    model=  build_model(params)
+    print("Model builded")
     while (epoch_counter < n_epochs) and (not done_looping):
         epoch_counter = epoch_counter + 1
         print("Training model...")
@@ -152,11 +146,11 @@ def train_model(params):
         print("Validating model...")
         this_validation_loss = 0
         for i in xrange(n_valid_batches):
-                    Fx = X_val[i * batch_size: (i + 1) * batch_size]
-                    data_Fx = dataset_loader.load_batch_images(size, nc, "F", Fx,im_type)
-                    data_Sx = dataset_loader.load_batch_images(size, nc, "S", Fx,im_type)
-                    data_y = y_val[i * batch_size: (i + 1) * batch_size]
-                    this_validation_loss += model.test_on_batch([data_Fx, data_Sx],data_y)
+            Fx = X_train[i * batch_size: (i + 1) * batch_size]
+            data_Fx = dataset_loader.load_batch_images(size, nc, "F", Fx,im_type)
+            data_Sx = dataset_loader.load_batch_images(size, nc, "S", Fx,im_type)
+            data_y = y_train[i * batch_size: (i + 1) * batch_size]
+            this_validation_loss += model.test_on_batch([data_Fx, data_Sx],data_y)
         this_validation_loss /=n_valid_batches
 
         s ='VAL--> epoch %i, validation error %f validation data mean/abs %f/%f'%(epoch_counter, this_validation_loss,y_val_mean,y_val_abs_mean)
@@ -175,8 +169,6 @@ def train_model(params):
                 test_abs_mean+=np.mean(np.abs(data_y))
                 test_losses +=  model.test_on_batch([data_Fx, data_Sx],data_y)
             test_losses/=n_test_batches
-            test_abs_mean/=n_test_batches
-            test_mean/=n_test_batches
             ext=params["models"]+str(rn_id)+"_"+str(epoch_counter % 3)+".h5"
             model.save_weights(ext, overwrite=True)
             s ='TEST--> epoch %i, test error %f test data mean/abs %f / %f' %(epoch_counter, test_losses,y_test_mean,y_test_abs_mean)
