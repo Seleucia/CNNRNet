@@ -113,11 +113,6 @@ def train_model(params):
     # n_valid_batches = 1
     # n_test_batches = 1
 
-
-    done_looping = False
-    epoch_counter = 0
-    best_validation_loss=np.inf
-
     y_val_mean=np.mean(y_val)
     y_val_abs_mean=np.mean(np.abs(y_val))
     y_test_mean=np.mean(y_test)
@@ -127,6 +122,10 @@ def train_model(params):
     check_mode=params["check_mode"]
     utils.log_write("Model builded",params)
     utils.log_write("Training started",params)
+    done_looping = False
+    epoch_counter = 0
+    best_validation_loss=np.inf
+    test_counter=0
     while (epoch_counter < n_epochs) and (not done_looping):
         epoch_counter = epoch_counter + 1
         print("Training model...")
@@ -161,20 +160,22 @@ def train_model(params):
         utils.log_write(s,params)
         if this_validation_loss < best_validation_loss:
             best_validation_loss = this_validation_loss
-            test_losses = 0
-            for i in xrange(n_test_batches):
-                Fx = X_test[i * batch_size: (i + 1) * batch_size]
-                data_Fx = dt_utils.load_batch_images(size, nc, "F", Fx,im_type)
-                data_Sx = dt_utils.load_batch_images(size, nc, "S", Fx,im_type)
-                data_y = y_test[i * batch_size: (i + 1) * batch_size]
-                test_losses +=  model.test_on_batch([data_Fx, data_Sx],data_y)
-                if(check_mode==1):
-                    break
-            test_losses/=n_test_batches
             ext=params["models"]+str(rn_id)+"_"+str(epoch_counter % 3)+".h5"
             model.save_weights(ext, overwrite=True)
-            s ='TEST--> epoch %i, test error %f test data mean/abs %f / %f' %(epoch_counter, test_losses,y_test_mean,y_test_abs_mean)
-            utils.log_write(s,params)
+            if(test_counter%params["test_freq"]==0):
+                test_counter+=1
+                test_losses = 0
+                for i in xrange(n_test_batches):
+                    Fx = X_test[i * batch_size: (i + 1) * batch_size]
+                    data_Fx = dt_utils.load_batch_images(size, nc, "F", Fx,im_type)
+                    data_Sx = dt_utils.load_batch_images(size, nc, "S", Fx,im_type)
+                    data_y = y_test[i * batch_size: (i + 1) * batch_size]
+                    test_losses +=  model.test_on_batch([data_Fx, data_Sx],data_y)
+                    if(check_mode==1):
+                        break
+                test_losses/=n_test_batches
+                s ='TEST--> epoch %i, test error %f test data mean/abs %f / %f' %(epoch_counter, test_losses,y_test_mean,y_test_abs_mean)
+                utils.log_write(s,params)
         if(check_mode==1):
                 break
     ext=params["models"]+"last_"+utils.get_time()+".h5"
@@ -183,5 +184,5 @@ def train_model(params):
     utils.log_write(s,params)
 
 if __name__ == "__main__":
-    params= config.get_params("home")
+    params= config.get_params()
     train_model(params)

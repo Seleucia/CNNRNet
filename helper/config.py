@@ -1,7 +1,8 @@
 import os
 import utils
+import platform
 
-def get_params(location):
+def get_params():
     params={}
     params["rn_id"]=1 #running id
     # early-stopping parameters
@@ -14,19 +15,19 @@ def get_params(location):
     params['initial_learning_rate']=0.0001
     params['learning_rate_decay']= 0.998
     params['squared_filter_length_limit']=15.0
-    params['batch_size']=10
+    params['batch_size']=120
     params['n_epochs']=3000
     params['dataset']=[]
     # dataset parameters
 
-    if(location=="home"):
+    if(platform.node()=="hc"):
         params['dataset'].append([])
         params['dataset'][0]="/home/coskun/PycharmProjects/data/rgbd_dataset_freiburg3_large_cabinet/"
         params['dataset'].append([])
         params['dataset'][1]="/home/coskun/PycharmProjects/data/rgbd_dataset_freiburg3_teddy/"
         params['dataset'].append([])
         params['dataset'][2]="/home/coskun/PycharmProjects/data/rgbd_dataset_freiburg3_cabinet/"
-    if(location=="tesla"):
+    if(platform.node()=="milletari-workstation"):
         params['dataset'].append([])
         params['dataset'][0]="/home/coskun/PycharmProjects/data/rgbd_dataset_freiburg3_large_cabinet/"
         params['dataset'].append([])
@@ -41,7 +42,7 @@ def get_params(location):
         params['dataset'][5]="/home/coskun/PycharmProjects/data/freiburg2_flowerbouquet_brownbackground/"
         params['dataset'].append([])
         params['dataset'][6]="/home/coskun/PycharmProjects/data/freiburg2_flowerbouquet_dishes/"
-    if(location=="std"):
+    if(platform.node()=="std"):
         params['dataset'].append([])
         params['dataset'][0]="/home/cmp/projects/data/rgbd_dataset_freiburg3_large_cabinet/"
         params['dataset'].append([])
@@ -57,6 +58,7 @@ def get_params(location):
     params['multi']=10 #ground truth location differences will be multiplied with this number
     params['test_size']=0.20 #Test size
     params['val_size']=0.20 #Test size
+    params['test_freq']=3 #Test frequency
 
     # c an Pooling parameters
     params['kern_mat']=[(5, 5), (5, 5)] #shape of kernel
