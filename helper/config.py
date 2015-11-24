@@ -35,13 +35,13 @@ def get_params():
         params['dataset'].append([])
         params['dataset'][2]="/home/coskun/PycharmProjects/data/rgbd_dataset_freiburg3_cabinet/"
         params['dataset'].append([])
-        params['dataset'][3]="/home/coskun/PycharmProjects/data/rgbd_dataset_freiburg3_coke/"
+        params['dataset'][3]="/home/coskun/PycharmProjects/data/rgbd_dataset_freiburg2_coke/"
         params['dataset'].append([])
         params['dataset'][4]="/home/coskun/PycharmProjects/data/rgbd_dataset_freiburg2_flowerbouquet/"
         params['dataset'].append([])
-        params['dataset'][5]="/home/coskun/PycharmProjects/data/freiburg2_flowerbouquet_brownbackground/"
+        params['dataset'][5]="/home/coskun/PycharmProjects/data/rgbd_dataset_freiburg2_flowerbouquet_brownbackground/"
         params['dataset'].append([])
-        params['dataset'][6]="/home/coskun/PycharmProjects/data/freiburg2_flowerbouquet_dishes/"
+        params['dataset'][6]="/home/coskun/PycharmProjects/data/rgbd_dataset_freiburg2_dishes/"
     if(platform.node()=="std"):
         params['dataset'].append([])
         params['dataset'][0]="/home/cmp/projects/data/rgbd_dataset_freiburg3_large_cabinet/"
