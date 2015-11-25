@@ -102,13 +102,17 @@ def prepare_data(step_size,data_x,data_y):
     rval = [(_data_x), (_data_y), (overlaps)]
     return rval
 
-def split_test_data(dir_list, data_y,test_size):
+def split_test_data(dir_list,id, data_y,test_size):
     tmp_data_x = dir_list
     tmp_delta_y = data_y
-
     e_ind = int(round(len(tmp_delta_y) * test_size))
     test_inds = range(len(tmp_delta_y) - e_ind, len(tmp_delta_y))
     train_inds = range(0, len(tmp_delta_y) - e_ind)
+
+    if(id%2==1):
+        test_inds = range(0,e_ind)
+        train_inds = range(e_ind, len(tmp_delta_y))
+
     tmp_y_test = numpy.array(tmp_delta_y)[test_inds, :]
     tmp_y_train = numpy.array(tmp_delta_y)[train_inds, :]
     tmp_y_train = tmp_y_train.reshape(len(tmp_y_train), 3)
@@ -146,7 +150,7 @@ def train_test_split(X, y, test_size, random_state):
         rVal=[X_training,X_test,y_training,y_test]
         return rVal
 
-def load_tum_data(params,ds_dir):
+def load_tum_data(params,ds_dir,id):
     dsRawData=load_data(ds_dir,params["im_type"])
     dir_list=dsRawData[0]
     data_y=dsRawData[1]
@@ -159,7 +163,7 @@ def load_tum_data(params,ds_dir):
     overlaps_train=[]
 
     for s in params["step_size"]:
-        dsSplits=split_test_data(dir_list, data_y,params["test_size"])
+        dsSplits=split_test_data(dir_list,id, data_y,params["test_size"])
         tmp_X_train,tmp_y_train=dsSplits[0]
         tmp_X_test,tmp_y_test=dsSplits[1]
 

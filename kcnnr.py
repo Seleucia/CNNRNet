@@ -160,7 +160,7 @@ def train_model(params):
         utils.log_write(s,params)
         if this_validation_loss < best_validation_loss:
             best_validation_loss = this_validation_loss
-            ext=params["models"]+str(rn_id)+"_"+str(epoch_counter % 3)+".h5"
+            ext=params["models"]+str(rn_id)+"_"+str(epoch_counter % 3)+"_"+im_type+".h5"
             model.save_weights(ext, overwrite=True)
             if(test_counter%params["test_freq"]==0):
                 test_counter+=1
@@ -178,7 +178,7 @@ def train_model(params):
                 utils.log_write(s,params)
         if(check_mode==1):
                 break
-    ext=params["models"]+"last_"+utils.get_time()+".h5"
+    ext=params["models"]+"last_"+utils.get_time()+"_"+im_type+".h5"
     model.save_weights(ext, overwrite=True)
     s ="Training ended"
     utils.log_write(s,params)
