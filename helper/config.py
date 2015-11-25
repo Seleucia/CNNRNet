@@ -42,13 +42,21 @@ def get_params():
         params['dataset'][5]="/home/coskun/PycharmProjects/data/rgbd_dataset_freiburg2_flowerbouquet_brownbackground/"
         params['dataset'].append([])
         params['dataset'][6]="/home/coskun/PycharmProjects/data/rgbd_dataset_freiburg2_dishes/"
-    if(platform.node()=="std"):
+    if(platform.node()=="cmp-comp"):
         params['dataset'].append([])
         params['dataset'][0]="/home/cmp/projects/data/rgbd_dataset_freiburg3_large_cabinet/"
         params['dataset'].append([])
         params['dataset'][1]="/home/cmp/projects/data/rgbd_dataset_freiburg3_teddy/"
         params['dataset'].append([])
         params['dataset'][2]="/home/cmp/projects/data/rgbd_dataset_freiburg3_cabinet/"
+        params['dataset'].append([])
+        params['dataset'][3]="/home/cmp/projects/data/rgbd_dataset_freiburg2_coke/"
+        params['dataset'].append([])
+        params['dataset'][4]="/home/cmp/projects/data/rgbd_dataset_freiburg2_flowerbouquet/"
+        params['dataset'].append([])
+        params['dataset'][5]="/home/cmp/projects/data/rgbd_dataset_freiburg2_flowerbouquet_brownbackground/"
+        params['dataset'].append([])
+        params['dataset'][6]="/home/cmp/projects/data/rgbd_dataset_freiburg2_dishes/"
 
     params['im_type']="depth"
     params['step_size']=[1,2,5,7,10,12,13,14,15,16,18,20,21,23,24,25]
