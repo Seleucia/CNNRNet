@@ -115,7 +115,7 @@ def imresize(img , cropped_width , cropped_height):
     height_scale = float(cropped_height) / img.shape[0] 
     
     if len(img.shape) == 2: #Gray Scale Case
-        img = np.tile(img[:,:,np.newaxis] , (1,1,3)) #Broadcast 
+        img = np.tile(img[:,:,np.newaxis] , (1,1,3)) #Broadcast
     
     order   = np.argsort([height_scale , width_scale])
     scale   = [height_scale , width_scale]
@@ -192,7 +192,12 @@ def caffe_extract_feats(path_imgs , path_model_def , path_model , WITH_GPU = Tru
         for i in range(b , b + batch_size ):
             if i < len(path_imgs):
                 print path_imgs[i]
-                list_imgs.append( np.array( caffe.io.load_image(path_imgs[i]) ) ) #loading images HxWx3 (RGB)
+                img=caffe.io.load_image(path_imgs[i])
+
+                if(params['orijinal_img']=="depth"):
+                    img= np.dstack([img]*3)
+
+                list_imgs.append( np.array( img ) ) #loading images HxWx3 (RGB)
             else:
                 list_imgs.append(list_imgs[-1]) #Appending the last image in order to have a batch of size 10. The extra predictions are removed later..
                 
@@ -200,7 +205,7 @@ def caffe_extract_feats(path_imgs , path_model_def , path_model , WITH_GPU = Tru
 
         caffe_net.forward(data = caffe_input)
 
-        predictions =caffe_net.blobs[params["im_type"]].data.transpose()
+        predictions =caffe_net.blobs[params["layer"]].data.transpose()
 
         print np.shape(feats)
         print np.shape(predictions)
@@ -243,8 +248,8 @@ if __name__ == '__main__':
         raise RuntimeError("%s , Path to pretrained model file does not exist"%(path_model))
 
     for dir in params["dataset"]:
-        im_type='rgb'
-        im_type_to=params["im_type"]
+        im_type=params['orijinal_img']
+        im_type_to=params['orijinal_img']+"_"+params['layer']
         new_dir=dir+im_type_to+"/"
         if os.path.exists(new_dir):
             shutil.rmtree(new_dir)

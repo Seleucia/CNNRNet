@@ -65,7 +65,7 @@ def get_params():
         params['dataset'].append([])
         params['dataset'][6]="/home/cmp/projects/data/rgbd_dataset_freiburg2_dishes/"
 
-    params['im_type']="fc7"
+    params['im_type']="rgb"
     params['step_size']=[1,2,5,7,10,12,13,14,15,16,18,20,21,23,24,25]
     #params['step_size']=[10]
     params['size']=[160, 120] #[width,height]
@@ -80,6 +80,9 @@ def get_params():
     params['nkerns']= [40, 30,20,20] #number of kernel
     params['pool_mat']=  [(2, 2), (2, 2)] #shape of pooling
 
+    #Feature extraction:
+    params['orijinal_img']="depth" #rgb,depth
+    params['layer']="fc7" #rgb,depth
     # os
     wd=os.getcwd()
     params['wd']=wd
@@ -87,7 +90,10 @@ def get_params():
     params['log_file']=wd+"/logs/log_"+utils.get_time()+".txt"
     params['model_name']=wd+"models/1_2.h5"
 
-    params['check_mode']=0 #process checking
+    params['check_mode']=1 #process checking
+    if(params['check_mode']==1):
+        params['step_size']=[10,15]
+
 
     return params
 
