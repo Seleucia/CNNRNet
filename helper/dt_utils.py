@@ -49,6 +49,14 @@ def load_batch_images(size,nc,dir, x,im_type):
     return numpy.array(batch_l)
 
 
+def write_features(ndarr, fl_ls,parent_dir):
+    for i in range(ndarr.shape[1]):
+        f=ndarr[:,i]
+        f_name=os.path.basename(fl_ls[i])
+        full_path=parent_dir+f_name.replace(".png","")
+        numpy.save(full_path,f)
+
+
 def shuffle_in_unison_inplace(a, b):
     assert len(a) == len(b)
     p = numpy.random.permutation(len(a))

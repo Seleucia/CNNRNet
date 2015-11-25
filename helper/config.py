@@ -20,7 +20,10 @@ def get_params():
     params['dataset']=[]
     # dataset parameters
 
+
     if(platform.node()=="hc"):
+        params["caffe"]="/home/coskun/sftpkg/caffe/python"
+        params["WITH_GPU"]=False
         params['dataset'].append([])
         params['dataset'][0]="/home/coskun/PycharmProjects/data/rgbd_dataset_freiburg3_large_cabinet/"
         params['dataset'].append([])
@@ -28,6 +31,8 @@ def get_params():
         params['dataset'].append([])
         params['dataset'][2]="/home/coskun/PycharmProjects/data/rgbd_dataset_freiburg3_cabinet/"
     if(platform.node()=="milletari-workstation"):
+        params["caffe"]="/usr/local/caffe/python"
+        params["WITH_GPU"]=True
         params['dataset'].append([])
         params['dataset'][0]="/home/coskun/PycharmProjects/data/rgbd_dataset_freiburg3_large_cabinet/"
         params['dataset'].append([])
@@ -43,6 +48,8 @@ def get_params():
         params['dataset'].append([])
         params['dataset'][6]="/home/coskun/PycharmProjects/data/rgbd_dataset_freiburg2_dishes/"
     if(platform.node()=="cmp-comp"):
+        params["WITH_GPU"]=False
+        params["caffe"]="/home/coskun/sftpkg/caffe/python"
         params['dataset'].append([])
         params['dataset'][0]="/home/cmp/projects/data/rgbd_dataset_freiburg3_large_cabinet/"
         params['dataset'].append([])
@@ -58,7 +65,7 @@ def get_params():
         params['dataset'].append([])
         params['dataset'][6]="/home/cmp/projects/data/rgbd_dataset_freiburg2_dishes/"
 
-    params['im_type']="depth"
+    params['im_type']="fc7"
     params['step_size']=[1,2,5,7,10,12,13,14,15,16,18,20,21,23,24,25]
     #params['step_size']=[10]
     params['size']=[160, 120] #[width,height]

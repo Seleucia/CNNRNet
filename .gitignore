@@ -4,4 +4,6 @@
 *.npy
 *.h5
 *.txt
+*.caffemodel
+*.prototxt
 .idea/
