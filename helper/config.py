@@ -90,7 +90,7 @@ def get_params():
     params['log_file']=wd+"/logs/log_"+utils.get_time()+".txt"
     params['model_name']=wd+"models/1_2.h5"
 
-    params['check_mode']=1 #process checking
+    params['check_mode']=0 #process checking
     if(params['check_mode']==1):
         params['step_size']=[10,15]
 
