@@ -4,6 +4,8 @@ import platform
 
 def get_params():
     params={}
+    params['check_mode']=0 #process checking
+
     params["rn_id"]=1 #running id
     # early-stopping parameters
     params['patience']= 10000  # look as this many examples regardless
@@ -90,7 +92,6 @@ def get_params():
     params['log_file']=wd+"/logs/log_"+utils.get_time()+".txt"
     params['model_name']=wd+"models/1_2.h5"
 
-    params['check_mode']=0 #process checking
     if(params['check_mode']==1):
         params['step_size']=[10,15]
 
