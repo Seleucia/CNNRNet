@@ -4,7 +4,7 @@ import platform
 
 def get_params():
     params={}
-    params['check_mode']=1 #process checking
+    params['check_mode']=0 #process checking
 
     params["rn_id"]=2 #running id
     # early-stopping parameters
