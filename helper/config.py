@@ -17,7 +17,7 @@ def get_params():
     params['initial_learning_rate']=0.001
     params['learning_rate_decay']= 0.998
     params['squared_filter_length_limit']=15.0
-    params['batch_size']=120
+    params['batch_size']=60
     params['n_epochs']=3000
     params['dataset']=[]
     # dataset parameters
@@ -25,6 +25,7 @@ def get_params():
 
     if(platform.node()=="hc"):
         params["caffe"]="/home/coskun/sftpkg/caffe/python"
+        params['batch_size']=10
         params["WITH_GPU"]=False
         params['dataset'].append([])
         params['dataset'][0]="/home/coskun/PycharmProjects/data/rgbd_dataset_freiburg3_large_cabinet/"
