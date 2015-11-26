@@ -4,9 +4,9 @@ import platform
 
 def get_params():
     params={}
-    params['check_mode']=0 #process checking
+    params['check_mode']=1 #process checking
 
-    params["rn_id"]=1 #running id
+    params["rn_id"]=2 #running id
     # early-stopping parameters
     params['patience']= 10000  # look as this many examples regardless
     params['patience_increase']=2  # wait this much longer when a new best is
@@ -67,7 +67,7 @@ def get_params():
         params['dataset'].append([])
         params['dataset'][6]="/home/cmp/projects/data/rgbd_dataset_freiburg2_dishes/"
 
-    params['im_type']="depth"
+    params['im_type']="gray"
     params['step_size']=[1,2,5,7,10,12,13,14,15,16,18,20,21,23,24,25]
     #params['step_size']=[10]
     params['size']=[160, 120] #[width,height]

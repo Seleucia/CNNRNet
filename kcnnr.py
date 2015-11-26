@@ -3,6 +3,7 @@ import helper.dt_utils as dt_utils
 import numpy as np
 from keras.layers.convolutional import Convolution2D, MaxPooling2D
 from keras.layers.core import Dense, Dropout, Activation, Flatten
+from keras.layers.advanced_activations import PReLU
 from keras.layers.core import Merge
 from keras.models import Sequential
 from keras.optimizers import Adagrad
@@ -18,15 +19,15 @@ def build_model(params):
     # input: 100x100 images with 3 channels -> (3, 100, 100) tensors.
     # this applies 32 convolution filters of size 3x3 each.
     lmodel.add(Convolution2D(params["nkerns"][0], 3, 3, border_mode='full', input_shape=(params["nc"], params["size"][1], params["size"][0])))
-    lmodel.add(Activation('tanh'))
+    lmodel.add(PReLU())
     lmodel.add(MaxPooling2D(pool_size=(2, 2)))
     lmodel.add(Dropout(0.5))
     lmodel.add(Convolution2D(params["nkerns"][1], 3, 3))
-    lmodel.add(Activation('tanh'))
+    lmodel.add(PReLU())
     lmodel.add(MaxPooling2D(pool_size=(2, 2)))
     lmodel.add(Dropout(0.5))
     lmodel.add(Convolution2D(params["nkerns"][2], 3, 3))
-    lmodel.add(Activation('tanh'))
+    lmodel.add(PReLU())
     lmodel.add(MaxPooling2D(pool_size=(2, 2)))
     lmodel.add(Dropout(0.5))
 
@@ -34,45 +35,45 @@ def build_model(params):
     lmodel.add(Flatten())
     # Note: Keras does automatic shape inference.
     lmodel.add(Dense(200))
-    lmodel.add(Activation('tanh'))
+    lmodel.add(PReLU())
     lmodel.add(Dropout(0.5))
 
     lmodel.add(Dense(200))
-    lmodel.add(Activation('tanh'))
+    lmodel.add(PReLU())
 
     rmodel = Sequential()
     # input: 100x100 images with 3 channels -> (3, 100, 100) tensors.
     # this applies 32 convolution filters of size 3x3 each.
     rmodel.add(Convolution2D(params["nkerns"][0], 3, 3, border_mode='full', input_shape=(params["nc"], params["size"][1], params["size"][0])))
-    rmodel.add(Activation('tanh'))
+    rmodel.add(PReLU())
     rmodel.add(MaxPooling2D(pool_size=(2, 2)))
     rmodel.add(Dropout(0.5))
     rmodel.add(Convolution2D(params["nkerns"][1], 3, 3))
-    rmodel.add(Activation('tanh'))
+    rmodel.add(PReLU())
     rmodel.add(MaxPooling2D(pool_size=(2, 2)))
     rmodel.add(Dropout(0.5))
 
 
     rmodel.add(Convolution2D(params["nkerns"][3], 3, 3))
-    rmodel.add(Activation('tanh'))
+    rmodel.add(PReLU())
     rmodel.add(MaxPooling2D(pool_size=(2, 2)))
     rmodel.add(Dropout(0.5))
 
     rmodel.add(Flatten())
     # Note: Keras does automatic shape inference.
     rmodel.add(Dense(200))
-    rmodel.add(Activation('tanh'))
+    rmodel.add(PReLU())
     rmodel.add(Dropout(0.5))
 
     rmodel.add(Dense(200))
-    rmodel.add(Activation('tanh'))
+    rmodel.add(PReLU())
 
     model = Sequential()
     model.add(Merge([lmodel, rmodel], mode='mul'))
     model.add(Dropout(0.5))
 
     model.add(Dense(400))
-    model.add(Activation('tanh'))
+    model.add(PReLU())
     model.add(Dropout(0.5))
 
     model.add(Dense(400))
