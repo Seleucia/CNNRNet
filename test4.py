@@ -2,9 +2,9 @@ import dataset_loader
 import numpy
 
 import kcnnr
-import plot_data
 import predict_location
 from helper import config, model_saver, utils
+from plot import plot_data
 
 params= config.get_params("home")
 params['step_size']=[10]
@@ -44,7 +44,7 @@ n_test_batches /= params['batch_size']
 #Print and plot error with different axes
 pred_y_delta_test_aug= y_delta_test_aug[0:n_test_batches * params['batch_size']]
 err= y_delta_pred - pred_y_delta_test_aug
-plot_data.plot_err(err,fig_namexyz)
+plot_data.plot_err(err, fig_namexyz)
 mean_error=numpy.mean(numpy.abs(err))
 print "Mean Error:"+str(mean_error)
 print "Mean of gt values:"+str(numpy.mean(pred_y_delta_test_aug))
@@ -76,7 +76,7 @@ model_saver.save_pred(ext_yy_test_aug, yy_test_aug)
 model_saver.save_pred(ext_y_test_gt, y_test_gt)
 
 
-plot_data.plot_y([y_test_gt,yy_test], fig_name3d)
+plot_data.plot_y([y_test_gt, yy_test], fig_name3d)
 
 
 print("ok")

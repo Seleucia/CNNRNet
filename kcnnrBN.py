@@ -11,7 +11,6 @@ from keras.optimizers import SGD
 
 from helper import config, utils
 
-
 def build_model(params):
 
     lmodel = Sequential()
@@ -21,17 +20,21 @@ def build_model(params):
     lmodel.add(Convolution2D(params["nkerns"][0], 3, 3, border_mode='full', input_shape=(params["nc"], params["size"][1], params["size"][0])))
     lmodel.add(PReLU())
     lmodel.add(MaxPooling2D(pool_size=(2, 2)))
+    lmodel.add(Dropout(0.25))
     lmodel.add(Convolution2D(params["nkerns"][1], 3, 3))
     lmodel.add(PReLU())
     lmodel.add(MaxPooling2D(pool_size=(2, 2)))
+    lmodel.add(Dropout(0.25))
     lmodel.add(Convolution2D(params["nkerns"][2], 3, 3))
     lmodel.add(PReLU())
     lmodel.add(MaxPooling2D(pool_size=(2, 2)))
+    lmodel.add(Dropout(0.25))
 
 
     lmodel.add(Flatten())
     lmodel.add(Dense(200))
     lmodel.add(PReLU())
+    lmodel.add(Dropout(0.5))
     lmodel.add(Dense(200))
     lmodel.add(PReLU())
 
@@ -41,25 +44,32 @@ def build_model(params):
     rmodel.add(Convolution2D(params["nkerns"][0], 3, 3, border_mode='full', input_shape=(params["nc"], params["size"][1], params["size"][0])))
     rmodel.add(PReLU())
     rmodel.add(MaxPooling2D(pool_size=(2, 2)))
+    rmodel.add(Dropout(0.25))
     rmodel.add(Convolution2D(params["nkerns"][1], 3, 3))
     rmodel.add(PReLU())
     rmodel.add(MaxPooling2D(pool_size=(2, 2)))
+    rmodel.add(Dropout(0.25))
     rmodel.add(Convolution2D(params["nkerns"][3], 3, 3))
     rmodel.add(PReLU())
     rmodel.add(MaxPooling2D(pool_size=(2, 2)))
+    rmodel.add(Dropout(0.25))
 
     rmodel.add(Flatten())
     rmodel.add(Dense(200))
     rmodel.add(PReLU())
+    rmodel.add(Dropout(0.5))
     rmodel.add(Dense(200))
     rmodel.add(PReLU())
 
     model = Sequential()
     model.add(Merge([lmodel, rmodel], mode='mul'))
+    model.add(Dropout(0.5))
     model.add(Dense(400))
     model.add(PReLU())
+    model.add(Dropout(0.5))
     model.add(Dense(400))
     model.add(Activation('linear'))
+    model.add(Dropout(0.5))
 
     model.add(Dense(3))
 

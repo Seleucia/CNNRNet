@@ -4,9 +4,8 @@ import platform
 
 def get_params():
     params={}
-    params['check_mode']=0 #process checking
-
-    params["rn_id"]=2 #running id
+    params['check_mode']=1 #process checking
+    params["rn_id"]="dropout" #running id
     # early-stopping parameters
     params['patience']= 10000  # look as this many examples regardless
     params['patience_increase']=2  # wait this much longer when a new best is
@@ -88,9 +87,9 @@ def get_params():
     params['layer']="fc7" #rgb,depth
     # os
     wd=os.getcwd()
-    params['wd']=wd
+    params['wd']=os.path.dirname(wd)
     params['models']=wd+"/models/"
-    params['log_file']=wd+"/logs/log_"+utils.get_time()+".txt"
+    params['log_file']=wd+"/logs/log_"+params["rn_id"]+"_"+utils.get_time()+".txt"
     params['model_name']=wd+"models/1_2.h5"
 
     if(params['check_mode']==1):

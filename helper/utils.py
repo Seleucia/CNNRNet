@@ -51,18 +51,6 @@ def init_CNNW_b(W, b, rng, n_in, n_out,fshape):
 rng = numpy.random.RandomState(1234)
 srng = T.shared_randomstreams.RandomStreams(rng.randint(999999))
 
-def drop(input, p=0.5, rng=rng):
-    """
-    :type input: numpy.array
-    :param input: layer or weight matrix on which dropout resp. dropconnect is applied
-
-    :type p: float or double between 0. and 1.
-    :param p: p probability of NOT dropping out a unit or connection, therefore (1.-p) is the drop rate.
-
-    """
-    mask = srng.binomial(n=1, p=p, size=input.shape, dtype=theano.config.floatX)
-    return input * mask
-
 def rescale_weights(params, incoming_max):
     incoming_max = numpy.cast[theano.config.floatX](incoming_max)
     for p in params:
@@ -127,7 +115,6 @@ def start_log(datasets,params):
     log_write("Mean of val data:%f, abs mean: %f"%(y_val_mean,y_val_abs_mean),params)
     log_write("Mean of test data:%f, abs mean: %f"%(y_test_mean,y_test_abs_mean),params)
 
-
 def get_time():
     return str(datetime.datetime.now().time()).replace(":","_").replace(".","_")
 
@@ -146,9 +133,58 @@ def log_to_file(str,params):
     with open(params["log_file"], "a") as log:
         log.write(str)
 
-
 def log_write(str,params):
     print(str)
     ds= get_time()
     str=ds+" | "+str+"\n"
     log_to_file(str,params)
+
+
+def log_read(mode,params):
+    wd=params["wd"]
+    filename=params['log_file']
+    with open(wd+"/logs/"+filename) as file:
+        data = file.read()
+        lines = data.split("\n")
+        i=0
+        list=[]
+        for line in lines:
+            if mode+"-->" in line:
+                epoch=0
+                error=0.
+                sl=line.split("|")
+                for s in sl:
+                    if "epoch" in s:
+                        epoch=int(s.strip().split(" ")[2])
+                    if "error" in s:
+                        error=float(s.strip().split(" ")[1])
+                list.append((epoch,error))
+    #numpy.array([[epoch,error] for (epoch,error) in list_val])[:,1] #all error
+    return list
+
+def log_read_train(params):
+    wd=params["wd"]
+    mode="TRAIN"
+    filename=params['log_file']
+    with open(wd+"/logs/"+filename) as file:
+        data = file.read()
+        lines = data.split("\n")
+        i=0
+
+        list=[]
+        for line in lines:
+            if mode+"-->" in line:
+                epoch=0
+                batch_index=0
+                error=0.
+                sl=line.split("|")
+                for s in sl:
+                    if "epoch" in s:
+                        epoch=int(s.strip().split(" ")[2])
+                    if "error" in s:
+                        error=float(s.strip().split(" ")[1])
+                    if "minibatch" in s:
+                        batch_index=int(s.strip().split(" ")[1].split("/")[0])
+                list.append((epoch,batch_index,error))
+    #numpy.array([[b, c, d] for (b, c, d) in list_val if b==1 ])[:,2] #first epoch all error
+    return list
