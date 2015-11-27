@@ -8,16 +8,14 @@ from keras.layers.core import Merge
 from keras.models import Sequential
 from keras.optimizers import Adagrad
 from keras.optimizers import SGD
-import cPickle as pickle
+from keras import regularizers
 import sys
 from helper import config, utils
 
 sys.setrecursionlimit(50000)
 
 def build_model(params):
-
     lmodel = Sequential()
-
     # input: 100x100 images with 3 channels -> (3, 100, 100) tensors.
     # this applies 32 convolution filters of size 3x3 each.
     lmodel.add(Convolution2D(params["nkerns"][0], 3, 3, border_mode='full', input_shape=(params["nc"], params["size"][1], params["size"][0])))
@@ -67,6 +65,8 @@ def build_model(params):
 
     sgd = SGD(lr=params['initial_learning_rate'], decay=params['learning_rate_decay'], momentum=params['momentum'], nesterov=True)
     adagrad=Adagrad(lr=params['initial_learning_rate'], epsilon=1e-6)
+    reg2=regularizers.l2(0.01)
+    model.regularizers.append(reg2)
     model.compile(loss='mean_squared_error', optimizer=adagrad)
     return model
 

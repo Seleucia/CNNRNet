@@ -48,7 +48,6 @@ def load_batch_images(size,nc,dir, x,im_type):
         i+=1
     return numpy.array(batch_l)
 
-
 def write_features(ndarr, fl_ls,parent_dir):
     for i in range(ndarr.shape[1]):
         f=ndarr[:,i]
