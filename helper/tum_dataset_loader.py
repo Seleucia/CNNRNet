@@ -305,7 +305,6 @@ def load_tum_data_valid(dataset,step_size,multi):
     rval=[data_x,delta_y,data_y,overlaps]
     return rval
 
-
 def compute_mean(params):
     id=0
     ds_mean=0.
@@ -322,8 +321,9 @@ def compute_mean(params):
             sm += numpy.sum(numpy.array(img,theano.config.floatX))
         id+=1
         ds_mean+=sm/len(raw_X_train)
-
-    print(sm)
+    mn=ds_mean/len(params["dataset"])
+    mn=mn/params["size"][0]*params["size"][1]
+    print(mn)
 
 def load_splits(params):
     dsRawData=load_data(params["dataset"],params["im_type"])
