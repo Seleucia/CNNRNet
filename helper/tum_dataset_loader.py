@@ -16,7 +16,7 @@ def load_batch_imagesV2(size,nc,dir, x,im_type):
     fl_size=size[0]*size[1]
     m_size = (len(x), fl_size)
     data_x = numpy.empty(m_size, theano.config.floatX)
-    i = 0
+    i = 2
     normalizer=5000
     img_arr=[]
     if(im_type=="gray"):
@@ -129,6 +129,7 @@ def split_data(dir_list,id, data_y,test_size,val_size):
 
     tmp_y_train = tmp_y_train.reshape(len(tmp_y_train), 3)
     tmp_y_val = tmp_y_val.reshape(len(tmp_y_val), 3)
+    tmp_y_test = tmp_y_test.reshape(len(tmp_y_test), 3)
 
     tmp_X_train = numpy.array(tmp_data_x)[train_inds, :]
     tmp_X_test = numpy.array(tmp_data_x)[test_inds, :]
@@ -235,8 +236,10 @@ def load_tum_data(params,id):
 
     overlaps_train=[]
     overlaps_val=[]
+
     (X_train,y_train)= dt_utils.shuffle_in_unison_inplace(X_train,y_delta_train)
     (X_val,y_val)= dt_utils.shuffle_in_unison_inplace(X_val,y_delta_val)
+
     rval = [(X_train, y_train,overlaps_train), (X_val, y_delta_val,overlaps_val),
             (X_test, y_delta_test,overlaps_test)]
     #    model_saver.save_partitions(params["rn_id"],rval)

@@ -30,10 +30,9 @@ dsRawData=tdl.load_data(params["dataset"][id],params["im_type"])
 dir_list=dsRawData[0]
 data_y_gt=dsRawData[1]
 
-dsSplits=tdl.split_test_data(dir_list,id, data_y_gt,params["test_size"])
+dsSplits=tdl.split_data(dir_list,id, data_y_gt,params["test_size"],params["val_size"])
 tmp_X_train,y_train_delta_gt=dsSplits[0]
 tmp_X_test,y_test_delta_gt=dsSplits[1]
-
 
 
 #location differences with orijinal, step_size=1 setted this means only looking consequtive locations
@@ -68,7 +67,6 @@ yy_test_step=np.cumsum(yy_test_step, axis=0)
 #camera location restored from predicted data
 yy_pred= utils.up_sample(overlaps_test_step, y_delta_pred, step)
 yy_pred=yy_pred.reshape(len(yy_pred),3)
-yy_pred=-yy_pred
 yy_pred=np.vstack([y_test_delta_gt[0,:],yy_pred])
 yy_pred=np.cumsum(yy_pred,axis=0)
 
@@ -88,7 +86,7 @@ model_saver.save_pred(ext_yy_test_aug, yy_test_step,params)
 model_saver.save_pred(ext_y_test_gt, y_test_delta_gt,params)
 
 
-plot_data.plot_y([y_test_delta_gt, np.array(yy_pred)], fig_name3d)
+plot_data.plot_y([y_test_delta_gt, np.array(yy_test_step)], fig_name3d)
 
 
 print("ok")

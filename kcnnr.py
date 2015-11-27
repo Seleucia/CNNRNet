@@ -132,10 +132,10 @@ def train_model(params):
         print("Validating model...")
         this_validation_loss = 0
         for i in xrange(n_valid_batches):
-            Fx = X_train[i * batch_size: (i + 1) * batch_size]
+            Fx = X_val[i * batch_size: (i + 1) * batch_size]
             data_Fx = dt_utils.load_batch_images(size, nc, "F", Fx,im_type)
             data_Sx = dt_utils.load_batch_images(size, nc, "S", Fx,im_type)
-            data_y = y_train[i * batch_size: (i + 1) * batch_size]
+            data_y = y_val[i * batch_size: (i + 1) * batch_size]
             this_validation_loss += model.test_on_batch([data_Fx, data_Sx],data_y)
             if(check_mode==1):
                 break
