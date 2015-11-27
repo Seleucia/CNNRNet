@@ -175,7 +175,7 @@ def train_model(params):
     # ext=params["models"]+"last_"+str(rn_id)+utils.get_time()+"_"+im_type+".pkl"
     # pickle.dump(model, open(ext, 'wb'))
     ext=params["models"]+str(rn_id)+"_regular_"+str(epoch_counter % 5)+"_"+im_type+".hdf5"
-    model.save_weights(ext)
+    model.save_weights(ext, overwrite=True)
     utils.log_write("Training ended",params)
 
 if __name__ == "__main__":
