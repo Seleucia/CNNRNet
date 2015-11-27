@@ -150,7 +150,7 @@ def train_model(params):
             ext=params["models"]+str(rn_id)+"_"+str(epoch_counter % 3)+"_"+im_type+".hdf5"
             model.save_weights(ext, overwrite=True)
             test_counter+=1
-            if(test_counter%params["test_freq"]==0):
+            if(test_counter%params["test_freq"]==1):
                 test_losses = 0
                 for i in xrange(n_test_batches):
                     Fx = X_test[i * batch_size: (i + 1) * batch_size]
