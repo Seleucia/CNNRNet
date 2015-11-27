@@ -13,9 +13,8 @@ def load_data(params):
     Overlaps_train=[]
     Overlaps_val=[]
     Overlaps_test=[]
-    id=0
-    for dir in params["dataset"]:
-        datasets = tumdata.load_tum_data(params,dir,id)
+    for id in range(len(params["dataset"])):
+        datasets = tumdata.load_tum_data(params,id)
         x_train, y_train,overlaps_train = datasets[0]
         x_val, y_val,overlaps_val = datasets[1]
         x_test, y_test,overlaps_test = datasets[2]
@@ -39,8 +38,19 @@ def load_data(params):
             Overlaps_train=np.concatenate((Overlaps_train,overlaps_train),axis=0)
             Overlaps_val=np.concatenate((Overlaps_val,overlaps_val),axis=0)
             Overlaps_test=np.concatenate((Overlaps_test,overlaps_test),axis=0)
-        id+=1
 
+    X_train,Y_train=dt_utils.shuffle_in_unison_inplace(X_train,Y_train)
+    X_val,Y_val=dt_utils.shuffle_in_unison_inplace(X_val,Y_val)
+    rval = [(X_train, Y_train,Overlaps_train), (X_val, Y_val,Overlaps_val),
+            (X_test, Y_test,Overlaps_test)]
+    return rval
+
+
+def load_data_with_id(params,id):
+    datasets = tumdata.load_tum_data(params,id)
+    X_train, Y_train, Overlaps_train = datasets[0]
+    X_val, Y_val, Overlaps_val = datasets[1]
+    X_test, Y_test, Overlaps_test = datasets[2]
     X_train,Y_train=dt_utils.shuffle_in_unison_inplace(X_train,Y_train)
     X_val,Y_val=dt_utils.shuffle_in_unison_inplace(X_val,Y_val)
     rval = [(X_train, Y_train,Overlaps_train), (X_val, Y_val,Overlaps_val),

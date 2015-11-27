@@ -8,9 +8,11 @@ from keras.layers.core import Merge
 from keras.models import Sequential
 from keras.optimizers import Adagrad
 from keras.optimizers import SGD
-
+import cPickle as pickle
+import sys
 from helper import config, utils
 
+sys.setrecursionlimit(50000)
 
 def build_model(params):
 
@@ -143,10 +145,12 @@ def train_model(params):
         utils.log_write(s,params)
         if this_validation_loss < best_validation_loss:
             best_validation_loss = this_validation_loss
-            ext=params["models"]+str(rn_id)+"_"+str(epoch_counter % 3)+"_"+im_type+".h5"
+            # ext=params["models"]+str(rn_id)+"_"+str(epoch_counter % 3)+"_"+im_type+".pkl"
+            # pickle.dump(model, open(ext, 'wb'))
+            ext=params["models"]+str(rn_id)+"_"+str(epoch_counter % 3)+"_"+im_type+".hdf5"
             model.save_weights(ext, overwrite=True)
+            test_counter+=1
             if(test_counter%params["test_freq"]==0):
-                test_counter+=1
                 test_losses = 0
                 for i in xrange(n_test_batches):
                     Fx = X_test[i * batch_size: (i + 1) * batch_size]
@@ -161,13 +165,17 @@ def train_model(params):
                 utils.log_write(s,params)
         else:
             if(epoch_counter % 5==0):
-                ext=params["models"]+str(rn_id)+"_regular_"+str(epoch_counter % 5)+"_"+im_type+".h5"
+                # ext=params["models"]+str(rn_id)+"_regular_"+str(epoch_counter % 5)+"_"+im_type+".pkl"
+                # pickle.dump(model, open(ext, 'wb'))
+                ext=params["models"]+str(rn_id)+"_regular_"+str(epoch_counter % 5)+"_"+im_type+".hdf5"
                 model.save_weights(ext, overwrite=True)
 
         if(check_mode==1):
                 break
-    ext=params["models"]+"last_"+str(rn_id)+utils.get_time()+"_"+im_type+".h5"
-    model.save_weights(ext, overwrite=True)
+    # ext=params["models"]+"last_"+str(rn_id)+utils.get_time()+"_"+im_type+".pkl"
+    # pickle.dump(model, open(ext, 'wb'))
+    ext=params["models"]+str(rn_id)+"_regular_"+str(epoch_counter % 5)+"_"+im_type+".hdf5"
+    model.save_weights(ext)
     utils.log_write("Training ended",params)
 
 if __name__ == "__main__":

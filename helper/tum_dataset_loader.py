@@ -102,26 +102,40 @@ def prepare_data(step_size,data_x,data_y):
     rval = [(_data_x), (_data_y), (overlaps)]
     return rval
 
-def split_test_data(dir_list,id, data_y,test_size):
+def split_test_data(dir_list,id, data_y,test_size,val_size):
     tmp_data_x = dir_list
     tmp_delta_y = data_y
-    e_ind = int(round(len(tmp_delta_y) * test_size))
-    test_inds = range(len(tmp_delta_y) - e_ind, len(tmp_delta_y))
-    train_inds = range(0, len(tmp_delta_y) - e_ind)
+    t_ind = int(round(len(tmp_delta_y) * test_size))
+    v_ind = int(round(len(tmp_delta_y) * val_size))
 
-    if(id%2==1):
-        test_inds = range(0,e_ind)
-        train_inds = range(e_ind, len(tmp_delta_y))
+    if(id%3==0):#mid is train
+        train_inds = range(v_ind, len(tmp_delta_y) - t_ind)
+        test_inds = range(len(tmp_delta_y) - t_ind, len(tmp_delta_y))
+        val_inds = range(0,v_ind)
 
-    tmp_y_test = numpy.array(tmp_delta_y)[test_inds, :]
+    if(id%3==1):#start is train
+        train_inds = range(0, len(tmp_delta_y) - (t_ind+v_ind))
+        test_inds = range(len(tmp_delta_y) - t_ind, len(tmp_delta_y))
+        val_inds = range(len(tmp_delta_y) - (t_ind+v_ind),len(tmp_delta_y)- t_ind)
+
+    if(id%3==2):#end is train
+        train_inds = range(v_ind+t_ind, len(tmp_delta_y))
+        test_inds = range(0 , t_ind)
+        val_inds = range(t_ind , v_ind+t_ind)
+
     tmp_y_train = numpy.array(tmp_delta_y)[train_inds, :]
+    tmp_y_test = numpy.array(tmp_delta_y)[test_inds, :]
+    tmp_y_val = numpy.array(tmp_delta_y)[val_inds, :]
+
     tmp_y_train = tmp_y_train.reshape(len(tmp_y_train), 3)
+    tmp_y_val = tmp_y_val.reshape(len(tmp_y_val), 3)
 
-    tmp_X_test = numpy.array(tmp_data_x)[test_inds, :]
     tmp_X_train = numpy.array(tmp_data_x)[train_inds, :]
+    tmp_X_test = numpy.array(tmp_data_x)[test_inds, :]
+    tmp_X_val = numpy.array(tmp_data_x)[val_inds, :]
 
 
-    rVal=[(tmp_X_train,tmp_y_train),(tmp_X_test,tmp_y_test)]
+    rVal=[(tmp_X_train,tmp_y_train),(tmp_X_test,tmp_y_test),(tmp_X_val,tmp_y_val)]
     return rVal
 
 def split_data(test_size,val_size,data_x,data_y):
@@ -150,65 +164,94 @@ def train_test_split(X, y, test_size, random_state):
         rVal=[X_training,X_test,y_training,y_test]
         return rVal
 
-def load_tum_data(params,ds_dir,id):
-    dsRawData=load_data(ds_dir,params["im_type"])
+def load_tum_data(params,id):
+    dsRawData=load_data(params["dataset"][id],params["im_type"])
     dir_list=dsRawData[0]
     data_y=dsRawData[1]
 
-    X_val_train=[]
-    y_delta_val_train=[]
+    dsSplits=split_test_data(dir_list,id, data_y,params["test_size"],params["val_size"])
+    raw_X_train,raw_y_train=dsSplits[0]
+    raw_X_test,raw_y_test=dsSplits[1]
+    raw_X_val,raw_y_val=dsSplits[2]
+
+    X_val=[]
+    X_train=[]
     X_test=[]
+
+    y_delta_val=[]
+    y_delta_train=[]
     y_delta_test=[]
+
     overlaps_test=[]
     overlaps_train=[]
+    overlaps_val=[]
 
     for s in params["step_size"]:
-        dsSplits=split_test_data(dir_list,id, data_y,params["test_size"])
-        tmp_X_train,tmp_y_train=dsSplits[0]
-        tmp_X_test,tmp_y_test=dsSplits[1]
+        tmp_X_train,tmp_y_train,tmp_overlaps_train=prepare_data(s,raw_X_train,raw_y_train)
+        tmp_X_test,tmp_y_test,tmp_overlaps_test=prepare_data(s,raw_X_test,raw_y_test)
+        tmp_X_val,tmp_y_val,tmp_overlaps_val=prepare_data(s,raw_X_val,raw_y_val)
 
-        tmp_X_train,tmp_y_train,tmp_overlaps_train=prepare_data(s,tmp_X_train,tmp_y_train)
-        tmp_X_test,tmp_y_test,tmp_overlaps_test=prepare_data(s,tmp_X_test,tmp_y_test)
-
-        if(len(X_val_train)==0):
-            X_val_train=tmp_X_train
-            y_delta_val_train=tmp_y_train
+        if(len(X_train)==0):
+            X_train=tmp_X_train
             X_test=tmp_X_test
+            X_val=tmp_X_val
+
+            y_delta_train=tmp_y_train
             y_delta_test=tmp_y_test
-            if len(numpy.shape(tmp_overlaps_test))>1:
-                overlaps_test=numpy.asarray(tmp_overlaps_test).reshape(len(tmp_overlaps_test))
-            else:
-                overlaps_test=tmp_overlaps_test
+            y_delta_val=tmp_y_val
+
             if len(numpy.shape(tmp_overlaps_train))>1:
                 overlaps_train=numpy.asarray(tmp_overlaps_train).reshape(len(tmp_overlaps_train))
             else:
                 overlaps_train=tmp_overlaps_train
-        else:
-            X_val_train=numpy.concatenate((X_val_train,tmp_X_train))
-            y_delta_val_train=numpy.concatenate((y_delta_val_train,tmp_y_train))
-            X_test=numpy.concatenate((X_test,tmp_X_test))
-            y_delta_test=numpy.concatenate((y_delta_test,tmp_y_test))
-            overlaps_test=numpy.concatenate((overlaps_test,tmp_overlaps_test))
-            overlaps_train=numpy.concatenate((overlaps_train,tmp_overlaps_train))
 
+            if len(numpy.shape(tmp_overlaps_test))>1:
+                overlaps_test=numpy.asarray(tmp_overlaps_test).reshape(len(tmp_overlaps_test))
+            else:
+                overlaps_test=tmp_overlaps_test
+
+            if len(numpy.shape(tmp_overlaps_val))>1:
+                overlaps_val=numpy.asarray(tmp_overlaps_val).reshape(len(tmp_overlaps_val))
+            else:
+                overlaps_val=tmp_overlaps_val
+
+        else:
+            X_train=numpy.concatenate((X_train,tmp_X_train))
+            X_test=numpy.concatenate((X_test,tmp_X_test))
+            X_val=numpy.concatenate((X_val,tmp_X_val))
+
+            y_delta_train=numpy.concatenate((y_delta_train,tmp_y_train))
+            y_delta_test=numpy.concatenate((y_delta_test,tmp_y_test))
+            y_delta_val=numpy.concatenate((y_delta_val,tmp_y_val))
+
+            overlaps_train=numpy.concatenate((overlaps_train,tmp_overlaps_train))
+            overlaps_test=numpy.concatenate((overlaps_test,tmp_overlaps_test))
+            overlaps_val=numpy.concatenate((overlaps_val,tmp_overlaps_val))
+
+    y_delta_train=numpy.asarray(y_delta_train)
     y_delta_test=numpy.asarray(y_delta_test)
+    y_delta_val=numpy.asarray(y_delta_val)
+
+    X_train=numpy.asarray(X_train)
     X_test=numpy.asarray(X_test)
+    X_val=numpy.asarray(X_val)
+
+    y_delta_train=y_delta_train*params["multi"]
+    y_delta_train=y_delta_train.reshape(len(y_delta_train),3)
+
     y_delta_test=y_delta_test*params["multi"]
     y_delta_test=y_delta_test.reshape(len(y_delta_test),3)
 
-    y_delta_val_train=numpy.asarray(y_delta_val_train)
-    X_val_train=numpy.asarray(X_val_train)
-    y_delta_val_train=y_delta_val_train*params["multi"]
-    y_delta_val_train=y_delta_val_train.reshape(len(y_delta_val_train),3)
 
-    X_train, X_val, y_train, y_val= train_test_split(X_val_train, y_delta_val_train, test_size=params["val_size"], random_state=42)
-    del X_val_train
-    del y_delta_val_train
+    y_delta_val=y_delta_val*params["multi"]
+    y_delta_val=y_delta_val.reshape(len(y_delta_val),3)
+
 
     overlaps_train=[]
     overlaps_val=[]
-    (X_train,y_train)= dt_utils.shuffle_in_unison_inplace(numpy.asarray(X_train),numpy.asarray(y_train))
-    rval = [(X_train, y_train,overlaps_train), (X_val, y_val,overlaps_val),
+    (X_train,y_train)= dt_utils.shuffle_in_unison_inplace(X_train,y_delta_train)
+    (X_val,y_val)= dt_utils.shuffle_in_unison_inplace(X_val,y_delta_val)
+    rval = [(X_train, y_train,overlaps_train), (X_val, y_delta_val,overlaps_val),
             (X_test, y_delta_test,overlaps_test)]
     #    model_saver.save_partitions(params["rn_id"],rval)
     return rval

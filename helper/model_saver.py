@@ -17,20 +17,17 @@ def save_model(ext,params):
         p.dump(params)
 
 
-def save_pred(ext,pred):
-    i=0
-    with file('predictions/'+str(ext), 'wb') as f:
+def save_pred(ext,pred,params):
+    pred=params["wd"]+"/"+"pred/ds/"+str(ext)
+    with file(pred, 'wb') as f:
         p = cPickle.Pickler(f,protocol=cPickle.HIGHEST_PROTOCOL)
         p.fast = True
         p.dump(pred)
 
-def load_pred(pred_name):
-    i=0
-    with file('predictions/'+pred_name, 'rb') as f:
+def load_pred(pred_name,params):
+    pred=params["wd"]+"/"+"pred/ds/"+str(pred_name)
+    with file(pred, 'rb') as f:
         return cPickle.load(f)
-
-
-
 
 def save_garb(obj):
     tm= str(datetime.datetime.now().hour)+"-"+str(datetime.datetime.now().minute)+"-"+str(datetime.datetime.now().second)

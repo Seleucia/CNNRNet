@@ -5,7 +5,7 @@ import platform
 def get_params():
     params={}
     params['check_mode']=1 #process checking
-    params["rn_id"]="dropout" #running id
+    params["rn_id"]="val_dist" #running id
     # early-stopping parameters
     params['patience']= 10000  # look as this many examples regardless
     params['patience_increase']=2  # wait this much longer when a new best is
@@ -86,15 +86,16 @@ def get_params():
     params['orijinal_img']="depth" #rgb,depth
     params['layer']="fc7" #rgb,depth
     # os
-    wd=os.getcwd()
-    params['wd']=os.path.dirname(wd)
+
+    wd=os.path.dirname(os.path.realpath(__file__))
+    wd=os.path.dirname(wd)
+    params['wd']=wd
     params['models']=wd+"/models/"
     params['log_file']=wd+"/logs/log_"+params["rn_id"]+"_"+utils.get_time()+".txt"
     params['model_name']=wd+"models/1_2.h5"
 
     if(params['check_mode']==1):
         params['step_size']=[10,15]
-
 
     return params
 

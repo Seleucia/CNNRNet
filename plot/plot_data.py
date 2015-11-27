@@ -4,7 +4,7 @@ import numpy as np
 
 
 
-def plot_raw_y(data_y,fig_name):
+def plot_raw_y(data_y,fig_name,params):
     import matplotlib.pyplot as plt
     fig, ax = plt.subplots(subplot_kw={'projection': '3d'})
     color=['red', 'green']
@@ -47,7 +47,7 @@ def plot_y(data_y,fig_name):
 
 
     ax.legend(legends,loc='upper left')
-    plt.savefig("predictions/"+fig_name)
+    plt.savefig(fig_name)
     plt.show()
 
 
@@ -68,7 +68,7 @@ def plot_err(err,fig_name):
     ax3.plot(fr, z)
     plt.grid()
     #f.subplots_adjust(hspace=0)
-    plt.savefig("predictions/"+fig_name)
+    plt.savefig(fig_name)
     #plt.setp([a.get_xticklabels() for a in f.axes[:-1]], visible=False)
     plt.show()
 
