@@ -102,7 +102,7 @@ def prepare_data(step_size,data_x,data_y):
     rval = [(_data_x), (_data_y), (overlaps)]
     return rval
 
-def split_test_data(dir_list,id, data_y,test_size,val_size):
+def split_data(dir_list,id, data_y,test_size,val_size):
     tmp_data_x = dir_list
     tmp_delta_y = data_y
     t_ind = int(round(len(tmp_delta_y) * test_size))
@@ -138,20 +138,6 @@ def split_test_data(dir_list,id, data_y,test_size,val_size):
     rVal=[(tmp_X_train,tmp_y_train),(tmp_X_test,tmp_y_test),(tmp_X_val,tmp_y_val)]
     return rVal
 
-def split_data(test_size,val_size,data_x,data_y):
-        e_ind=int(round(len(data_x)*test_size))
-        test_inds=range(len(data_x)-e_ind,len(data_x))
-        train_inds=range(0,len(data_x)-e_ind)
-
-        y_test=numpy.array(data_y)[test_inds,:]
-        y_data=numpy.array(data_y)[train_inds,:]
-
-        X_test=numpy.array(data_x)[test_inds,:]
-        X_data=numpy.array(data_x)[train_inds,:]
-        X_train, X_val, y_train, y_val= train_test_split(X_data, y_data, test_size=val_size, random_state=42)
-        rval = [(X_train, y_train), (X_val, y_val), (X_test, y_test)]
-        return rval
-
 def train_test_split(X, y, test_size, random_state):
         indices=numpy.arange(len(X))
         prng = RandomState(random_state)
@@ -169,7 +155,7 @@ def load_tum_data(params,id):
     dir_list=dsRawData[0]
     data_y=dsRawData[1]
 
-    dsSplits=split_test_data(dir_list,id, data_y,params["test_size"],params["val_size"])
+    dsSplits=split_data(dir_list,id, data_y,params["test_size"],params["val_size"])
     raw_X_train,raw_y_train=dsSplits[0]
     raw_X_test,raw_y_test=dsSplits[1]
     raw_X_val,raw_y_val=dsSplits[2]
