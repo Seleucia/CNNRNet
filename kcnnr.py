@@ -4,6 +4,7 @@ import numpy as np
 from keras.layers.convolutional import Convolution2D, MaxPooling2D
 from keras.layers.core import Dense, Dropout, Activation, Flatten
 from keras.layers.advanced_activations import PReLU
+from keras.layers.normalization import BatchNormalization
 from keras.layers.core import Merge
 from keras.models import Sequential
 from keras.optimizers import Adagrad
@@ -21,19 +22,24 @@ def build_model(params):
     lmodel.add(Convolution2D(params["nkerns"][0], 3, 3, border_mode='full', input_shape=(params["nc"], params["size"][1], params["size"][0])))
     lmodel.add(PReLU())
     lmodel.add(MaxPooling2D(pool_size=(2, 2)))
+    lmodel.add(BatchNormalization())
     lmodel.add(Convolution2D(params["nkerns"][1], 3, 3))
     lmodel.add(PReLU())
     lmodel.add(MaxPooling2D(pool_size=(2, 2)))
+    lmodel.add(BatchNormalization())
     lmodel.add(Convolution2D(params["nkerns"][2], 3, 3))
     lmodel.add(PReLU())
     lmodel.add(MaxPooling2D(pool_size=(2, 2)))
+    lmodel.add(BatchNormalization())
 
 
     lmodel.add(Flatten())
     lmodel.add(Dense(200))
     lmodel.add(PReLU())
+    lmodel.add(BatchNormalization())
     lmodel.add(Dense(200))
     lmodel.add(PReLU())
+    lmodel.add(BatchNormalization())
 
     rmodel = Sequential()
     # input: 100x100 images with 3 channels -> (3, 100, 100) tensors.
@@ -41,19 +47,23 @@ def build_model(params):
     rmodel.add(Convolution2D(params["nkerns"][0], 3, 3, border_mode='full', input_shape=(params["nc"], params["size"][1], params["size"][0])))
     rmodel.add(PReLU())
     rmodel.add(MaxPooling2D(pool_size=(2, 2)))
+    rmodel.add(BatchNormalization())
     rmodel.add(Convolution2D(params["nkerns"][1], 3, 3))
     rmodel.add(PReLU())
     rmodel.add(MaxPooling2D(pool_size=(2, 2)))
+    rmodel.add(BatchNormalization())
     rmodel.add(Convolution2D(params["nkerns"][3], 3, 3))
     rmodel.add(PReLU())
     rmodel.add(MaxPooling2D(pool_size=(2, 2)))
+    rmodel.add(BatchNormalization())
 
     rmodel.add(Flatten())
     rmodel.add(Dense(200))
     rmodel.add(PReLU())
+    rmodel.add(BatchNormalization())
     rmodel.add(Dense(200))
     rmodel.add(PReLU())
-
+    rmodel.add(BatchNormalization())
     model = Sequential()
     model.add(Merge([lmodel, rmodel], mode='mul'))
     model.add(Dense(400))
