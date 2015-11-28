@@ -4,9 +4,9 @@ import platform
 
 def get_params():
     params={}
-    params['check_mode']=0 #process checking
-    params["rn_id"]="val_data_norm" #running id
-    params["notes"]="data norm and mean subtracted without drop out,l2 reg" #running id
+    params['check_mode']=1 #process checking
+    params["rn_id"]="val_drop_wight" #running id
+    params["notes"]="Batch normalaziton removed, dropout and l2 regularize added, weight init setting norm" #running id
     # early-stopping parameters
     params['patience']= 10000  # look as this many examples regardless
     params['patience_increase']=2  # wait this much longer when a new best is

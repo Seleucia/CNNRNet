@@ -16,67 +16,76 @@ from helper import config, utils
 sys.setrecursionlimit(50000)
 
 def build_model(params):
-    lmodel = Sequential()
+    l2=regularizers.l2(0.01)
+    l2_out=regularizers.l2(0.0001)
     # input: 100x100 images with 3 channels -> (3, 100, 100) tensors.
     # this applies 32 convolution filters of size 3x3 each.
-    lmodel.add(Convolution2D(params["nkerns"][0], 3, 3, border_mode='full', input_shape=(params["nc"], params["size"][1], params["size"][0])))
+
+    #########Left Stream######################
+    lmodel = Sequential()
+    lmodel.add(Convolution2D(params["nkerns"][0], 3, 3, border_mode='full', input_shape=(params["nc"], params["size"][1], params["size"][0]),init='he_normal', W_regularizer=l2))
     lmodel.add(PReLU())
     lmodel.add(MaxPooling2D(pool_size=(2, 2)))
-    lmodel.add(BatchNormalization())
-    lmodel.add(Convolution2D(params["nkerns"][1], 3, 3))
+    lmodel.add(Dropout(0.1))
+
+    lmodel.add(Convolution2D(params["nkerns"][1], 3, 3,init='he_normal', W_regularizer=l2))
     lmodel.add(PReLU())
     lmodel.add(MaxPooling2D(pool_size=(2, 2)))
-    lmodel.add(BatchNormalization())
-    lmodel.add(Convolution2D(params["nkerns"][2], 3, 3))
+    lmodel.add(Dropout(0.25))
+
+    lmodel.add(Convolution2D(params["nkerns"][2], 2, 2,init='he_normal', W_regularizer=l2))
     lmodel.add(PReLU())
     lmodel.add(MaxPooling2D(pool_size=(2, 2)))
-    lmodel.add(BatchNormalization())
+    lmodel.add(Dropout(0.5))
 
 
     lmodel.add(Flatten())
-    lmodel.add(Dense(200))
+    lmodel.add(Dense(200,init='he_normal', W_regularizer=l2))
     lmodel.add(PReLU())
-    lmodel.add(BatchNormalization())
-    lmodel.add(Dense(200))
-    lmodel.add(PReLU())
-    lmodel.add(BatchNormalization())
+    lmodel.add(Dropout(0.5))
 
+    lmodel.add(Dense(200,init='he_normal', W_regularizer=l2))
+    lmodel.add(PReLU())
+
+    #########Right Stream######################
     rmodel = Sequential()
-    # input: 100x100 images with 3 channels -> (3, 100, 100) tensors.
-    # this applies 32 convolution filters of size 3x3 each.
-    rmodel.add(Convolution2D(params["nkerns"][0], 3, 3, border_mode='full', input_shape=(params["nc"], params["size"][1], params["size"][0])))
+    rmodel.add(Convolution2D(params["nkerns"][0], 3, 3, border_mode='full', input_shape=(params["nc"], params["size"][1], params["size"][0]),init='he_normal', W_regularizer=l2))
     rmodel.add(PReLU())
     rmodel.add(MaxPooling2D(pool_size=(2, 2)))
-    rmodel.add(BatchNormalization())
-    rmodel.add(Convolution2D(params["nkerns"][1], 3, 3))
+    rmodel.add(Dropout(0.1))
+
+    rmodel.add(Convolution2D(params["nkerns"][1], 3, 3,init='he_normal', W_regularizer=l2))
     rmodel.add(PReLU())
     rmodel.add(MaxPooling2D(pool_size=(2, 2)))
-    rmodel.add(BatchNormalization())
-    rmodel.add(Convolution2D(params["nkerns"][3], 3, 3))
+    rmodel.add(Dropout(0.25))
+
+    rmodel.add(Convolution2D(params["nkerns"][3], 2, 2,init='he_normal', W_regularizer=l2))
     rmodel.add(PReLU())
     rmodel.add(MaxPooling2D(pool_size=(2, 2)))
-    rmodel.add(BatchNormalization())
+    rmodel.add(Dropout(0.5))
 
     rmodel.add(Flatten())
-    rmodel.add(Dense(200))
+    rmodel.add(Dense(200,init='he_normal', W_regularizer=l2))
     rmodel.add(PReLU())
-    rmodel.add(BatchNormalization())
-    rmodel.add(Dense(200))
+    rmodel.add(Dropout(0.5))
+
+    rmodel.add(Dense(200,init='he_normal', W_regularizer=l2))
     rmodel.add(PReLU())
-    rmodel.add(BatchNormalization())
+
+    #########Merge Stream######################
     model = Sequential()
     model.add(Merge([lmodel, rmodel], mode='mul'))
-    model.add(Dense(400))
+    model.add(Dense(400,init='he_normal', W_regularizer=l2_out))
     model.add(PReLU())
-    model.add(Dense(400))
+
+    model.add(Dense(400,init='he_normal'))
     model.add(Activation('linear'))
 
-    model.add(Dense(3))
+    model.add(Dense(3,init='he_normal'))
 
     sgd = SGD(lr=params['initial_learning_rate'], decay=params['learning_rate_decay'], momentum=params['momentum'], nesterov=True)
     adagrad=Adagrad(lr=params['initial_learning_rate'], epsilon=1e-6)
-    reg2=regularizers.l2(0.01)
-    model.regularizers.append(reg2)
+    model.regularizers.append()
     model.compile(loss='mean_squared_error', optimizer=adagrad)
     return model
 
