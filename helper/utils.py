@@ -99,6 +99,7 @@ def start_log(datasets,params):
     ds= get_time()
 
 
+    log_write("Production notes: %s"%(params['notes']),params)
     log_write("Batch size: %s"%(params['batch_size']),params)
     log_write("Images are cropped to: %s"%(params['size']),params)
     log_write("Dataset splits: %s"%(params["step_size"]),params)

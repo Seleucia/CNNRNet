@@ -53,8 +53,8 @@ def load_batch_images(params,dir, x):
             dImg=dImg2
         img = Image.open(dImg)
         img=img.resize(size)
-        arr1= numpy.array(img,theano.config.floatX)/normalizer
-        arr1=arr1-sbt
+        arr1= numpy.array(img,theano.config.floatX)
+        arr1=(arr1-sbt)/normalizer
         l=[]
         l.append([])
         l[0]=arr1
