@@ -5,10 +5,7 @@ import numpy
 import theano
 from numpy.random import RandomState
 import glob
-from theano import config
 from PIL import Image
-import pickle
-import model_saver
 import dt_utils
 
 def load_batch_imagesV2(size,nc,dir, x,im_type):
@@ -306,24 +303,40 @@ def load_tum_data_valid(dataset,step_size,multi):
     return rval
 
 def compute_mean(params):
-    id=0
-    ds_mean=0.
-    for dir in params["dataset"]:
-        dsRawData=load_data(dir,params["im_type"])
-        dir_list=dsRawData[0]
-        data_y=dsRawData[1]
-        dsSplits=split_data(dir_list,id, data_y,params["test_size"],params["val_size"])
-        raw_X_train,raw_y_train=dsSplits[0]
-        sm=0.
-        for dImg in raw_X_train:
-            img = Image.open(dImg[0])
-            img=img.resize(params["size"])
-            sm += numpy.sum(numpy.array(img,theano.config.floatX))
-        id+=1
-        ds_mean+=sm/len(raw_X_train)
-    mn=ds_mean/len(params["dataset"])
-    mn=mn/params["size"][0]*params["size"][1]
-    print(mn)
+   id=0
+   ds_mean1=0.
+   ds_mean2=0.
+   im_type="depth"
+   for dir in params["dataset"]:
+       dsRawData=load_data(dir,im_type)
+       dir_list=dsRawData[0]
+       data_y=dsRawData[1]
+       dsSplits=split_data(dir_list,id, data_y,params["test_size"],params["val_size"])
+       raw_X_train,raw_y_train=dsSplits[0]
+       sm1=0.
+       sm2=0.
+       for dImg in raw_X_train:
+           img = Image.open(dImg[0])
+           if(im_type=="rgb"):
+               sm1+=numpy.mean(numpy.array(img,theano.config.floatX),axis=(1,0))
+               img=img.resize(params["size"])
+               sm2 += numpy.mean(numpy.array(img,theano.config.floatX),axis=(1,0))
+           else:
+               sm1 += numpy.sum(numpy.array(img,theano.config.floatX))
+               img=img.resize(params["size"])
+               sm2 += numpy.sum(numpy.array(img,theano.config.floatX))
+           #break
+       id+=1
+       ds_mean1+=(sm1/len(raw_X_train))
+       ds_mean2+=(sm2/len(raw_X_train))
+       #break
+   mn1=ds_mean1/len(params["dataset"])
+   mn2=ds_mean2/len(params["dataset"])
+   if(im_type!="rgb"):
+        mn1=mn1/(640*480)
+        mn2=mn2/(params["size"][0]*params["size"][1])
+
+   print "Mean of dataset for: %s, before resize: %s, after resize: %s"%(im_type,mn1,mn2)
 
 def load_splits(params):
     dsRawData=load_data(params["dataset"],params["im_type"])

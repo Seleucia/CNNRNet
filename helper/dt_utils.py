@@ -7,8 +7,6 @@ from numpy.random import RandomState
 import glob
 from theano import config
 from PIL import Image
-import pickle
-import model_saver
 
 def shared_dataset(data_xx, data_yy, borrow=True):
         shared_x = theano.shared(numpy.asarray(data_xx,
@@ -19,17 +17,34 @@ def shared_dataset(data_xx, data_yy, borrow=True):
                                  borrow=borrow)
         return shared_x, shared_y
 
-def load_batch_images(size,nc,dir, x,im_type):
+def load_batch_images(params,dir, x):
     #We should modify this function to load images with different number of channels
+    size=params["size"]
+    nc=params["nc"]
+    im_type=params["im_type"]
     fl_size=size[0]*size[1]
     m_size = (len(x), fl_size)
     data_x = numpy.empty(m_size, theano.config.floatX)
-    i = 0
-    normalizer=5000
     img_arr=[]
+
+    sbt=1
+    if(im_type=="depth"):
+        normalizer=52492
+        sbt=params["depth_mean"]
+
+    if(im_type=="pre_depth"):
+        normalizer=52492
+        sbt=params["pre_depth_mean"]
+
     if(im_type=="gray"):
         normalizer=255
+        sbt=params["gray_mean"]
+    if(im_type=="rgb"):
+        normalizer=255
+        sbt=params["rgb_mean"]
+
     batch_l=[]
+    i = 0
     for (dImg1, dImg2) in x:
         dImg=""
         if dir=="F":
@@ -39,6 +54,7 @@ def load_batch_images(size,nc,dir, x,im_type):
         img = Image.open(dImg)
         img=img.resize(size)
         arr1= numpy.array(img,theano.config.floatX)/normalizer
+        arr1=arr1-sbt
         l=[]
         l.append([])
         l[0]=arr1

@@ -9,13 +9,7 @@ def predict(test_set_x,params):
     model.build()
     wd=params["wd"]
     model_name=wd+"/"+"models"+"/"+params['model_name']
-    import h5py
-    #model2=pickle.load(open( model_name.replace("hdf5","pkl"), "rb" ) )
     model.load_weights(model_name)
-    #dataset parameters
-    im_type=params["im_type"]
-    nc =params["nc"]  # number of channcels
-    size =params["size"]  # size = [480,640] orijinal size,[height,width]
 
     # learning parameters
     batch_size =params["batch_size"]
@@ -30,8 +24,8 @@ def predict(test_set_x,params):
     print "Prediction on test images"
     for i in xrange(n_test_batches):
         Fx = test_set_x[i * batch_size: (i + 1) * batch_size]
-        data_Fx = du.load_batch_images(size, nc, "F", Fx,im_type)
-        data_Sx = du.load_batch_images(size, nc, "S", Fx,im_type)
+        data_Fx = du.load_batch_images(params, "F", Fx)
+        data_Sx = du.load_batch_images(params,"S", Fx)
         if(len(y_pred)==0):
             y_pred= model.predict([data_Fx, data_Sx])
         else:

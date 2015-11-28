@@ -75,8 +75,6 @@ def train_model(params):
     im_type=params["im_type"]
     batch_size =params["batch_size"]
     n_epochs =params["n_epochs"]
-    nc =params["nc"]  # number of channcels
-    size =params["size"]  # size = [480,640] orijinal size,[height,width]
 
     datasets = data_loader.load_data(params)
     utils.start_log(datasets,params)
@@ -92,10 +90,6 @@ def train_model(params):
     n_train_batches /= batch_size
     n_valid_batches /= batch_size
     n_test_batches /= batch_size
-
-    # n_train_batches = 3
-    # n_valid_batches = 1
-    # n_test_batches = 1
 
     y_val_mean=np.mean(y_val)
     y_val_abs_mean=np.mean(np.abs(y_val))
@@ -120,8 +114,8 @@ def train_model(params):
                 print 'training @ iter = ', iter
 
             Fx = X_train[minibatch_index * batch_size: (minibatch_index + 1) * batch_size]
-            data_Fx = dt_utils.load_batch_images(size, nc, "F", Fx,im_type)
-            data_Sx = dt_utils.load_batch_images(size, nc, "S", Fx,im_type)
+            data_Fx = dt_utils.load_batch_images(params,"F", Fx)
+            data_Sx = dt_utils.load_batch_images(params,"S", Fx)
             data_y = y_train[minibatch_index * batch_size: (minibatch_index + 1) * batch_size]
             loss =model.train_on_batch([data_Fx, data_Sx], data_y)
             s='TRAIN--> epoch %i | minibatch %i/%i | error %f'%(epoch_counter, minibatch_index + 1, n_train_batches,  loss)
@@ -133,8 +127,8 @@ def train_model(params):
         this_validation_loss = 0
         for i in xrange(n_valid_batches):
             Fx = X_val[i * batch_size: (i + 1) * batch_size]
-            data_Fx = dt_utils.load_batch_images(size, nc, "F", Fx,im_type)
-            data_Sx = dt_utils.load_batch_images(size, nc, "S", Fx,im_type)
+            data_Fx = dt_utils.load_batch_images(params,"F", Fx)
+            data_Sx = dt_utils.load_batch_images(params,"S", Fx)
             data_y = y_val[i * batch_size: (i + 1) * batch_size]
             this_validation_loss += model.test_on_batch([data_Fx, data_Sx],data_y)
             if(check_mode==1):
@@ -145,8 +139,6 @@ def train_model(params):
         utils.log_write(s,params)
         if this_validation_loss < best_validation_loss:
             best_validation_loss = this_validation_loss
-            # ext=params["models"]+str(rn_id)+"_"+str(epoch_counter % 3)+"_"+im_type+".pkl"
-            # pickle.dump(model, open(ext, 'wb'))
             ext=params["models"]+str(rn_id)+"_"+str(epoch_counter % 3)+"_"+im_type+".hdf5"
             model.save_weights(ext, overwrite=True)
             test_counter+=1
@@ -154,8 +146,8 @@ def train_model(params):
                 test_losses = 0
                 for i in xrange(n_test_batches):
                     Fx = X_test[i * batch_size: (i + 1) * batch_size]
-                    data_Fx = dt_utils.load_batch_images(size, nc, "F", Fx,im_type)
-                    data_Sx = dt_utils.load_batch_images(size, nc, "S", Fx,im_type)
+                    data_Fx = dt_utils.load_batch_images(params,"F", Fx)
+                    data_Sx = dt_utils.load_batch_images(params,"S", Fx)
                     data_y = y_test[i * batch_size: (i + 1) * batch_size]
                     test_losses +=  model.test_on_batch([data_Fx, data_Sx],data_y)
                     if(check_mode==1):
@@ -165,15 +157,11 @@ def train_model(params):
                 utils.log_write(s,params)
         else:
             if(epoch_counter % 5==0):
-                # ext=params["models"]+str(rn_id)+"_regular_"+str(epoch_counter % 5)+"_"+im_type+".pkl"
-                # pickle.dump(model, open(ext, 'wb'))
                 ext=params["models"]+str(rn_id)+"_regular_"+str(epoch_counter % 5)+"_"+im_type+".hdf5"
                 model.save_weights(ext, overwrite=True)
 
         if(check_mode==1):
                 break
-    # ext=params["models"]+"last_"+str(rn_id)+utils.get_time()+"_"+im_type+".pkl"
-    # pickle.dump(model, open(ext, 'wb'))
     ext=params["models"]+str(rn_id)+"_regular_"+str(epoch_counter % 5)+"_"+im_type+".hdf5"
     model.save_weights(ext, overwrite=True)
     utils.log_write("Training ended",params)

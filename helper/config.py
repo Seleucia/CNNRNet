@@ -4,7 +4,7 @@ import platform
 
 def get_params():
     params={}
-    params['check_mode']=0 #process checking
+    params['check_mode']=1 #process checking
     params["rn_id"]="val_dist" #running id
     # early-stopping parameters
     params['patience']= 10000  # look as this many examples regardless
@@ -16,6 +16,11 @@ def get_params():
     params['initial_learning_rate']=0.001
     params['learning_rate_decay']= 0.998
     params['squared_filter_length_limit']=15.0
+
+    params['gray_mean']=130.668652173 #130.507121448
+    params['depth_mean']=13797.3639853 #13746.3784954
+    params['pre_depth_mean']=9505.32929609 #9515.98643977
+    params['rgb_mean']=[138.28382874, 128.78469849 ,124.75618744] #[138.18440247,128.58282471 ,124.65019226]
     params['batch_size']=60
     params['n_epochs']=3000
     params['dataset']=[]
@@ -74,12 +79,13 @@ def get_params():
     params['multi']=10 #ground truth location differences will be multiplied with this number
     params['test_size']=0.20 #Test size
     params['val_size']=0.20 #Test size
-    params['test_freq']=3 #Test frequency
+    params['test_freq']=10 #Test frequency
 
     # c an Pooling parameters
     params['kern_mat']=[(5, 5), (5, 5)] #shape of kernel
     params['nkerns']= [40, 30,20,20] #number of kernel
     params['pool_mat']=  [(2, 2), (2, 2)] #shape of pooling
+
 
     #Feature extraction:
     params['orijinal_img']="depth" #rgb,depth
