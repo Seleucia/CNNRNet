@@ -250,15 +250,15 @@ if __name__ == '__main__':
     for dir in params["dataset"]:
         im_type=params['orijinal_img']
         im_type_to=params['orijinal_img']+"_"+params['layer']
-        new_dir=dir+im_type_to+"/"
+        new_dir=dir[0]+im_type_to+"/"
         if os.path.exists(new_dir):
             shutil.rmtree(new_dir)
         os.makedirs(new_dir)
-        rgb_dir=dir+im_type+'/*.png'
+        rgb_dir=dir[0]+im_type+'/*.png'
         path_imgs =lst=glob.glob(rgb_dir)
         feats = caffe_extract_feats(path_imgs, path_model_def_file, path_model, WITH_GPU)
         dt_utils.write_features(feats, path_imgs,new_dir)
-        print("data set has already converted %s"%(dir))
+        print("data set has already converted %s"%(dir[0]))
 
     print "Have a Good day!"
     

@@ -4,7 +4,7 @@ import platform
 
 def get_params():
     params={}
-    params['check_mode']=1 #process checking
+    params['check_mode']=1 #process checkY_testing
     params["rn_id"]="val_drop_wight" #running id
     params["notes"]="Batch normalaziton removed, dropout and l2 regularize added, weight init setting norm" #running id
 

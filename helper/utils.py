@@ -70,17 +70,17 @@ def convert_to_grayscale(params):
     for dir in params["dataset"]:
         im_type='rgb'
         im_type_to='gray'
-        new_dir=dir+im_type_to+"/"
+        new_dir=dir[0]+im_type_to+"/"
         if not os.path.exists(new_dir):
             os.makedirs(new_dir)
-            full_path=dir+'/'+im_type+'/*.png'
+            full_path=dir[0]+'/'+im_type+'/*.png'
             lst=glob.glob(full_path)
             for f in lst:
                 img = Image.open(f).convert('L')
                 img.save(new_dir+os.path.basename(f))
-            print("data set converted %s"%(dir))
+            print("data set converted %s"%(dir[0]))
         else:
-            print("data set has already converted %s"%(dir))
+            print("data set has already converted %s"%(dir[0]))
 
 
 def start_log(datasets,params):
@@ -106,7 +106,7 @@ def start_log(datasets,params):
     log_write("Image type: %s"%(params["im_type"]),params)
     log_write("List of dataset used:",params)
     for dir in params["dataset"]:
-        log_write(dir,params)
+        log_write(dir[0],params)
 
     log_write("Starting Time:%s"%(ds),params)
     log_write("size of training data:%f"%(len(X_train)),params)
