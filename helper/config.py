@@ -5,13 +5,13 @@ import set_ds_list as sdl
 
 def get_params():
     params={}
-    params['check_mode']=1 #process checkY_testing
+    params['check_mode']=0 #process checkY_testing
     params["rn_id"]="more_data" #running id
     params["notes"]="Dropout use, data size increased" #running id
 
     params['shufle_data']=0
     params['gray_mean']=114.33767967 #114.151092572
-    params['depth_mean']=13797.3639853 #13746.3784954
+    params['depth_mean']=11259.5139883 #11267.5944432
     params['pre_depth_mean']=15226.8661501 #15193.6595791
     params['rgb_mean']=[138.28382874, 128.78469849 ,124.75618744] #[138.18440247,128.58282471 ,124.65019226]
     params['batch_size']=60
