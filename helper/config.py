@@ -14,7 +14,7 @@ def get_params():
     params['depth_mean']=13797.3639853 #13746.3784954
     params['pre_depth_mean']=9505.32929609 #9515.98643977
     params['rgb_mean']=[138.28382874, 128.78469849 ,124.75618744] #[138.18440247,128.58282471 ,124.65019226]
-    params['batch_size']=360
+    params['batch_size']=60
 
     #system settings
     wd=os.path.dirname(os.path.realpath(__file__))
@@ -53,7 +53,7 @@ def get_params():
         params["WITH_GPU"]=False
         params["caffe"]="/home/coskun/sftpkg/caffe/python"
 
-    params['im_type']="gray"
+    params['im_type']="pre_depth"
     params['step_size']=[1,5,7,10,12,14,15,17,19,21,23,25]
     #params['step_size']=[10]
     params['size']=[160, 120] #[width,height]
