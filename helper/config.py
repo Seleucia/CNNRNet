@@ -6,14 +6,14 @@ import set_ds_list as sdl
 def get_params():
     params={}
     params['check_mode']=0 #process checkY_testing
-    params["rn_id"]="more_data" #running id
+    params["rn_id"]="more_data2" #running id
     params["notes"]="Dropout use, data size increased" #running id
 
-    params['shufle_data']=0
+    params['shufle_data']=1
     params['gray_mean']=114.33767967 #114.151092572
     params['depth_mean']=11259.5139883 #11267.5944432
     params['pre_depth_mean']=15226.8661501 #15193.6595791
-    params['rgb_mean']=[138.28382874, 128.78469849 ,124.75618744] #[138.18440247,128.58282471 ,124.65019226]
+    params['rgb_mean']=[119.27810669 ,113.50662231 ,109.87239075] #[138.18440247,128.58282471 ,124.65019226]
     params['batch_size']=60
 
     #system settings
@@ -71,8 +71,8 @@ def get_params():
 
 
     #Feature extraction:
-    params['orijinal_img']="depth" #rgb,depth
-    params['layer']="fc7" #rgb,depth
+    params['orijinal_img']="rgb" #rgb,depth
+    params['layer']="fc6" #rgb,depth
     # os
 
     if(params['check_mode']==1):

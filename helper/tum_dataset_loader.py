@@ -8,35 +8,6 @@ import glob
 from PIL import Image
 import dt_utils
 
-def load_batch_imagesV2(size,nc,dir, x,im_type):
-    #This code must be modified for theano version of model
-    fl_size=size[0]*size[1]
-    m_size = (len(x), fl_size)
-    data_x = numpy.empty(m_size, theano.config.floatX)
-    i = 2
-    normalizer=5000
-    img_arr=[]
-    if(im_type=="gray"):
-        normalizer=255
-    batch_l=[]
-    for (dImg1, dImg2) in x:
-        dImg=""
-        if dir=="F":
-            dImg=dImg1
-        else:
-            dImg=dImg2
-        img = Image.open(dImg)
-        img=img.resize(size)
-        arr1= numpy.array(img,theano.config.floatX)/normalizer
-        l=[]
-        l.append([])
-        l[0]=arr1
-        n_l=numpy.array(l)
-        batch_l.append([])
-        batch_l[i]=n_l
-        i+=1
-    return numpy.array(batch_l)
-
 def read_file_list(filename):
     file = open(filename)
     data = file.read()
@@ -284,43 +255,6 @@ def load_pairs(dataset,im_type,step_size=[]):
     prng.shuffle(X_Pairs)
 
     return X_Pairs
-
-def load_tum_data_valid(dataset,step_size,multi):
-    dir_f=dataset+'/depth/'
-    full_path=dataset+'/depth/*.png'
-    lst=glob.glob(full_path)
-    n_lst = [l.replace(dir_f, '') for l in lst]
-    lst = [l.replace('.png', '') for l in n_lst]
-    first_list=[float(i) for i in lst]
-    filename=dataset+'groundtruth.txt'
-    second_list=read_file_list(filename)
-
-    #Find closes trajectry for depth image
-    matches=associate(first_list, second_list.keys())
-    data_y=numpy.matrix([[float(value) for value in second_list[b][0:3]] for a,b in matches])
-    dir_list=[["%s%f%s" %(dir_f,a,".png")] for a,b in matches]
-    data_x=[]
-    delta_y=[]
-
-    overlaps = [[] for i in range(len(dir_list)-1)]
-    for i in range(len(dir_list)):
-        fImage1=dir_list[i][0]
-        new_i=(i+step_size)
-        if(new_i<len(dir_list)):
-            fImage2=dir_list[new_i][0]
-            data_x.append([fImage1,fImage2])
-            delta_y.append(data_y[i,:]-data_y[new_i,:])
-            for k in range(i,new_i):
-                overlaps[k].append(i)
-
-
-    delta_y=numpy.asarray(delta_y)
-    data_x=numpy.asarray(data_x)
-    delta_y=delta_y*multi
-    delta_y=delta_y.reshape(len(delta_y),3)
-
-    rval=[data_x,delta_y,data_y,overlaps]
-    return rval
 
 def compute_mean(params):
    id=0

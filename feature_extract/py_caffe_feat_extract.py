@@ -248,6 +248,8 @@ if __name__ == '__main__':
         raise RuntimeError("%s , Path to pretrained model file does not exist"%(path_model))
 
     for dir in params["dataset"]:
+        if (dir == -1):
+            continue
         im_type=params['orijinal_img']
         im_type_to=params['orijinal_img']+"_"+params['layer']
         new_dir=dir[0]+im_type_to+"/"

@@ -71,7 +71,6 @@ def write_features(ndarr, fl_ls,parent_dir):
         full_path=parent_dir+f_name.replace(".png","")
         numpy.save(full_path,f)
 
-
 def shuffle_in_unison_inplace(a, b):
     assert len(a) == len(b)
     p = numpy.random.permutation(len(a))
