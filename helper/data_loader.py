@@ -39,8 +39,10 @@ def load_data(params):
             Overlaps_val=np.concatenate((Overlaps_val,overlaps_val),axis=0)
             Overlaps_test=np.concatenate((Overlaps_test,overlaps_test),axis=0)
 
-    X_train,Y_train=dt_utils.shuffle_in_unison_inplace(X_train,Y_train)
-    X_val,Y_val=dt_utils.shuffle_in_unison_inplace(X_val,Y_val)
+    if(params['shufle_data']==1):
+        X_train,Y_train=dt_utils.shuffle_in_unison_inplace(X_train,Y_train)
+        X_val,Y_val=dt_utils.shuffle_in_unison_inplace(X_val,Y_val)
+
     rval = [(X_train, Y_train,Overlaps_train), (X_val, Y_val,Overlaps_val),
             (X_test, Y_test,Overlaps_test)]
     return rval
@@ -51,8 +53,15 @@ def load_data_with_id(params,id):
     X_train, Y_train, Overlaps_train = datasets[0]
     X_val, Y_val, Overlaps_val = datasets[1]
     X_test, Y_test, Overlaps_test = datasets[2]
-    X_train,Y_train=dt_utils.shuffle_in_unison_inplace(X_train,Y_train)
-    X_val,Y_val=dt_utils.shuffle_in_unison_inplace(X_val,Y_val)
+    if(params['shufle_data']==1):
+        X_train,Y_train=dt_utils.shuffle_in_unison_inplace(X_train,Y_train)
+        X_val,Y_val=dt_utils.shuffle_in_unison_inplace(X_val,Y_val)
+
     rval = [(X_train, Y_train,Overlaps_train), (X_val, Y_val,Overlaps_val),
             (X_test, Y_test,Overlaps_test)]
     return rval
+
+import config
+params=config.get_params()
+id=3
+load_data_with_id(params,id)

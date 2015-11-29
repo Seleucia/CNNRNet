@@ -45,6 +45,14 @@ def read_file_list(filename):
     list = [(float(l[0]),l[1:]) for l in list if len(l)>1]
     return dict(list)
 
+def read_associations(filename):
+    file = open(filename)
+    data = file.read()
+    lines = data.split("\n")
+    list = [[v.strip() for v in line.split(" ") if v.strip()!=""] for line in lines if len(line)>0 and line[0]!="#"]
+    list = [[l[0],l[1],l[2]] for l in list if len(l)>1]
+    return list
+
 def associate(first_list, second_list):
     offset=0
     max_difference=0.2
@@ -67,17 +75,24 @@ def associate(first_list, second_list):
     return matches
 
 def load_data(dataset,im_type):
-    dir_f=dataset+im_type+'/'
-    full_path=dataset+im_type+'/*.png'
+    dir_f=dataset[0]+im_type+'/'
+    full_path=dataset[0]+im_type+'/*.png'
     lst=glob.glob(full_path)
     n_lst = [l.replace(dir_f, '') for l in lst]
     lst = [l.replace('.png', '') for l in n_lst]
     first_list=[float(i) for i in lst]
-    filename=dataset+'groundtruth.txt';
+    filename=dataset[0]+'groundtruth.txt';
     second_list=read_file_list(filename)
 
     #Find closes trajectry for depth image
-    matches=associate(first_list, second_list.keys())
+    #filename=dataset[0]+'associations.txt';
+    #associations=read_associations(filename)
+    if(dataset[1]=="ICL"):
+        matches= [numpy.array([idx+1,float(idx+1)]) for idx in range(len(second_list)-1)]
+    else:
+        matches=associate(first_list, second_list.keys())
+
+
     data_y=numpy.matrix([[float(value) for value in second_list[b][0:3]] for a,b in matches])
     data_x=[["%s%f%s" %(dir_f,a,".png")] for a,b in matches]
     rval=[(data_x),(data_y)]
@@ -234,10 +249,14 @@ def load_tum_data(params,id):
     overlaps_train=[]
     overlaps_val=[]
 
-    (X_train,y_train)= dt_utils.shuffle_in_unison_inplace(X_train,y_delta_train)
-    (X_val,y_val)= dt_utils.shuffle_in_unison_inplace(X_val,y_delta_val)
+    if(params['shufle_data']==1):
+        (X_train,y_train)= dt_utils.shuffle_in_unison_inplace(X_train,y_delta_train)
+        (X_val,y_val)= dt_utils.shuffle_in_unison_inplace(X_val,y_delta_val)
+    else:
+        y_train= y_delta_train
+        y_val= y_delta_val
 
-    rval = [(X_train, y_train,overlaps_train), (X_val, y_delta_val,overlaps_val),
+    rval = [(X_train, y_train,overlaps_train), (X_val, y_val,overlaps_val),
             (X_test, y_delta_test,overlaps_test)]
     #    model_saver.save_partitions(params["rn_id"],rval)
     return rval
