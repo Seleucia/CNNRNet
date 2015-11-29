@@ -78,7 +78,7 @@ def get_params():
         params['dataset'].append([])
         params['dataset'][6]=["/home/cmp/projects/data/rgbd_dataset_freiburg2_dishes/","TUM"]
 
-    params['im_type']="depth"
+    params['im_type']="gray"
     params['step_size']=[1,2,5,7,10,12,13,14,15,16,18,20,21,23,24,25]
     #params['step_size']=[10]
     params['size']=[160, 120] #[width,height]
