@@ -92,7 +92,7 @@ def set_list(params):
         params['dataset'][22]=["traj1_frei_png","ICL"]
         params['dataset'][23]=["traj2_frei_png","ICL"]
         params['dataset'][24]=["traj3_frei_png","ICL"]
-        
+
     wd=params["wd"]
     dt=os.path.dirname(wd)+"/data/"
     idx=0
