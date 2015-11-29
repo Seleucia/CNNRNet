@@ -108,7 +108,10 @@ def start_log(datasets,params):
     log_write("Dataset splits: %s"%(params["step_size"]),params)
     log_write("Image type: %s"%(params["im_type"]),params)
     log_write("List of dataset used:",params)
+
     for dir in params["dataset"]:
+        if dir==-1:
+            continue
         log_write(dir[0],params)
 
     log_write("Starting Time:%s"%(ds),params)
