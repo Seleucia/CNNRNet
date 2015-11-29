@@ -25,6 +25,39 @@ def plot_raw_y(data_y,fig_name,params):
     plt.show()
 
 
+def plot_orijinal_y(y_train_delta_gt,y_test_delta_gt,y_val_delta_gt):
+    import matplotlib.pyplot as plt
+    fig, ax = plt.subplots(subplot_kw={'projection': '3d'})
+    plt.gca().set_color_cycle(['red','green','blue'])
+    legends=[]
+    legends.append("Train data")
+    legends.append("Test data")
+    legends.append("Validation data")
+
+    ax.set_xlabel('X Label')
+    ax.set_ylabel('Y Label')
+    ax.set_zlabel('Z Label')
+    i=0
+    x =y_train_delta_gt[:,0]
+    y =y_train_delta_gt[:,1]
+    z =y_train_delta_gt[:,2]
+    ax.plot(x, y, z,'red')
+
+    x =y_test_delta_gt[:,0]
+    y =y_test_delta_gt[:,1]
+    z =y_test_delta_gt[:,2]
+    ax.plot(x, y, z,'green')
+
+    x =y_val_delta_gt[:,0]
+    y =y_val_delta_gt[:,1]
+    z =y_val_delta_gt[:,2]
+    ax.plot(x, y, z,'blue')
+
+    ax.legend(legends,loc='upper left')
+    plt.show()
+
+
+
 def plot_y(data_y,fig_name):
     import matplotlib.pyplot as plt
     fig, ax = plt.subplots(subplot_kw={'projection': '3d'})

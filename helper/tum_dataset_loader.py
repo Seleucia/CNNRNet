@@ -89,12 +89,13 @@ def load_data(dataset,im_type):
     #associations=read_associations(filename)
     if(dataset[1]=="ICL"):
         matches= [numpy.array([idx+1,float(idx+1)]) for idx in range(len(second_list)-1)]
+        data_x=[["%s%s%s" %(dir_f,int(a),".png")] for a,b in matches]
     else:
         matches=associate(first_list, second_list.keys())
+        data_x=[["%s%f%s" %(dir_f,a,".png")] for a,b in matches]
 
 
     data_y=numpy.matrix([[float(value) for value in second_list[b][0:3]] for a,b in matches])
-    data_x=[["%s%f%s" %(dir_f,a,".png")] for a,b in matches]
     rval=[(data_x),(data_y)]
     return rval
 
@@ -326,7 +327,12 @@ def compute_mean(params):
    ds_mean1=0.
    ds_mean2=0.
    im_type="depth"
+   ds_counter=0
    for dir in params["dataset"]:
+       if params["dataset"][id] ==-1:
+            id+=1
+            continue
+       ds_counter+=1
        dsRawData=load_data(dir,im_type)
        dir_list=dsRawData[0]
        data_y=dsRawData[1]
@@ -349,8 +355,8 @@ def compute_mean(params):
        ds_mean1+=(sm1/len(raw_X_train))
        ds_mean2+=(sm2/len(raw_X_train))
        #break
-   mn1=ds_mean1/len(params["dataset"])
-   mn2=ds_mean2/len(params["dataset"])
+   mn1=ds_mean1/ds_counter
+   mn2=ds_mean2/ds_counter
    if(im_type!="rgb"):
         mn1=mn1/(640*480)
         mn2=mn2/(params["size"][0]*params["size"][1])

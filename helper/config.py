@@ -1,10 +1,11 @@
 import os
 import utils
 import platform
+import set_ds_list as sdl
 
 def get_params():
     params={}
-    params['check_mode']=0 #process checkY_testing
+    params['check_mode']=1 #process checkY_testing
     params["rn_id"]="val_drop_wight" #running id
     params["notes"]="Batch normalaziton removed, dropout and l2 regularize added, weight init setting norm" #running id
 
@@ -14,6 +15,14 @@ def get_params():
     params['pre_depth_mean']=9505.32929609 #9515.98643977
     params['rgb_mean']=[138.28382874, 128.78469849 ,124.75618744] #[138.18440247,128.58282471 ,124.65019226]
     params['batch_size']=60
+
+    #system settings
+    wd=os.path.dirname(os.path.realpath(__file__))
+    wd=os.path.dirname(wd)
+    params['wd']=wd
+    params['models']=wd+"/models/"
+    params['log_file']=wd+"/logs/log_"+params["rn_id"]+"_"+utils.get_time()+".txt"
+    params['model_name']=wd+"models/1_2.h5"
 
 
     # early-stopping parameters
@@ -29,54 +38,20 @@ def get_params():
     params['n_epochs']=3000
 
     # dataset parameters
-    params['dataset']=[]
+    params=sdl.set_list(params)
 
     if(platform.node()=="hc"):
         params["caffe"]="/home/coskun/sftpkg/caffe/python"
         params['batch_size']=10
         params["WITH_GPU"]=False
-        params['dataset'].append([])
-        params['dataset'][0]=["/home/coskun/PycharmProjects/data/rgbd_dataset_freiburg3_large_cabinet/","TUM"]
-        params['dataset'].append([])
-        params['dataset'][1]=["/home/coskun/PycharmProjects/data/rgbd_dataset_freiburg3_teddy/","TUM"]
-        params['dataset'].append([])
-        params['dataset'][2]=["/home/coskun/PycharmProjects/data/rgbd_dataset_freiburg3_cabinet/","TUM"]
-        params['dataset'].append([])
-        params['dataset'][3]=["/home/coskun/PycharmProjects/data/living_room_traj0_frei_png/","ICL"]
+
     if(platform.node()=="milletari-workstation"):
         params["caffe"]="/usr/local/caffe/python"
         params["WITH_GPU"]=True
-        params['dataset'].append([])
-        params['dataset'][0]=["/home/coskun/PycharmProjects/data/rgbd_dataset_freiburg3_large_cabinet/","TUM"]
-        params['dataset'].append([])
-        params['dataset'][1]=["/home/coskun/PycharmProjects/data/rgbd_dataset_freiburg3_teddy/","TUM"]
-        params['dataset'].append([])
-        params['dataset'][2]=["/home/coskun/PycharmProjects/data/rgbd_dataset_freiburg3_cabinet/","TUM"]
-        params['dataset'].append([])
-        params['dataset'][3]=["/home/coskun/PycharmProjects/data/rgbd_dataset_freiburg2_coke/","TUM"]
-        params['dataset'].append([])
-        params['dataset'][4]=["/home/coskun/PycharmProjects/data/rgbd_dataset_freiburg2_flowerbouquet/","TUM"]
-        params['dataset'].append([])
-        params['dataset'][5]=["/home/coskun/PycharmProjects/data/rgbd_dataset_freiburg2_flowerbouquet_brownbackground/","TUM"]
-        params['dataset'].append([])
-        params['dataset'][6]=["/home/coskun/PycharmProjects/data/rgbd_dataset_freiburg2_dishes/","TUM"]
+
     if(platform.node()=="cmp-comp"):
         params["WITH_GPU"]=False
         params["caffe"]="/home/coskun/sftpkg/caffe/python"
-        params['dataset'].append([])
-        params['dataset'][0]=["/home/cmp/projects/data/rgbd_dataset_freiburg3_large_cabinet/","TUM"]
-        params['dataset'].append([])
-        params['dataset'][1]=["/home/cmp/projects/data/rgbd_dataset_freiburg3_teddy/","TUM"]
-        params['dataset'].append([])
-        params['dataset'][2]=["/home/cmp/projects/data/rgbd_dataset_freiburg3_cabinet/","TUM"]
-        params['dataset'].append([])
-        params['dataset'][3]=["/home/cmp/projects/data/rgbd_dataset_freiburg2_coke/","TUM"]
-        params['dataset'].append([])
-        params['dataset'][4]=["/home/cmp/projects/data/rgbd_dataset_freiburg2_flowerbouquet/","TUM"]
-        params['dataset'].append([])
-        params['dataset'][5]=["/home/cmp/projects/data/rgbd_dataset_freiburg2_flowerbouquet_brownbackground/","TUM"]
-        params['dataset'].append([])
-        params['dataset'][6]=["/home/cmp/projects/data/rgbd_dataset_freiburg2_dishes/","TUM"]
 
     params['im_type']="gray"
     params['step_size']=[1,2,5,7,10,12,13,14,15,16,18,20,21,23,24,25]
@@ -99,15 +74,8 @@ def get_params():
     params['layer']="fc7" #rgb,depth
     # os
 
-    wd=os.path.dirname(os.path.realpath(__file__))
-    wd=os.path.dirname(wd)
-    params['wd']=wd
-    params['models']=wd+"/models/"
-    params['log_file']=wd+"/logs/log_"+params["rn_id"]+"_"+utils.get_time()+".txt"
-    params['model_name']=wd+"models/1_2.h5"
-
     if(params['check_mode']==1):
-        params['step_size']=[10,15]
+        params['step_size']=[10]
 
     return params
 

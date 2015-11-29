@@ -14,6 +14,9 @@ def load_data(params):
     Overlaps_val=[]
     Overlaps_test=[]
     for id in range(len(params["dataset"])):
+        if params["dataset"][id] ==-1:
+            continue
+
         datasets = tumdata.load_tum_data(params,id)
         x_train, y_train,overlaps_train = datasets[0]
         x_val, y_val,overlaps_val = datasets[1]
@@ -60,8 +63,3 @@ def load_data_with_id(params,id):
     rval = [(X_train, Y_train,Overlaps_train), (X_val, Y_val,Overlaps_val),
             (X_test, Y_test,Overlaps_test)]
     return rval
-
-import config
-params=config.get_params()
-id=3
-load_data_with_id(params,id)

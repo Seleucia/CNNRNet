@@ -68,6 +68,8 @@ def up_sample(overlaps,data_y,step_size):
 
 def convert_to_grayscale(params):
     for dir in params["dataset"]:
+        if dir ==-1:
+            continue
         im_type='rgb'
         im_type_to='gray'
         new_dir=dir[0]+im_type_to+"/"
@@ -81,6 +83,7 @@ def convert_to_grayscale(params):
             print("data set converted %s"%(dir[0]))
         else:
             print("data set has already converted %s"%(dir[0]))
+    print "Gray scale conversation completed"
 
 
 def start_log(datasets,params):
