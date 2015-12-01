@@ -6,6 +6,7 @@ from helper import config, model_saver, utils
 from plot import plot_data
 
 params= config.get_params()
+is_test=1
 cm_mul=10
 id=15 #data will be loaded according to this id
 params['step_size']=[10]
@@ -13,7 +14,7 @@ step=params['step_size'][0]
 
 
 params['model_name']="Nodrop_5_gray.hdf5"
-params['model']="kcnnr"
+params['model']="bncnnr"
 prediction_name= params['model_name'].replace("/", " ").split()[-1] .replace(".h5","")
 ext_raw_data=prediction_name+"raw_data"+"_"+str(step)+".pkl"
 ext_err=prediction_name+"err"+"_"+str(step)+".pkl"
@@ -33,7 +34,7 @@ data_y_gt=data_y_gt*cm_mul*cm_mul
 
 dsSplits=tdl.split_data(dir_list,id, data_y_gt,params["test_size"],params["val_size"])
 tmp_X_train,y_train_delta_gt=dsSplits[0]
-tmp_X_test,y_test_delta_gt=dsSplits[1]
+tmp_X_test,y_test_delta_gt=dsSplits[is_test]
 
 
 #location differences with orijinal, step_size=1 setted this means only looking consequtive locations
