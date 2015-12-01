@@ -75,9 +75,6 @@ def get_params():
    params['layer']="fc6" #rgb,depth
    # os
 
-
-
-
    return params
 
 def update_params(params):
