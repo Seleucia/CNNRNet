@@ -6,7 +6,7 @@ from models import model_provider
 
 def predict(test_set_x,params):
 
-    model= model_provider.get_model_pretrained(params)(params)
+    model= model_provider.get_model_pretrained(params)
 
     # learning parameters
     batch_size =params["batch_size"]
