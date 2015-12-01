@@ -12,8 +12,8 @@ sys.setrecursionlimit(50000)
 
 #########Model without droupout######################
 def build_model(params):
-   l2=regularizers.l2(0.000)
-   l2_out=regularizers.l2(0.00000)
+   l2=regularizers.l2(0.001)
+   l2_out=regularizers.l2(0.0001)
 
    #########Left Stream######################
    lmodel = Sequential()
