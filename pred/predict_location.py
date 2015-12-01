@@ -1,19 +1,12 @@
-import kcnnr
-import dcnnr
-import helper.dt_utils as du
 import numpy as np
 
-def predict(model_type,test_set_x,params):
-    if(model_type=="kccnr"):
-        model=kcnnr.build_model(params)
+import helper.dt_utils as du
+from models import model_provider
 
-    if(model_type=="kccnr"):
-        model=dcnnr.build_model(params)
 
-    model.build()
-    wd=params["wd"]
-    model_name=wd+"/"+"models"+"/"+params['model_name']
-    model.load_weights(model_name)
+def predict(test_set_x,params):
+
+    model= model_provider.get_model_pretrained(params)(params)
 
     # learning parameters
     batch_size =params["batch_size"]

@@ -5,9 +5,10 @@ import set_ds_list as sdl
 
 def get_params():
    params={}
-   params['check_mode']=2 #process checkY_testing
+   params['check_mode']=1 #process checkY_testing
    params["rn_id"]="more_noreg_data2" #running id
    params["notes"]="Dropout use, data size increased" #running id
+   params["model"]="kcnnr"#kccnr,dccnr
 
    params['shufle_data']=1
    params['gray_mean']=114.33767967 #114.151092572
@@ -15,17 +16,16 @@ def get_params():
    params['pre_depth_mean']=9505.32929609 #9515.98643977
    params['rgb_mean']=[138.28382874, 128.78469849 ,124.75618744] #[138.18440247,128.58282471 ,124.65019226]
    params['batch_size']=240
-   params['im_type']="pre_depth"
+   params['im_type']="gray"
    params['step_size']=[1,5,7,10,12,14,15,17,19,21,23,25]
-   params['step_size']=[1,10,25]
 
    #system settings
    wd=os.path.dirname(os.path.realpath(__file__))
    wd=os.path.dirname(wd)
    params['wd']=wd
-   params['models']=wd+"/models/"
-   params['log_file']=wd+"/logs/log_"+params["rn_id"]+"_"+utils.get_time()+".txt"
+   params['log_file']=wd+"/logs/"+params["model"]+"_"+params["rn_id"]+"_"+utils.get_time()+".txt"
    params['model_name']=wd+"models/1_2.h5"
+   params["model_file"]=wd+"/cp/"
 
 
    # early-stopping parameters
@@ -63,7 +63,7 @@ def get_params():
    params['multi']=10 #ground truth location differences will be multiplied with this number
    params['test_size']=0.20 #Test size
    params['val_size']=0.20 #Test size
-   params['test_freq']=10 #Test frequency
+   params['test_freq']=100 #Test frequency
 
    # c an Pooling parameters
    params['kern_mat']=[(5, 5), (5, 5)] #shape of kernel

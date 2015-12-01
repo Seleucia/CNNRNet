@@ -1,9 +1,11 @@
+import dataset_loader
+import matplotlib
 import numpy
 import theano
 import theano.tensor as T
-import dataset_loader
-from cnnr import CNNRNet
-import matplotlib
+
+from models.cnnr import CNNRNet
+
 matplotlib.use('Agg')
 
 theano.config.exception_verbosity='high'
