@@ -76,7 +76,7 @@ def train_model(params):
        model.save_weights(ext, overwrite=True)
        if this_validation_loss < best_validation_loss:
            best_validation_loss = this_validation_loss
-           ext=params["model_file"]+params["model"]+"_"+str(rn_id)+"_best_"+epoch_counter+"_"+im_type+".hdf5"
+           ext=params["model_file"]+params["model"]+"_"+str(rn_id)+"_best_"+str(epoch_counter)+"_"+im_type+".hdf5"
            model.save_weights(ext, overwrite=True)
 
 
