@@ -7,7 +7,7 @@ def get_params():
    params={}
    params['check_mode']=1 #process checkY_testing
    params["rn_id"]="fullmodecheck" #running id
-   params["notes"]="full mode check with higher regulizers" #running id
+   params["notes"]="full mode check with on predepth" #running id
    params["model"]="kcnnr"#kccnr,dccnr
 
    params['shufle_data']=1
@@ -16,7 +16,7 @@ def get_params():
    params['pre_depth_mean']=9505.32929609 #9515.98643977
    params['rgb_mean']=[138.28382874, 128.78469849 ,124.75618744] #[138.18440247,128.58282471 ,124.65019226]
    params['batch_size']=240
-   params['im_type']="gray"
+   params['im_type']="pre_depth"
    params['step_size']=[1,5,7,10,12,14,15,17,19,21,23,25]
 
    #system settings
