@@ -1,7 +1,7 @@
 import sys
 
 import numpy as np
-
+import argparse
 import helper.data_loader as data_loader
 import helper.dt_utils as dt_utils
 from helper import config, utils
@@ -88,5 +88,15 @@ def train_model(params):
 
 if __name__ == "__main__":
    params= config.get_params()
-   #params["model"]="kccnr"#kccnr,dccnr
+   parser = argparse.ArgumentParser(description='Training the module')
+   parser.add_argument('-c','--check_mode',type=int, help='Training mode:0 full train, 1 system check, 2 simle train',
+                       required=True)
+   parser.add_argument('-m','--model',help='Model: kcnnr, dccnr, current('+params["model"]+')',default=params["model"])
+   parser.add_argument('-i','--im_type',help='Image type: pre_depth, depth, gray, current('+params["im_type"]+')',
+                       default=params["im_type"])
+
+   args = vars(parser.parse_args())
+   params["check_mode"]=args["check_mode"]
+   params["model"]=args["model"]
+   params["im_type"]=args["im_type"]
    train_model(params)
