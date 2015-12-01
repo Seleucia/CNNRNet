@@ -3,8 +3,7 @@ import sys
 import numpy as np
 import argparse
 import helper.data_loader as data_loader
-import helper.dt_utils as dt_utils
-from helper import config, utils
+from helper import config, utils, dt_utils
 from models import model_provider
 
 sys.setrecursionlimit(50000)
@@ -79,7 +78,8 @@ def train_model(params):
            ext=params["model_file"]+params["model"]+"_"+str(rn_id)+"_best_"+str(epoch_counter)+"_"+im_type+".hdf5"
            model.save_weights(ext, overwrite=True)
 
-
+       #We are shuffling data at each epoch
+       X_train,y_train=dt_utils.shuffle_in_unison_inplace(X_train,y_train)
        if(check_mode==1):
                break
    ext=params["model_file"]+params["model"]+"_regular_"+str(epoch_counter % 5)+"_"+im_type+".hdf5"
