@@ -12,6 +12,6 @@ def get_model(params):
 def get_model_pretrained(params):
     model=get_model(params)
     model.build()
-    wd=params["wd"]
-    model_name=wd+"/"+"models"+"/"+params['model_name']
+    model_name=params['model_file']+params['model_name']
     model.load_weights(model_name)
+    return model

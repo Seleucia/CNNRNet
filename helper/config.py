@@ -24,7 +24,6 @@ def get_params():
    wd=os.path.dirname(wd)
    params['wd']=wd
    params['log_file']=wd+"/logs/"+params["model"]+"_"+params["rn_id"]+"_"+utils.get_time()+".txt"
-   params['model_name']=wd+"models/1_2.h5"
    params["model_file"]=wd+"/cp/"
 
 
@@ -76,10 +75,20 @@ def get_params():
    params['layer']="fc6" #rgb,depth
    # os
 
+
+
+
+   return params
+
+def update_params(params):
    if(params['check_mode']==1):
        params['step_size']=[10]
    if(params['check_mode']==2):
        params['step_size']=[1,10,25]
 
+   if params['check_mode']==2:
+      idx=range(0,len(params["dataset"]),3)
+      for i in idx:
+         params["dataset"][i]=-1
 
    return params

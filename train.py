@@ -99,4 +99,5 @@ if __name__ == "__main__":
    params["check_mode"]=args["check_mode"]
    params["model"]=args["model"]
    params["im_type"]=args["im_type"]
+   params=config.update_params(params)
    train_model(params)

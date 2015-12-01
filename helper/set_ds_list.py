@@ -101,9 +101,6 @@ def set_list(params):
            idx+=1
            continue
        params["dataset"][idx][0]=dt+params["dataset"][idx][0]+"/"
-
-       if idx%3!=0 and params['check_mode']==2:
-           params["dataset"][idx]=-1
        idx+=1
 
 

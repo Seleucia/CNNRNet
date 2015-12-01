@@ -6,13 +6,14 @@ from helper import config, model_saver, utils
 from plot import plot_data
 
 params= config.get_params()
+cm_mul=10
 id=15 #data will be loaded according to this id
 params['step_size']=[10]
 step=params['step_size'][0]
 
 
 params['model_name']="Nodrop_5_gray.hdf5"
-params['model']="kccnr"
+params['model']="kcnnr"
 prediction_name= params['model_name'].replace("/", " ").split()[-1] .replace(".h5","")
 ext_raw_data=prediction_name+"raw_data"+"_"+str(step)+".pkl"
 ext_err=prediction_name+"err"+"_"+str(step)+".pkl"
@@ -28,6 +29,7 @@ fig_namexyz= params["wd"]+"/pred/img/"+prediction_name + "_" + str(step) + "xyz.
 dsRawData=tdl.load_data(params["dataset"][id],params["im_type"])
 dir_list=dsRawData[0]
 data_y_gt=dsRawData[1]
+data_y_gt=data_y_gt*cm_mul*cm_mul
 
 dsSplits=tdl.split_data(dir_list,id, data_y_gt,params["test_size"],params["val_size"])
 tmp_X_train,y_train_delta_gt=dsSplits[0]
@@ -45,7 +47,7 @@ X_test_aug, y_delta_test_step, overlaps_test_step=tdl.prepare_data(step, tmp_X_t
 #location prediction over augmented data
 y_delta_pred= pred.predict_location.predict(X_test_aug, params)
 y_delta_pred=np.asarray(y_delta_pred)
-y_delta_pred=y_delta_pred/params["multi"]
+y_delta_pred=y_delta_pred*cm_mul
 
 
 #Print and plot error with different axes
