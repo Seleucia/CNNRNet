@@ -6,8 +6,8 @@ import set_ds_list as sdl
 def get_params():
    params={}
    params['check_mode']=1 #process checkY_testing
-   params["rn_id"]="more_noreg_data2" #running id
-   params["notes"]="Dropout use, data size increased" #running id
+   params["rn_id"]="fullmodecheck" #running id
+   params["notes"]="full mode check with higher regulizers" #running id
    params["model"]="kcnnr"#kccnr,dccnr
 
    params['shufle_data']=1
