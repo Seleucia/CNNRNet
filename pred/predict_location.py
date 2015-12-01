@@ -1,11 +1,15 @@
 import kcnnr
+import dcnnr
 import helper.dt_utils as du
-import helper.data_loader as tum_dataset_loader
 import numpy as np
-import cPickle as pickle
 
-def predict(test_set_x,params):
-    model=kcnnr.build_model(params)
+def predict(model_type,test_set_x,params):
+    if(model_type=="kccnr"):
+        model=kcnnr.build_model(params)
+
+    if(model_type=="kccnr"):
+        model=dcnnr.build_model(params)
+
     model.build()
     wd=params["wd"]
     model_name=wd+"/"+"models"+"/"+params['model_name']

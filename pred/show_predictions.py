@@ -8,12 +8,14 @@ from helper import config, model_saver, utils
 from plot import plot_data
 
 params= config.get_params()
-id=0 #data will be loaded according to this id
+id=15 #data will be loaded according to this id
 params['step_size']=[10]
 params['test_size']=0.2
 step=params['step_size'][0]
 
-params['model_name']="dropout_2_gray.h5"
+
+params['model_name']="Nodrop_5_gray.hdf5"
+model_type="kccnr"
 prediction_name= params['model_name'].replace("/", " ").split()[-1] .replace(".h5","")
 ext_raw_data=prediction_name+"raw_data"+"_"+str(step)+".pkl"
 ext_err=prediction_name+"err"+"_"+str(step)+".pkl"
@@ -44,9 +46,9 @@ X_test_aug, y_delta_test_step, overlaps_test_step=tdl.prepare_data(step, tmp_X_t
 
 
 #location prediction over augmented data
-y_delta_pred= predict_location.predict(X_test_aug, params)
-n_test_batches = len(X_test_aug)
-n_test_batches /= params['batch_size']
+y_delta_pred= predict_location.predict(model_type,X_test_aug, params)
+y_delta_pred=np.asarray(y_delta_pred)
+y_delta_pred=y_delta_pred/params["multi"]
 
 
 #Print and plot error with different axes
@@ -86,7 +88,7 @@ model_saver.save_pred(ext_yy_test_aug, yy_test_step,params)
 model_saver.save_pred(ext_y_test_gt, y_test_delta_gt,params)
 
 
-plot_data.plot_y([y_test_delta_gt, np.array(yy_test_step)], fig_name3d)
+plot_data.plot_y([yy_test_step, np.array(yy_pred)], fig_name3d)
 
 
 print("ok")
