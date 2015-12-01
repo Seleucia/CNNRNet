@@ -101,12 +101,13 @@ def start_log(datasets,params):
     y_test_abs_mean=np.mean(np.abs(y_test))
     ds= get_time()
 
-
+    log_write("Run Id: %s"%(params['rn_id']),params)
     log_write("Production notes: %s"%(params['notes']),params)
+    log_write("Running model: %s"%(params['model']),params)
+    log_write("Image type: %s"%(params["im_type"]),params)
     log_write("Batch size: %s"%(params['batch_size']),params)
     log_write("Images are cropped to: %s"%(params['size']),params)
     log_write("Dataset splits: %s"%(params["step_size"]),params)
-    log_write("Image type: %s"%(params["im_type"]),params)
     log_write("List of dataset used:",params)
 
     for dir in params["dataset"]:

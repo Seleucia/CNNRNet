@@ -72,11 +72,11 @@ def train_model(params):
 
        s ='VAL--> epoch %i | error %f | data mean/abs %f/%f'%(epoch_counter, this_validation_loss,y_val_mean,y_val_abs_mean)
        utils.log_write(s,params)
-       ext=params["model_file"]+params["model"]+"_"+str(epoch_counter)+"_"+im_type+".hdf5"
+       ext=params["model_file"]+params["model"]+"_"+str(epoch_counter % 10)+"_"+im_type+".hdf5"
        model.save_weights(ext, overwrite=True)
        if this_validation_loss < best_validation_loss:
            best_validation_loss = this_validation_loss
-           ext=params["model_file"]+params["model"]+"_"+str(rn_id)+"_regular_"+str(epoch_counter % 5)+"_"+im_type+".hdf5"
+           ext=params["model_file"]+params["model"]+"_"+str(rn_id)+"_best_"+epoch_counter+"_"+im_type+".hdf5"
            model.save_weights(ext, overwrite=True)
 
 
