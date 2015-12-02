@@ -46,11 +46,14 @@ def associate(first_list, second_list):
     return matches
 
 def load_data(dataset,im_type):
+    ext=".png"
+    if(im_type.find("fc")>0):
+        ext=".npy"
     dir_f=dataset[0]+im_type+'/'
-    full_path=dataset[0]+im_type+'/*.png'
+    full_path=dataset[0]+im_type+'/*'+ext
     lst=glob.glob(full_path)
     n_lst = [l.replace(dir_f, '') for l in lst]
-    lst = [l.replace('.png', '') for l in n_lst]
+    lst = [l.replace(ext, '') for l in n_lst]
     first_list=[float(i) for i in lst]
     filename=dataset[0]+'groundtruth.txt';
     second_list=read_file_list(filename)
@@ -60,10 +63,10 @@ def load_data(dataset,im_type):
     #associations=read_associations(filename)
     if(dataset[1]=="ICL"):
         matches= [numpy.array([idx+1,float(idx+1)]) for idx in range(len(second_list)-1)]
-        data_x=[["%s%s%s" %(dir_f,int(a),".png")] for a,b in matches]
+        data_x=[["%s%s%s" %(dir_f,int(a),ext)] for a,b in matches]
     else:
         matches=associate(first_list, second_list.keys())
-        data_x=[["%s%f%s" %(dir_f,a,".png")] for a,b in matches]
+        data_x=[["%s%f%s" %(dir_f,a,ext)] for a,b in matches]
 
 
     data_y=numpy.matrix([[float(value) for value in second_list[b][0:3]] for a,b in matches])
@@ -260,8 +263,12 @@ def compute_mean(params):
    id=0
    ds_mean1=0.
    ds_mean2=0.
-   im_type="depth"
+   im_type="hha_depth_fc6"
+   #im_type="rgb_fc6"
    ds_counter=0
+   mx=-numpy.inf
+   mn=numpy.inf
+
    for dir in params["dataset"]:
        if params["dataset"][id] ==-1:
             id+=1
@@ -275,15 +282,25 @@ def compute_mean(params):
        sm1=0.
        sm2=0.
        for dImg in raw_X_train:
-           img = Image.open(dImg[0])
-           if(im_type=="rgb"):
-               sm1+=numpy.mean(numpy.array(img,theano.config.floatX),axis=(1,0))
-               img=img.resize(params["size"])
-               sm2 += numpy.mean(numpy.array(img,theano.config.floatX),axis=(1,0))
+           if(im_type.find("fc")>0):
+               img=numpy.load(dImg[0])
+               sm1+=numpy.mean(img)
+               v=numpy.max(img)
+               if(v>mx):
+                   mx=v;
+               v=numpy.min(img)
+               if(v<mn):
+                   mn=v;
            else:
-               sm1 += numpy.sum(numpy.array(img,theano.config.floatX))
-               img=img.resize(params["size"])
-               sm2 += numpy.sum(numpy.array(img,theano.config.floatX))
+               img = Image.open(dImg[0])
+               if(im_type=="rgb"):
+                   sm1+=numpy.mean(numpy.array(img,theano.config.floatX),axis=(1,0))
+                   img=img.resize(params["size"])
+                   sm2 += numpy.mean(numpy.array(img,theano.config.floatX),axis=(1,0))
+               else:
+                   sm1 += numpy.sum(numpy.array(img,theano.config.floatX))
+                   img=img.resize(params["size"])
+                   sm2 += numpy.sum(numpy.array(img,theano.config.floatX))
            #break
        id+=1
        ds_mean1+=(sm1/len(raw_X_train))
@@ -295,7 +312,10 @@ def compute_mean(params):
         mn1=mn1/(640*480)
         mn2=mn2/(params["size"][0]*params["size"][1])
 
-   print "Mean of dataset for: %s, before resize: %s, after resize: %s"%(im_type,mn1,mn2)
+   if(im_type.find("fc")>0):
+       print "Inf of dataset for: %s, mean: %s, max %s, min %s"%(im_type,mn1,mx,mn)
+   else:
+       print "Mean of dataset for: %s, before resize: %s, after resize: %s"%(im_type,mn1,mn2)
 
 def load_splits(params):
     dsRawData=load_data(params["dataset"],params["im_type"])
