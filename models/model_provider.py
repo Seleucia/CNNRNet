@@ -2,6 +2,7 @@ import dcnnr
 import kcnnr
 import bncnnr
 import mlpr
+import bnmlpr
 
 
 def get_model(params):
@@ -13,6 +14,8 @@ def get_model(params):
         model= bncnnr.build_model(params)
     if(params["model"]=="mlpr"):
         model= mlpr.build_model(params)
+    if(params["model"]=="bnmlpr"):
+        model= bnmlpr.build_model(params)
     return model
 
 def get_model_pretrained(params):

@@ -6,9 +6,9 @@ import set_ds_list as sdl
 def get_params():
    params={}
    params['check_mode']=1 #process checkY_testing
-   params["rn_id"]="highreg" #running id
+   params["rn_id"]="regben" #running id
    params["notes"]="model l2 regularizers are increased" #running id
-   params["model"]="mlpr"#kccnr,dccnr
+   params["model"]="bnmlpr"#kccnr,dccnr
 
    params['shufle_data']=0
    params['gray_mean']=114.33767967 #114.151092572

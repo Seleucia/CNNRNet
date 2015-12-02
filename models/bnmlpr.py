@@ -7,8 +7,8 @@ from keras.optimizers import Adagrad
 from keras import regularizers
 
 def build_model(params):
-   l2=regularizers.l2(0.000)
-   l2_out=regularizers.l2(0.00000)
+   l2=regularizers.l2(0.001)
+   l2_out=regularizers.l2(0.00001)
    dims=4096
 
    #########Left Stream######################
