@@ -36,7 +36,7 @@ def load_batch_images(params,dir, x):
         sbt=params["gray_mean"]
 
     if(im_type=="hha_depth_fc6"):
-        normalizer=32
+        normalizer=47.2940864563
         sbt=params["hha_depth_fc6_mean"]
 
     if(im_type=="rgb"):
