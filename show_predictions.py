@@ -13,8 +13,8 @@ params['step_size']=[10]
 step=params['step_size'][0]
 
 
-params['model_name']="Nodrop_5_gray.hdf5"
-params['model']="bncnnr"
+params['model_name']="bnmlpr_0_hha_depth_fc6.hdf5"
+params['model']="bnmlpr"
 prediction_name= params['model_name'].replace("/", " ").split()[-1] .replace(".h5","")
 ext_raw_data=prediction_name+"raw_data"+"_"+str(step)+".pkl"
 ext_err=prediction_name+"err"+"_"+str(step)+".pkl"

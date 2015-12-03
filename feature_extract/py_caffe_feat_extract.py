@@ -161,7 +161,7 @@ def preprocess_image(img):
    img = np.transpose(img, [2,0,1])
    return img #HxWx3
 
-def caffe_extract_feats(path_imgs , path_model_def , path_model , WITH_GPU = True , batch_size = 160):
+def caffe_extract_feats(path_imgs , path_model_def , path_model , WITH_GPU = True , batch_size = 10):
    '''
    Function using the caffe python wrapper to extract 4096 from VGG_ILSVRC_16_layers.caffemodel model
 
@@ -177,7 +177,7 @@ def caffe_extract_feats(path_imgs , path_model_def , path_model , WITH_GPU = Tru
    features           : return the features extracted
    '''
 
-   if WITH_GPU:
+   if params["WITH_GPU"]:
        caffe.set_mode_gpu()
    else:
        caffe.set_mode_cpu()
@@ -233,7 +233,7 @@ if __name__ == '__main__':
    # parser.add_argument('-o',dest='out_directory',help='Output directory to store the generated features')
    #
    # args = parser.parse_args()
-   params['orijinal_img']="hha_depth"
+   params['orijinal_img']="rgb"
    path_model_def_file = "model/VGG_ILSVRC_16_layers_deploy.prototxt"
    path_model  = "model/VGG_ILSVRC_16_layers.caffemodel"
    filter_path = None
@@ -254,23 +254,28 @@ if __name__ == '__main__':
    for dir in params["dataset"]:
        if (dir == -1):
            continue
-       counter+=1
        im_type=params['orijinal_img']
        im_type_to=params['orijinal_img']+"_"+params['layer']
        new_dir=dir[0]+im_type_to+"/"
-       if os.path.exists(new_dir):
-           shutil.rmtree(new_dir)
-       os.makedirs(new_dir)
-       rgb_dir=dir[0]+im_type+'/*.png'
-       path_imgs =lst=glob.glob(rgb_dir)
-       feats = caffe_extract_feats(path_imgs, path_model_def_file, path_model, WITH_GPU)
-       man+=np.mean(feats)
-       if(np.max(feats)>mx):
-           mx=np.max(feats)
-       if(np.max(feats)<mn):
-           mn=np.min(feats)
-       dt_utils.write_features(feats, path_imgs,new_dir)
-       print("data set has already converted %s"%(dir[0]))
+       shutil.rmtree(new_dir)
+       if os.path.exists(new_dir)==False:
+           #shutil.rmtree(new_dir)
+          os.makedirs(new_dir)
+          rgb_dir=dir[0]+im_type+'/*.png'
+          path_imgs =lst=glob.glob(rgb_dir)
+          path_imgs=sorted(path_imgs)
+          feats = caffe_extract_feats(path_imgs, path_model_def_file, path_model, WITH_GPU)
+          man+=np.mean(feats)
+          if(np.max(feats)>mx):
+              mx=np.max(feats)
+          if(np.max(feats)<mn):
+              mn=np.min(feats)
+          dt_utils.write_features(feats, path_imgs,new_dir)
+          print("data set converted %s"%(dir[0]))
+          counter+=1
+       else:
+          print("data set has already converted %s"%(dir[0]))
+
    print("Info of data: %s, min: %s, max: %s"%(man/counter,mn,mx))
 
    print "Have a Good day!"

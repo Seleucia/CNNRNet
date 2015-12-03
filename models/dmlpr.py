@@ -14,17 +14,21 @@ def build_model(params):
    lmodel = Sequential()
    lmodel.add(Dense(256, input_shape=(dims,),init='he_normal', W_regularizer=l2))
    lmodel.add(PReLU())
+   lmodel.add(Dropout(0.01))
    lmodel.add(Dense(256,init='he_normal', W_regularizer=l2))
    lmodel.add(PReLU())
+   lmodel.add(Dropout(0.25))
    lmodel.add(Dense(256,init='he_normal', W_regularizer=l2))
    lmodel.add(PReLU())
 
    #########Right Stream######################
    rmodel = Sequential()
    rmodel.add(Dense(256, input_shape=(dims,),init='he_normal', W_regularizer=l2))
+   rmodel.add(Dropout(0.01))
    rmodel.add(PReLU())
    rmodel.add(Dense(256,init='he_normal', W_regularizer=l2))
    rmodel.add(PReLU())
+   rmodel.add(Dropout(0.25))
    rmodel.add(Dense(256,init='he_normal', W_regularizer=l2))
    rmodel.add(PReLU())
 

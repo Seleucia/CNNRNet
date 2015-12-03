@@ -3,7 +3,7 @@ import helper.config as config
 import plot_data
 
 params=config.get_params()
-params["log_file"]="log_val_dist_21_21_42_968265.txt"
+params["log_file"]="bnmlpr_regben_23_36_04_702139.txt"
 
 model="VAL"
 list_val=utils.log_read(model,params)
