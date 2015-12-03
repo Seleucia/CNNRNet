@@ -9,36 +9,46 @@ def build_model(params):
    l2=regularizers.l2(0.001)
    l2_out=regularizers.l2(0.00001)
    dims=4096
+   n=256
 
    #########Left Stream######################
    lmodel = Sequential()
-   lmodel.add(Dense(256, input_shape=(dims,),init='he_normal', W_regularizer=l2))
+   lmodel.add(Dense(n, input_shape=(dims,),init='he_normal', W_regularizer=l2))
    lmodel.add(PReLU())
    lmodel.add(Dropout(0.01))
-   lmodel.add(Dense(256,init='he_normal', W_regularizer=l2))
+   lmodel.add(Dense(n,init='he_normal', W_regularizer=l2))
    lmodel.add(PReLU())
    lmodel.add(Dropout(0.25))
-   lmodel.add(Dense(256,init='he_normal', W_regularizer=l2))
+   lmodel.add(Dense(n,init='he_normal', W_regularizer=l2))
+   lmodel.add(PReLU())
+   lmodel.add(Dropout(0.25))
+   lmodel.add(Dense(n,init='he_normal', W_regularizer=l2))
    lmodel.add(PReLU())
 
    #########Right Stream######################
    rmodel = Sequential()
-   rmodel.add(Dense(256, input_shape=(dims,),init='he_normal', W_regularizer=l2))
-   rmodel.add(Dropout(0.01))
+   rmodel.add(Dense(n, input_shape=(dims,),init='he_normal', W_regularizer=l2))
    rmodel.add(PReLU())
-   rmodel.add(Dense(256,init='he_normal', W_regularizer=l2))
+   rmodel.add(Dropout(0.01))
+   rmodel.add(Dense(n,init='he_normal', W_regularizer=l2))
    rmodel.add(PReLU())
    rmodel.add(Dropout(0.25))
-   rmodel.add(Dense(256,init='he_normal', W_regularizer=l2))
+   rmodel.add(Dense(n,init='he_normal', W_regularizer=l2))
+   rmodel.add(PReLU())
+   rmodel.add(Dropout(0.25))
+   rmodel.add(Dense(n,init='he_normal', W_regularizer=l2))
    rmodel.add(PReLU())
 
    #########Merge Stream######################
    model = Sequential()
    model.add(Merge([lmodel, rmodel], mode='mul'))
-   model.add(Dense(256,init='he_normal', W_regularizer=l2_out))
+   model.add(Dense(n,init='he_normal', W_regularizer=l2_out))
+   model.add(PReLU())
+   model.add(Dropout(0.01))
+   model.add(Dense(n,init='he_normal', W_regularizer=l2_out))
    model.add(PReLU())
 
-   model.add(Dense(256,init='he_normal'))
+   model.add(Dense(n,init='he_normal'))
    model.add(Activation('linear'))
 
    model.add(Dense(3,init='he_normal'))
