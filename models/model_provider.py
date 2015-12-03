@@ -4,6 +4,7 @@ import bncnnr
 import mlpr
 import bnmlpr
 import dmlpr
+import thmlpr
 
 
 def get_model(params):
@@ -19,6 +20,8 @@ def get_model(params):
         model= bnmlpr.build_model(params)
     if(params["model"]=="dmlpr"):
         model= dmlpr.build_model(params)
+    if(params["model"]=="thmlpr"):
+        model= thmlpr.build_model(params)
     return model
 
 def get_model_pretrained(params):
