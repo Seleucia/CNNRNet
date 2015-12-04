@@ -13,12 +13,12 @@ sys.setrecursionlimit(50000)
 #########Model with droupout######################
 
 def build_model(params):
-   l2=regularizers.l2(0.000)
-   l2_out=regularizers.l2(0.00000)
+   l2=regularizers.l2(0.001)
+   l2_out=regularizers.l2(0.0001)
 
    #########Left Stream######################
    lmodel = Sequential()
-   lmodel.add(Convolution2D(params["nkerns"][0], 3, 3, border_mode='full', input_shape=(params["nc"], params["size"][1], params["size"][0]),init='he_normal', W_regularizer=l2))
+   lmodel.add(Convolution2D(params["nkerns"][0], 3, 3, border_mode='valid', input_shape=(params["nc"], params["size"][1], params["size"][0]),init='he_normal', W_regularizer=l2))
    lmodel.add(PReLU())
    lmodel.add(MaxPooling2D(pool_size=(2, 2)))
    lmodel.add(Dropout(0.1))
@@ -44,7 +44,7 @@ def build_model(params):
 
    #########Right Stream######################
    rmodel = Sequential()
-   rmodel.add(Convolution2D(params["nkerns"][0], 3, 3, border_mode='full', input_shape=(params["nc"], params["size"][1], params["size"][0]),init='he_normal', W_regularizer=l2))
+   rmodel.add(Convolution2D(params["nkerns"][0], 3, 3, border_mode='valid', input_shape=(params["nc"], params["size"][1], params["size"][0]),init='he_normal', W_regularizer=l2))
    rmodel.add(PReLU())
    rmodel.add(MaxPooling2D(pool_size=(2, 2)))
    rmodel.add(Dropout(0.1))

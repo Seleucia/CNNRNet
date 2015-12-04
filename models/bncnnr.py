@@ -84,5 +84,4 @@ def build_model(params):
    sgd = SGD(lr=params['initial_learning_rate'], decay=params['learning_rate_decay'], momentum=params['momentum'], nesterov=True)
    adagrad=Adagrad(lr=params['initial_learning_rate'], epsilon=1e-6)
    model.compile(loss='mean_squared_error', optimizer=adagrad)
-   model.compile(loss='mean_squared_error', optimizer=adagrad)
    return model
