@@ -7,17 +7,17 @@ def get_params():
    params={}
    params['check_mode']=1 #process checkY_testing
    params["rn_id"]="dr" #running id
-   params["notes"]="dropout used with l2 regularizers" #running id
-   params["model"]="dmlpr"#kccnr,dccnr
+   params["notes"]="Renew test" #running id
+   params["model"]="kcnnr"#kccnr,dccnr
 
-   params['shufle_data']=0
+   params['shufle_data']=1
    params['gray_mean']=114.33767967 #114.151092572
    params['depth_mean']=13797.3639853 #13746.3784954
    params['pre_depth_mean']=9505.32929609 #9515.98643977
    params['rgb_mean']=[138.28382874, 128.78469849 ,124.75618744] #[138.18440247,128.58282471 ,124.65019226]
    params['hha_depth_fc6_mean']=1.43717336397
    params['batch_size']=240
-   params['im_type']="hha_depth_fc6"
+   params['im_type']="pre_depth"
    params['step_size']=[1,5,7,10,12,14,15,17,19,21,23,25]
 
    #system settings
