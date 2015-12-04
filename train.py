@@ -1,5 +1,4 @@
 import sys
-import theano
 import numpy as np
 import argparse
 import helper.data_loader as data_loader
