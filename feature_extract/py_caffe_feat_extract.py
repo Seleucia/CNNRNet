@@ -161,7 +161,7 @@ def preprocess_image(img):
    img = np.transpose(img, [2,0,1])
    return img #HxWx3
 
-def caffe_extract_feats(path_imgs , path_model_def , path_model , WITH_GPU = True , batch_size = 10):
+def caffe_extract_feats(parent_path,orijinal_img,conv_list,path_imgs , path_model_def , path_model ,ls_mx,batch_size):
    '''
    Function using the caffe python wrapper to extract 4096 from VGG_ILSVRC_16_layers.caffemodel model
 
@@ -182,10 +182,14 @@ def caffe_extract_feats(path_imgs , path_model_def , path_model , WITH_GPU = Tru
    else:
        caffe.set_mode_cpu()
    print "loading model:",path_model
-   caffe_net = caffe.Classifier(path_model_def , path_model , image_dims = (224,224) , raw_scale = 255, channel_swap=(2,1,0),
+   caffe_net = caffe.Classifier(path_model_def , path_model , image_dims = (224,224) , raw_scale = None, channel_swap=(2,1,0),
                            mean = np.array([103.939, 116.779, 123.68]) )
 
-   feats = np.zeros((4096 , len(path_imgs)))
+   feats_fc7 = np.zeros((4096 , len(path_imgs)))
+   feats_fc6 = np.zeros((4096 , len(path_imgs)))
+   ls_mn={}
+   for i in conv_list:
+      ls_mn[i]=0
 
    for b in range(0 , len(path_imgs) , batch_size):
        list_imgs = []
@@ -205,22 +209,35 @@ def caffe_extract_feats(path_imgs , path_model_def , path_model , WITH_GPU = Tru
 
        caffe_net.forward(data = caffe_input)
 
-       predictions =caffe_net.blobs[params["layer"]].data.transpose()
-
-       print np.shape(feats)
-       print np.shape(predictions)
+       predictions_fc7 =caffe_net.blobs["fc7"].data.transpose()
+       predictions_fc6 =caffe_net.blobs["fc6"].data.transpose()
        if i < len(path_imgs):
-           feats[:,b:i+1] = predictions
+           for lm in conv_list:
+              data=caffe_net.blobs[lm].data[:]
+              ls_mx[lm]=np.maximum(np.max(data),ls_mx[lm])
+              ls_mn[lm]+=np.mean(data)
+              dt_utils.write_mid_features(data,parent_path+orijinal_img+"_"+lm+"/",path_imgs[b : b + batch_size])
+
+           feats_fc7[:,b:i+1] = predictions_fc7
+           feats_fc6[:,b:i+1] = predictions_fc6
            n = i+1
        else:
            n = min(batch_size , len(path_imgs) - b)
-           feats[:,b:b+n] = predictions[:,0:n] #Removing extra predictions, due to the extra last image appending.
+           feats_fc7[:,b:b+n] = predictions_fc7[:,0:n] #Removing extra predictions, due to the extra last image appending.
+           feats_fc6[:,b:b+n] = predictions_fc6[:,0:n] #Removing extra predictions, due to the extra last image appending.
+           for lm in conv_list:
+              data=caffe_net.blobs[lm].data[0:n]
+              ls_mx[lm]=np.maximum(np.max(data),ls_mx[lm])
+              ls_mn[lm]+=np.mean(data)
+              dt_utils.write_mid_features(data,parent_path+orijinal_img+"_"+lm+"/",path_imgs[b : b + batch_size])
            n += b
        print "%d out of %d done....."%(n ,len(path_imgs))
        if(params["check_mode"]==1):
-           return feats
+           ls_mn=dict((key, value/batch_size) for (key, value) in ls_mn.iteritems())
+           return (feats_fc6,feats_fc7,ls_mx,ls_mn)
 
-   return feats
+   ls_mn=dict((key, value/feats.shape[1]) for (key, value) in ls_mn.iteritems())
+   return (feats_fc6,feats_fc7,ls_mx,ls_mn)
 
 if __name__ == '__main__':
    print "Main started"
@@ -246,36 +263,64 @@ if __name__ == '__main__':
 
    if not os.path.exists(path_model):
        raise RuntimeError("%s , Path to pretrained model file does not exist"%(path_model))
-   man=0;
-   mx=-np.inf;
-   mn=np.inf;
+   batch_size = 10
+   mn6=0;
+   mn7=0;
+   mx6=-np.inf;
+   mx7=-np.inf;
    counter=0
-   params['check_mode']=0 #process checkY_testing
+   img_counter=0
+   fc_list=[]
+   fc_list.append("fc6")
+   fc_list.append("fc7")
+   conv_list=[]
+   conv_list.append("conv4_2")
+   conv_list.append("conv5_2")
+   ls_mx={}
+   ls_mn={}
+   for i in conv_list:
+      ls_mx[i]=0
+      ls_mn[i]=0
+   params['check_mode']=1 #process checkY_testing
+   orijinal_img=params['orijinal_img']
    for dir in params["dataset"]:
        if (dir == -1):
            continue
-       im_type=params['orijinal_img']
-       im_type_to=params['orijinal_img']+"_"+params['layer']
-       new_dir=dir[0]+im_type_to+"/"
-       shutil.rmtree(new_dir)
-       if os.path.exists(new_dir)==False:
-           #shutil.rmtree(new_dir)
-          os.makedirs(new_dir)
-          rgb_dir=dir[0]+im_type+'/*.png'
-          path_imgs =lst=glob.glob(rgb_dir)
-          path_imgs=sorted(path_imgs)
-          feats = caffe_extract_feats(path_imgs, path_model_def_file, path_model, WITH_GPU)
-          man+=np.mean(feats)
-          if(np.max(feats)>mx):
-              mx=np.max(feats)
-          if(np.max(feats)<mn):
-              mn=np.min(feats)
-          dt_utils.write_features(feats, path_imgs,new_dir)
-          print("data set converted %s"%(dir[0]))
-          counter+=1
-       else:
-          print("data set has already converted %s"%(dir[0]))
+       for i in fc_list:
+           new_dir= dir[0] + orijinal_img+"_"+i + "/"
+           if(os.path.exists(new_dir)):
+              shutil.rmtree(new_dir)
+           os.makedirs(new_dir)
+       for i in conv_list:
+           new_dir= dir[0] + orijinal_img+"_"+ i + "/"
+           if(os.path.exists(new_dir)):
+              shutil.rmtree(new_dir)
+           os.makedirs(new_dir)
+       rgb_dir= dir[0] + orijinal_img + '/*.png'
+       path_imgs =lst=glob.glob(rgb_dir)
+       path_imgs=sorted(path_imgs)
 
-   print("Info of data: %s, min: %s, max: %s"%(man/counter,mn,mx))
+       feats = caffe_extract_feats(dir[0],orijinal_img,conv_list,path_imgs, path_model_def_file, path_model,ls_mx,batch_size)
+       img_counter+=len(path_imgs)
+       fc6=feats[0]
+       fc7=feats[1]
+       ls_mx=feats[2]
+       tmp_ls_mn=feats[3]
+       ls_mn=dict((key, value+ls_mn[key]) for (key, value) in tmp_ls_mn.iteritems())
 
-   print "Have a Good day!"
+       mn6+=np.mean(fc6)
+       mn7+=np.mean(fc7)
+       mx6=np.maximum(mx6,np.max(fc6))
+       mx7=np.maximum(mx7,np.max(fc7))
+
+       dt_utils.write_features(fc6, path_imgs,dir[0] +orijinal_img+"_"+ fc_list[0] + "/")
+       dt_utils.write_features(fc7, path_imgs,dir[0] +orijinal_img+"_"+ fc_list[1] + "/")
+       print("data set converted %s"%(dir[0]))
+       counter+=1
+
+   print("#datasets: %s, #images: %s"%(counter,img_counter))
+   print("fc6/fc7 mean: %s / %s, max: %s / %s"%(mn6/counter,mn7/counter,mx6,mx7))
+
+   ls_mn=dict((key, value/counter) for (key, value) in ls_mn.iteritems())
+   for i in conv_list:
+      print("%s mean: %s, max: %s"%(i,ls_mn[i],ls_mx[i]))

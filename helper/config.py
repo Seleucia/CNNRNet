@@ -83,6 +83,7 @@ def update_params(params):
 
    if(params['check_mode']==1):
        params['step_size']=[10]
+
    if(params['check_mode']==2):
        params['step_size']=[1,10,25]
 

@@ -1,4 +1,4 @@
-import cPickle
+import tables
 import gzip
 import os
 import numpy
@@ -75,6 +75,24 @@ def write_features(ndarr, fl_ls,parent_dir):
         f_name=os.path.basename(fl_ls[i])
         full_path=parent_dir+f_name.replace(".png","")
         numpy.save(full_path,f)
+
+
+def write_mid_features(data,parent_dir, fl_ls):
+    for i in range(data.shape[0]):
+        f=data[i]
+        f_name=os.path.basename(fl_ls[i])
+        full_path=parent_dir+f_name.replace(".png","")
+        save_hdf(full_path,f)
+
+def save_hdf(f_name,all_data):
+    f = tables.openFile(f_name+'.hdf', 'w')
+    atom = tables.Atom.from_dtype(all_data.dtype)
+    filters = tables.Filters(complib='blosc', complevel=9,least_significant_digit=2)
+    ds = f.createCArray(f.root, 'all_data', atom, all_data.shape, filters=filters)
+    # save w/o compressive filter
+    #ds = f.createCArray(f.root, 'all_data', atom, all_data.shape)
+    ds[:] = all_data
+    f.close()
 
 def shuffle_in_unison_inplace(a, b):
     assert len(a) == len(b)

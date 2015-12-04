@@ -14,7 +14,7 @@ step=params['step_size'][0]
 
 
 params['model_name']="bnmlpr_0_hha_depth_fc6.hdf5"
-params['model']="bnmlpr"
+params['model']="dmlpr"
 prediction_name= params['model_name'].replace("/", " ").split()[-1] .replace(".h5","")
 ext_raw_data=prediction_name+"raw_data"+"_"+str(step)+".pkl"
 ext_err=prediction_name+"err"+"_"+str(step)+".pkl"
@@ -88,4 +88,4 @@ model_saver.save_pred(ext_yy_test_aug, yy_test_step,params)
 model_saver.save_pred(ext_y_test_gt, y_test_delta_gt,params)
 
 
-plot_data.plot_y([yy_test_step, np.array(yy_pred)], fig_name3d)
+plot_data.plot_y([y_test_delta_gt, np.array(yy_test_step)], fig_name3d)
