@@ -17,7 +17,7 @@ def get_params():
    params['rgb_mean']=[138.28382874, 128.78469849 ,124.75618744] #[138.18440247,128.58282471 ,124.65019226]
    params['hha_depth_fc6_mean']=1.43717336397
    params['batch_size']=240
-   params['im_type']="pre_depth"
+   params['im_type']="gray"
    params['step_size']=[1,5,7,10,12,14,15,17,19,21,23,25]
 
    #system settings

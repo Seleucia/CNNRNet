@@ -66,7 +66,7 @@ def load_batch_images(params,dir, x):
         batch_l.append([])
         batch_l[i]=n_l
         i+=1
-    batch_l=numpy.squeeze(batch_l)
+#    batch_l=numpy.squeeze(batch_l)
     return numpy.array(batch_l)
 
 def write_features(ndarr, fl_ls,parent_dir):
