@@ -88,11 +88,17 @@ def save_hdf(f_name,all_data):
     f = tables.openFile(f_name+'.hdf', 'w')
     atom = tables.Atom.from_dtype(all_data.dtype)
     filters = tables.Filters(complib='blosc', complevel=9,least_significant_digit=2)
-    ds = f.createCArray(f.root, 'all_data', atom, all_data.shape, filters=filters)
+    ds = f.createCArray(f.root, 'data', atom, all_data.shape, filters=filters)
     # save w/o compressive filter
     #ds = f.createCArray(f.root, 'all_data', atom, all_data.shape)
     ds[:] = all_data
     f.close()
+
+def read_hdf(f_name):
+    f = tables.openFile(f_name, 'r')
+    data=f.root.data[:]
+    f.close()
+    return data
 
 def shuffle_in_unison_inplace(a, b):
     assert len(a) == len(b)
