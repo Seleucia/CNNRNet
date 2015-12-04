@@ -1,5 +1,5 @@
 import sys
-
+import theano
 import numpy as np
 import argparse
 import helper.data_loader as data_loader
@@ -52,7 +52,9 @@ def train_model(params):
           data_Sx = dt_utils.load_batch_images(params,"S", Fx)
           data_y = y_train[minibatch_index * batch_size: (minibatch_index + 1) * batch_size]
           loss =model.train_on_batch([data_Fx, data_Sx], data_y)
-          s='TRAIN--> epoch %i | minibatch %i/%i | error %f'%(epoch_counter, minibatch_index + 1, n_train_batches,  loss[0])
+          if(type(loss) is float==False):
+             loss=loss[0]
+          s='TRAIN--> epoch %i | minibatch %i/%i | error %f'%(epoch_counter, minibatch_index + 1, n_train_batches,  loss)
           utils.log_write(s,params)
           if(check_mode==1):
               break
@@ -64,7 +66,10 @@ def train_model(params):
           data_Fx = dt_utils.load_batch_images(params,"F", Fx)
           data_Sx = dt_utils.load_batch_images(params,"S", Fx)
           data_y = y_val[i * batch_size: (i + 1) * batch_size]
-          this_validation_loss += model.test_on_batch([data_Fx, data_Sx],data_y)[0]
+          loss= model.test_on_batch([data_Fx, data_Sx],data_y)
+          if(type(loss) is float==False):
+             loss=loss[0]
+          this_validation_loss +=loss
           if(check_mode==1):
               break
       this_validation_loss /=n_valid_batches
