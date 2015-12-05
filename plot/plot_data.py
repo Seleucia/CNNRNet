@@ -141,7 +141,7 @@ def plot_val_train(list_train,fig_name,epoch):
     #plt.setp([a.get_xticklabels() for a in f.axes[:-1]], visible=False)
     plt.show()
 
-def plot_ms(data,name):
+def plot_ms(data,dir,name):
     import matplotlib.pyplot as plt
     y = data
     x =range(len(data))
@@ -150,6 +150,6 @@ def plot_ms(data,name):
     plt.xlabel('x')
     plt.ylabel('y')
     plt.title(name)
-    plt.savefig(name)
+    plt.savefig(dir+name)
     plt.grid(True)
     plt.show()
