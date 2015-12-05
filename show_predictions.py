@@ -12,9 +12,9 @@ id=21 #data will be loaded according to this id
 params['step_size']=[10]
 step=params['step_size'][0]
 
-params['model_name']="kcnnr_7_gray.hdf5"
-params['model']="kcnnr"
-params['im_type']="gray"
+params['model_name']="dcnnr_3_pre_depth.hdf5"
+params['model']="dcnnr"
+params['im_type']="pre_depth"
 prediction_name= params['model_name'].replace("/", " ").split()[-1] .replace(".h5","")
 ext_raw_data=prediction_name+"raw_data"+"_"+str(step)+".pkl"
 ext_err=prediction_name+"err"+"_"+str(step)+".pkl"

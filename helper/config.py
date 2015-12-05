@@ -80,7 +80,6 @@ def get_params():
 
 def update_params(params):
    params['log_file']=params["wd"]+"/logs/"+params["model"]+"_"+params["rn_id"]+"_"+utils.get_time()+".txt"
-
    if(params['check_mode']==1):
        params['step_size']=[10]
 

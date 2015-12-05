@@ -3,7 +3,7 @@ import gzip
 import os
 import numpy
 import theano
-from numpy.random import RandomState
+import plot.plot_data as pd
 import glob
 from theano import config
 from PIL import Image
@@ -76,7 +76,6 @@ def write_features(ndarr, fl_ls,parent_dir):
         full_path=parent_dir+f_name.replace(".png","")
         numpy.save(full_path,f)
 
-
 def write_mid_features(data,parent_dir, fl_ls):
     for i in range(data.shape[0]):
         f=data[i]
@@ -104,3 +103,21 @@ def shuffle_in_unison_inplace(a, b):
     assert len(a) == len(b)
     p = numpy.random.permutation(len(a))
     return a[p], b[p]
+
+def check_missin_values(params):
+    orijinal_img="depth"
+    for dir in params["dataset"]:
+        if (dir == -1):
+            continue
+        rgb_dir= dir[0] + orijinal_img + '/*.png'
+        path_imgs =glob.glob(rgb_dir)
+        path_imgs=sorted(path_imgs)
+        ms=numpy.zeros((len(path_imgs),1))
+        i=0
+        for dImg in path_imgs:
+            img = Image.open(dImg)
+            arr1= numpy.array(img,theano.config.floatX)
+            p=(arr1.size-numpy.count_nonzero(arr1))/float(arr1.size)
+            ms[i]=p
+            i+=1
+        pd.plot_ms(ms,dir[0],os.path.basename(os.path.normpath(dir[0])))

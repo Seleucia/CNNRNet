@@ -3,7 +3,6 @@ import numpy
 import numpy as np
 
 
-
 def plot_raw_y(data_y,fig_name,params):
     import matplotlib.pyplot as plt
     fig, ax = plt.subplots(subplot_kw={'projection': '3d'})
@@ -23,7 +22,6 @@ def plot_raw_y(data_y,fig_name,params):
     ax.legend(legends,loc='upper left')
     plt.savefig("predictions/"+fig_name)
     plt.show()
-
 
 def plot_orijinal_y(y_train_delta_gt,y_test_delta_gt,y_val_delta_gt):
     import matplotlib.pyplot as plt
@@ -56,8 +54,6 @@ def plot_orijinal_y(y_train_delta_gt,y_test_delta_gt,y_val_delta_gt):
     ax.legend(legends,loc='upper left')
     plt.show()
 
-
-
 def plot_y(data_y,fig_name):
     import matplotlib.pyplot as plt
     fig, ax = plt.subplots(subplot_kw={'projection': '3d'})
@@ -82,8 +78,6 @@ def plot_y(data_y,fig_name):
     ax.legend(legends,loc='upper left')
     plt.savefig(fig_name)
     plt.show()
-
-
 
 def plot_err(err,fig_name):
     import matplotlib.pyplot as plt
@@ -147,3 +141,15 @@ def plot_val_train(list_train,fig_name,epoch):
     #plt.setp([a.get_xticklabels() for a in f.axes[:-1]], visible=False)
     plt.show()
 
+def plot_ms(data,name):
+    import matplotlib.pyplot as plt
+    y = data
+    x =range(len(data))
+    plt.plot(x,y)
+
+    plt.xlabel('x')
+    plt.ylabel('y')
+    plt.title(name)
+    plt.savefig(name)
+    plt.grid(True)
+    plt.show()
