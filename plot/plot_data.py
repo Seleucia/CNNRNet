@@ -150,6 +150,6 @@ def plot_ms(data,dir,name):
     plt.xlabel('x')
     plt.ylabel('y')
     plt.title(name)
-    plt.savefig(dir+name)
+    plt.savefig(dir.replace(name+"/","")+name)
     plt.grid(True)
     plt.show()
