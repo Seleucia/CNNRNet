@@ -77,7 +77,7 @@ yy_pred=np.cumsum(yy_pred,axis=0)
 q=np.squeeze(np.asarray(y_delta_test_1))
 w=np.squeeze(np.asarray(y_test_delta_gt))[0,:]
 yy_test_1=np.vstack((w,q))
-yy_test_1=np.cumsum(yy_test_1, axis=0)
+yy_test_1=np.array(np.cumsum(yy_test_1, axis=0))
 
 #save generated data
 model_saver.save_pred(ext_raw_data, data_y_gt,params)
