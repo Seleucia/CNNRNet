@@ -61,14 +61,14 @@ print "Mean of pred values:"+str(np.mean(y_delta_pred))
 
 #camera location restored from augmented data
 yy_test_step= utils.up_sample(overlaps_test_step, y_delta_test_step, step)
-yy_test_step=yy_test_step.reshape(len(yy_test_step),3)
+yy_test_step=yy_test_step.reshape(len(yy_test_step),params['n_output'])
 yy_test_step=np.vstack([y_test_delta_gt[0, :], yy_test_step])
 yy_test_step=np.cumsum(yy_test_step, axis=0)
 
 
 #camera location restored from predicted data
 yy_pred= utils.up_sample(overlaps_test_step, y_delta_pred, step)
-yy_pred=yy_pred.reshape(len(yy_pred),3)
+yy_pred=yy_pred.reshape(len(yy_pred),params['n_output'])
 yy_pred=np.vstack([y_test_delta_gt[0,:],yy_pred])
 yy_pred=np.cumsum(yy_pred,axis=0)
 
@@ -87,7 +87,10 @@ model_saver.save_pred(ext_yy_test, yy_test_1,params)
 model_saver.save_pred(ext_yy_test_aug, yy_test_step,params)
 model_saver.save_pred(ext_y_test_gt, y_test_delta_gt,params)
 
-
+y_test_delta_gt=y_test_delta_gt[:,0:3]
+yy_test_step=yy_test_step[:,0:3]
+yy_pred=yy_pred[:,0:3]
+y_delta_test_1=y_delta_test_1[:,0:3]
 plot_data.plot_y([yy_test_step, np.array(yy_pred)], fig_name3d)
 
 

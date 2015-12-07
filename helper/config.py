@@ -5,7 +5,7 @@ import set_ds_list as sdl
 
 def get_params():
    params={}
-   params['check_mode']=1 #process checkY_testing
+   params['run_mode']=1 #process checkY_testing
    params["rn_id"]="dr" #running id
    params["notes"]="Renew test" #running id
    params["model"]="kcnnr"#kccnr,dccnr
@@ -25,7 +25,7 @@ def get_params():
    wd=os.path.dirname(os.path.realpath(__file__))
    wd=os.path.dirname(wd)
    params['wd']=wd
-   params['log_file']=wd+"/logs/"+params["model"]+"_"+params["rn_id"]+"_"+utils.get_time()+".txt"
+   params['log_file']=wd+"/logs/"+params["model"]+"_"+params["rn_id"]+"_"+str(params['run_mode'])+"_"+utils.get_time()+".txt"
    params["model_file"]=wd+"/cp/"
 
 
@@ -80,16 +80,22 @@ def get_params():
    return params
 
 def update_params(params):
-   params['log_file']=params["wd"]+"/logs/"+params["model"]+"_"+params["rn_id"]+"_"+utils.get_time()+".txt"
-   if(params['check_mode']==1):
+   params['log_file']=params["wd"]+"/logs/"+params["model"]+"_"+params["rn_id"]+"_"+str(params['run_mode'])+"_"+utils.get_time()+".txt"
+   if(params['run_mode']==1):
        params['step_size']=[10]
 
-   if(params['check_mode']==2):
+   if(params['run_mode']==2):
        params['step_size']=[1,10,25]
 
-   if params['check_mode']==2:
+   if params['run_mode']==2:
       idx=range(0,len(params["dataset"]),3)
       for i in idx:
          params["dataset"][i]=-1
+
+   if params['run_mode']==3:#only ICL data
+      for i in params["dataset"]:
+         if params["dataset"][i]!=-1:
+            if params["dataset"][i][1]!="ICL":
+               params["dataset"][i]=-1
 
    return params

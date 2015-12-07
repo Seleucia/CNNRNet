@@ -33,7 +33,7 @@ def train_model(params):
 
   utils.log_write("Model build started",params)
   model=  model_provider.get_model(params)
-  check_mode=params["check_mode"]
+  run_mode=params["run_mode"]
   utils.log_write("Model build ended",params)
   utils.log_write("Training started",params)
   best_validation_loss=np.inf
@@ -53,7 +53,7 @@ def train_model(params):
           loss =model.train_on_batch([data_Fx, data_Sx], data_y)[0]
           s='TRAIN--> epoch %i | minibatch %i/%i | error %f'%(epoch_counter, minibatch_index + 1, n_train_batches,  loss)
           utils.log_write(s,params)
-          if(check_mode==1):
+          if(run_mode==1):
               break
 
       print("Validating model...")
@@ -65,7 +65,7 @@ def train_model(params):
           data_y = y_val[i * batch_size: (i + 1) * batch_size]
           loss= model.test_on_batch([data_Fx, data_Sx],data_y)[0]
           this_validation_loss +=loss
-          if(check_mode==1):
+          if(run_mode==1):
               break
       this_validation_loss /=n_valid_batches
 
@@ -80,7 +80,7 @@ def train_model(params):
 
       #We are shuffling data at each epoch
       X_train,y_train=dt_utils.shuffle_in_unison_inplace(X_train,y_train)
-      if(check_mode==1):
+      if(run_mode==1):
               break
   ext=params["model_file"]+params["model"]+"_regular_"+str(epoch_counter % 5)+"_"+im_type+".hdf5"
   model.save_weights(ext, overwrite=True)
@@ -89,14 +89,14 @@ def train_model(params):
 if __name__ == "__main__":
   params= config.get_params()
   parser = argparse.ArgumentParser(description='Training the module')
-  parser.add_argument('-c','--check_mode',type=int, help='Training mode:0 full train, 1 system check, 2 simle train',
+  parser.add_argument('-rm','--run_mode',type=int, help='Training mode:0 full train, 1 system check, 2 simle train',
                       required=True)
   parser.add_argument('-m','--model',help='Model: kcnnr, dccnr, current('+params["model"]+')',default=params["model"])
   parser.add_argument('-i','--im_type',help='Image type: pre_depth, depth, gray, current('+params["im_type"]+')',
                       default=params["im_type"])
 
   args = vars(parser.parse_args())
-  params["check_mode"]=args["check_mode"]
+  params["run_mode"]=args["run_mode"]
   params["model"]=args["model"]
   params["im_type"]=args["im_type"]
   params=config.update_params(params)

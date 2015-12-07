@@ -102,7 +102,8 @@ def start_log(datasets,params):
     ds= get_time()
 
     log_write("Run Id: %s"%(params['rn_id']),params)
-    log_write("Production notes: %s"%(params['notes']),params)
+    log_write("Deployment notes: %s"%(params['notes']),params)
+    log_write("Running mode: %s"%(params['run_mode']),params)
     log_write("Running model: %s"%(params['model']),params)
     log_write("Image type: %s"%(params["im_type"]),params)
     log_write("Batch size: %s"%(params['batch_size']),params)
@@ -124,7 +125,7 @@ def start_log(datasets,params):
     log_write("Mean of test data:%f, abs mean: %f"%(y_test_mean,y_test_abs_mean),params)
 
 def get_time():
-    return str(datetime.datetime.now().time()).replace(":","_").replace(".","_")
+    return str(datetime.datetime.now().time()).replace(":","-").replace(".","-")
 
 def create_file(log_file):
     log_dir= os.path.dirname(log_file)

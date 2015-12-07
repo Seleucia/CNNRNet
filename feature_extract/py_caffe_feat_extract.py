@@ -232,7 +232,7 @@ def caffe_extract_feats(parent_path,orijinal_img,conv_list,path_imgs , path_mode
               dt_utils.write_mid_features(data,parent_path+orijinal_img+"_"+lm+"/",path_imgs[b : b + batch_size])
            n += b
        print "%d out of %d done....."%(n ,len(path_imgs))
-       if(params["check_mode"]==1):
+       if(params["run_mode"]==1):
            ls_mn=dict((key, value/batch_size) for (key, value) in ls_mn.iteritems())
            return (feats_fc6,feats_fc7,ls_mx,ls_mn)
 
@@ -281,7 +281,7 @@ if __name__ == '__main__':
    for i in conv_list:
       ls_mx[i]=0
       ls_mn[i]=0
-   params['check_mode']=1 #process checkY_testing
+   params['run_mode']=1 #process checkY_testing
    orijinal_img=params['orijinal_img']
    for dir in params["dataset"]:
        if (dir == -1):
