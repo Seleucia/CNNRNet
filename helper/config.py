@@ -19,6 +19,7 @@ def get_params():
    params['batch_size']=240
    params['im_type']="gray"
    params['step_size']=[1,5,7,10,12,14,15,17,19,21,23,25]
+   params['n_output']=7
 
    #system settings
    wd=os.path.dirname(os.path.realpath(__file__))

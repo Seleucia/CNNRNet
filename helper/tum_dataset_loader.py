@@ -45,7 +45,7 @@ def associate(first_list, second_list):
     matches=numpy.array(matches)
     return matches
 
-def load_data(dataset,im_type):
+def load_data(dataset,im_type,n_output):
     ext=".png"
     if(im_type.find("fc")>0):
         ext=".npy"
@@ -69,7 +69,7 @@ def load_data(dataset,im_type):
         data_x=[["%s%f%s" %(dir_f,a,ext)] for a,b in matches]
 
 
-    data_y=numpy.matrix([[float(value) for value in second_list[b][0:3]] for a,b in matches])
+    data_y=numpy.matrix([[float(value) for value in second_list[b][0:n_output]] for a,b in matches])
     rval=[(data_x),(data_y)]
     return rval
 
@@ -114,10 +114,6 @@ def split_data(dir_list,id, data_y,test_size,val_size):
     tmp_y_test = numpy.array(tmp_delta_y)[test_inds, :]
     tmp_y_val = numpy.array(tmp_delta_y)[val_inds, :]
 
-    tmp_y_train = tmp_y_train.reshape(len(tmp_y_train), 3)
-    tmp_y_val = tmp_y_val.reshape(len(tmp_y_val), 3)
-    tmp_y_test = tmp_y_test.reshape(len(tmp_y_test), 3)
-
     tmp_X_train = numpy.array(tmp_data_x)[train_inds, :]
     tmp_X_test = numpy.array(tmp_data_x)[test_inds, :]
     tmp_X_val = numpy.array(tmp_data_x)[val_inds, :]
@@ -139,7 +135,7 @@ def train_test_split(X, y, test_size, random_state):
         return rVal
 
 def load_tum_data(params,id):
-    dsRawData=load_data(params["dataset"][id],params["im_type"])
+    dsRawData=load_data(params["dataset"][id],params["im_type"],params["n_output"])
     dir_list=dsRawData[0]
     data_y=dsRawData[1]
 
@@ -211,29 +207,14 @@ def load_tum_data(params,id):
     X_val=numpy.asarray(X_val)
 
     y_delta_train=y_delta_train*params["multi"]
-    y_delta_train=y_delta_train.reshape(len(y_delta_train),3)
-
     y_delta_test=y_delta_test*params["multi"]
-    y_delta_test=y_delta_test.reshape(len(y_delta_test),3)
-
-
     y_delta_val=y_delta_val*params["multi"]
-    y_delta_val=y_delta_val.reshape(len(y_delta_val),3)
-
 
     overlaps_train=[]
     overlaps_val=[]
 
-    if(params['shufle_data']==1):
-        (X_train,y_train)= dt_utils.shuffle_in_unison_inplace(X_train,y_delta_train)
-        (X_val,y_val)= dt_utils.shuffle_in_unison_inplace(X_val,y_delta_val)
-    else:
-        y_train= y_delta_train
-        y_val= y_delta_val
-
-    rval = [(X_train, y_train,overlaps_train), (X_val, y_val,overlaps_val),
+    rval = [(X_train, y_delta_train,overlaps_train), (X_val, y_delta_val,overlaps_val),
             (X_test, y_delta_test,overlaps_test)]
-    #    model_saver.save_partitions(params["rn_id"],rval)
     return rval
 
 def load_pairs(dataset,im_type,step_size=[]):
@@ -321,7 +302,6 @@ def load_splits(params):
     dsRawData=load_data(params["dataset"],params["im_type"])
     data_x=dsRawData[0]
     data_y=dsRawData[1]
-    data_y=data_y.reshape(len(data_y),3)
     dsSplit=split_data(params["test_size"],params["val_size"],data_x,data_y)
     X_train, y_train = dsSplit[0]
     X_val, y_val = dsSplit[1]

@@ -67,7 +67,7 @@ def build_model(params):
    model.add(Dense(400,init='he_normal'))
    model.add(Activation('linear'))
 
-   model.add(Dense(3,init='he_normal'))
+   model.add(Dense(params['n_output'],init='he_normal'))
 
    sgd = SGD(lr=params['initial_learning_rate'], decay=params['learning_rate_decay'], momentum=params['momentum'], nesterov=True)
    adagrad=Adagrad(lr=params['initial_learning_rate'], epsilon=1e-6)

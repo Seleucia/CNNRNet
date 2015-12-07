@@ -37,7 +37,7 @@ def build_model(params):
    model.add(Dense(256,init='he_normal'))
    model.add(Activation('linear'))
 
-   model.add(Dense(3,init='he_normal'))
+   model.add(Dense(params['n_output'],init='he_normal'))
 
    adagrad=Adagrad(lr=params['initial_learning_rate'], epsilon=1e-6)
    model.compile(loss='mean_squared_error', optimizer=adagrad)

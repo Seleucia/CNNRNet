@@ -8,11 +8,11 @@ from plot import plot_data
 params= config.get_params()
 is_test=1
 cm_mul=10
-id=21 #data will be loaded according to this id
+id=17 #data will be loaded according to this id
 params['step_size']=[10]
 step=params['step_size'][0]
 
-params['model_name']="dcnnr_3_pre_depth.hdf5"
+params['model_name']="dcnnr_4_pre_depth.hdf5"
 params['model']="dcnnr"
 params['im_type']="pre_depth"
 prediction_name= params['model_name'].replace("/", " ").split()[-1] .replace(".h5","")
@@ -27,7 +27,7 @@ fig_namexyz= params["wd"]+"/pred/img/"+prediction_name + "_" + str(step) + "xyz.
 
 
 #orijinal locations of camera
-dsRawData=tdl.load_data(params["dataset"][id],params["im_type"])
+dsRawData=tdl.load_data(params["dataset"][id],params["im_type"],params["n_output"])
 dir_list=dsRawData[0]
 data_y_gt=dsRawData[1]
 data_y_gt=data_y_gt*cm_mul*cm_mul

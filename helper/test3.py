@@ -9,7 +9,8 @@ params=config.get_params()
 #ds=dl.load_data_with_id(params,17)
 print("okayuu")
 print "Mean Compute Started...."
-dt.check_missin_values(params)
+dl.load_data(params)
+#dt.check_missin_values(params)
 #tdl.compute_mean(params)
 #print "Gray scale conver started...."
 #utils.convert_to_grayscale(params)
