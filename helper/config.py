@@ -90,6 +90,7 @@ def update_params(params):
    params['log_file']=params["wd"]+"/logs/"+params["model"]+"_"+params["rn_id"]+"_"+str(params['run_mode'])+"_"+utils.get_time()+".txt"
    if(params['run_mode']==1):
        params['step_size']=[10]
+       params['n_patch']= 2
 
    if(params['run_mode']==2):
        params['step_size']=[1,10,25]
