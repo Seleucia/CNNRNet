@@ -33,11 +33,13 @@ def train_model(params):
 
   utils.log_write("Model build started",params)
   model=  model_provider.get_model(params)
+  utils.log_write("Number of parameters: %s"%(model.count_params()),params)
   run_mode=params["run_mode"]
   utils.log_write("Model build ended",params)
   utils.log_write("Training started",params)
   best_validation_loss=np.inf
   epoch_counter = 0
+  n_patch=10
   while (epoch_counter < n_epochs):
       epoch_counter = epoch_counter + 1
       print("Training model...")
@@ -45,16 +47,20 @@ def train_model(params):
           iter = (epoch_counter - 1) * n_train_batches + minibatch_index
           if iter % 100 == 0:
               print 'training @ iter = ', iter
-
-          Fx = X_train[minibatch_index * batch_size: (minibatch_index + 1) * batch_size]
-          data_Fx = dt_utils.load_batch_images(params,"F", Fx)
-          data_Sx = dt_utils.load_batch_images(params,"S", Fx)
-          data_y = y_train[minibatch_index * batch_size: (minibatch_index + 1) * batch_size]
-          loss =model.train_on_batch([data_Fx, data_Sx], data_y)
-          if isinstance(loss,list):
-             loss=loss[0]
-
-          s='TRAIN--> epoch %i | minibatch %i/%i | error %f'%(epoch_counter, minibatch_index + 1, n_train_batches,  loss)
+          epoch_loss=0
+          for patch_index in xrange(n_patch):
+             patch_loc=utils.get_patch_loc(params)
+             Fx = X_train[minibatch_index * batch_size: (minibatch_index + 1) * batch_size]
+             data_Fx = dt_utils.load_batch_images(params,"F", Fx,patch_loc)
+             data_Sx = dt_utils.load_batch_images(params,"S", Fx,patch_loc)
+             data_y = y_train[minibatch_index * batch_size: (minibatch_index + 1) * batch_size]
+             loss =model.train_on_batch([data_Fx, data_Sx], data_y)
+             if isinstance(loss,list):
+                epoch_loss+=loss[0]
+             else:
+                epoch_loss+=loss
+          epoch_loss/=n_patch
+          s='TRAIN--> epoch %i | minibatch %i/%i | error %f'%(epoch_counter, minibatch_index + 1, n_train_batches,  epoch_loss)
           utils.log_write(s,params)
           if(run_mode==1):
               break
@@ -62,15 +68,21 @@ def train_model(params):
       print("Validating model...")
       this_validation_loss = 0
       for i in xrange(n_valid_batches):
-          Fx = X_val[i * batch_size: (i + 1) * batch_size]
-          data_Fx = dt_utils.load_batch_images(params,"F", Fx)
-          data_Sx = dt_utils.load_batch_images(params,"S", Fx)
-          data_y = y_val[i * batch_size: (i + 1) * batch_size]
-          loss= model.test_on_batch([data_Fx, data_Sx],data_y)
-          if isinstance(loss,list):
-             loss=loss[0]
-          this_validation_loss +=loss
-          if(run_mode==1):
+         epoch_loss=0
+         for patch_index in xrange(n_patch):
+            patch_loc=utils.get_patch_loc(params)
+            Fx = X_val[i * batch_size: (i + 1) * batch_size]
+            data_Fx = dt_utils.load_batch_images(params,"F", Fx,patch_loc)
+            data_Sx = dt_utils.load_batch_images(params,"S", Fx,patch_loc)
+            data_y = y_val[i * batch_size: (i + 1) * batch_size]
+            loss= model.test_on_batch([data_Fx, data_Sx],data_y)
+            if isinstance(loss,list):
+                epoch_loss+=loss[0]
+            else:
+               epoch_loss+=loss
+         epoch_loss/=n_patch
+         this_validation_loss +=epoch_loss
+         if(run_mode==1):
               break
       this_validation_loss /=n_valid_batches
 

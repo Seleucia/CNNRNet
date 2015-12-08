@@ -1,5 +1,6 @@
 import dcnnr
 import kcnnr
+import pcnnr
 import bncnnr
 import mlpr
 import bnmlpr
@@ -22,6 +23,8 @@ def get_model(params):
         model= dmlpr.build_model(params)
     if(params["model"]=="thmlpr"):
         model= thmlpr.build_model(params)
+    if(params["model"]=="pcnnr"):
+        model= pcnnr.build_model(params)
     return model
 
 def get_model_pretrained(params):

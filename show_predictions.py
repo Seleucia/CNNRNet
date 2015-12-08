@@ -12,9 +12,9 @@ id=17 #data will be loaded according to this id
 params['step_size']=[10]
 step=params['step_size'][0]
 
-params['model_name']="dcnnr_4_pre_depth.hdf5"
+params['model_name']="dcnnr_dr_best_1_gray.hdf5"
 params['model']="dcnnr"
-params['im_type']="pre_depth"
+params['im_type']="gray"
 prediction_name= params['model_name'].replace("/", " ").split()[-1] .replace(".h5","")
 ext_raw_data=prediction_name+"raw_data"+"_"+str(step)+".pkl"
 ext_err=prediction_name+"err"+"_"+str(step)+".pkl"
@@ -90,7 +90,7 @@ model_saver.save_pred(ext_y_test_gt, y_test_delta_gt,params)
 y_test_delta_gt=y_test_delta_gt[:,0:3]
 yy_test_step=yy_test_step[:,0:3]
 yy_pred=yy_pred[:,0:3]
-y_delta_test_1=y_delta_test_1[:,0:3]
+y_delta_test_1=np.asarray(y_delta_test_1)[:,0:3]
 plot_data.plot_y([yy_test_step, np.array(yy_pred)], fig_name3d)
 
 

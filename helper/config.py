@@ -5,10 +5,12 @@ import set_ds_list as sdl
 
 def get_params():
    params={}
-   params['run_mode']=1 #process checkY_testing
+   params['run_mode']=3 #0,full,1:only for check, 2: very small ds, 3:only ICL data
    params["rn_id"]="dr" #running id
    params["notes"]="Renew test" #running id
-   params["model"]="kcnnr"#kccnr,dccnr
+   params["model"]="pcnnr"#kccnr,dccnr
+   params['patch_use']= 1
+   params['n_patch']= 250
 
    params['shufle_data']=1
    params['gray_mean']=114.33767967 #114.151092572
@@ -20,7 +22,10 @@ def get_params():
    params['im_type']="gray"
    params['step_size']=[1,5,7,10,12,14,15,17,19,21,23,25]
    params['n_output']=7
+   params['orijinal_size']=[640,460]
 
+   if(params['patch_use']== 1):
+      params['step_size']=[1,5,8,10,12,15]
    #system settings
    wd=os.path.dirname(os.path.realpath(__file__))
    wd=os.path.dirname(wd)
@@ -59,7 +64,7 @@ def get_params():
        params["caffe"]="/home/coskun/sftpkg/caffe/python"
 
    #params['step_size']=[10]
-   params['size']=[160, 120] #[width,height]
+   params['size']=[64, 46] #[width,height], fore others: 160,120
    params['nc']=1 #number of dimensions
    params['multi']=10 #ground truth location differences will be multiplied with this number
    params['test_size']=0.20 #Test size
@@ -70,6 +75,8 @@ def get_params():
    params['kern_mat']=[(5, 5), (5, 5)] #shape of kernel
    params['nkerns']= [40, 30,20,20] #number of kernel
    params['pool_mat']=  [(2, 2), (2, 2)] #shape of pooling
+   params['stride_mat']=  [2, 2] #shape of pooling
+   params['patch_margin']=  [10, 10] #shape of pooling
 
 
    #Feature extraction:
@@ -93,7 +100,7 @@ def update_params(params):
          params["dataset"][i]=-1
 
    if params['run_mode']==3:#only ICL data
-      for i in params["dataset"]:
+      for i in range(len(params["dataset"])):
          if params["dataset"][i]!=-1:
             if params["dataset"][i][1]!="ICL":
                params["dataset"][i]=-1

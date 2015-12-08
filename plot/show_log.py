@@ -3,7 +3,7 @@ import helper.config as config
 import plot_data
 
 params=config.get_params()
-params["log_file"]="dcnnr_dr_05_44_52_462880.txt"
+params["log_file"]="dcnnr_dr_0_20-24-01-476440.txt"
 
 model="VAL"
 list_val=utils.log_read(model,params)

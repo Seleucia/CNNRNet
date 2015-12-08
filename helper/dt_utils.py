@@ -17,7 +17,7 @@ def shared_dataset(data_xx, data_yy, borrow=True):
                                  borrow=borrow)
         return shared_x, shared_y
 
-def load_batch_images(params,dir, x):
+def load_batch_images(params,dir, x,patch_loc):
     #We should modify this function to load images with different number of channels
     size=params["size"]
     im_type=params["im_type"]
@@ -55,7 +55,10 @@ def load_batch_images(params,dir, x):
             arr1=numpy.load(dImg)
         else:
             img = Image.open(dImg)
-            img=img.resize(size)
+            if(params['patch_use']==1):
+                img=img.crop(patch_loc)
+            else:
+                img=img.resize(size)
             arr1= numpy.array(img,theano.config.floatX)
 
         arr1=(arr1-sbt)/normalizer

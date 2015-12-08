@@ -6,6 +6,8 @@ import glob
 from PIL import Image
 import datetime
 import numpy as np
+from random import randint
+
 
 def init_W_b(W, b, rng, n_in, n_out):
     # for a discussion of the initialization, see
@@ -126,6 +128,18 @@ def start_log(datasets,params):
 
 def get_time():
     return str(datetime.datetime.now().time()).replace(":","-").replace(".","-")
+
+def get_patch_loc(params):
+    patch_margin=params["patch_margin"]
+    orijinal_size=params['orijinal_size']
+    size=params['size']
+    x1=randint(patch_margin[0],orijinal_size[0]-(patch_margin[0]+size[0]))
+    x2=x1+size[0]
+
+    y1=randint(patch_margin[1],orijinal_size[1]-(patch_margin[1]+size[1]))
+    y2=y1+size[1]
+    return (x1,y1,x2,y2)
+
 
 def create_file(log_file):
     log_dir= os.path.dirname(log_file)
