@@ -40,7 +40,7 @@ def train_model(params):
   best_validation_loss=np.inf
   epoch_counter = 0
   n_patch=params["n_patch"]
-  n_repeat=params["n_repeat"]
+  n_repeat=params["n_repeat"]#instead of extracting many batches for each epoch, we are repeating epoch since we are ensuring that output changes for each patch
   while (epoch_counter < n_epochs):
       epoch_counter = epoch_counter + 1
       print("Training model...")
