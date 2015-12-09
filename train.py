@@ -101,8 +101,6 @@ def train_model(params):
       X_train,y_train=dt_utils.shuffle_in_unison_inplace(X_train,y_train)
       if(run_mode==1):
               break
-  ext=params["model_file"]+params["model"]+"_regular_"+str(epoch_counter % 5)+"_"+im_type+".hdf5"
-  model.save_weights(ext, overwrite=True)
   utils.log_write("Training ended",params)
 
 if __name__ == "__main__":
