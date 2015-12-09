@@ -59,6 +59,10 @@ def train_model(params):
                 epoch_loss+=loss[0]
              else:
                 epoch_loss+=loss
+          if(params['patch_use']==1):
+             ext=params["model_file"]+params["model"]+"_m_"+str(minibatch_index)+"_"+im_type+".hdf5"
+             model.save_weights(ext, overwrite=True)
+
           epoch_loss/=n_patch
           s='TRAIN--> epoch %i | minibatch %i/%i | error %f'%(epoch_counter, minibatch_index + 1, n_train_batches,  epoch_loss)
           utils.log_write(s,params)
