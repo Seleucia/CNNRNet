@@ -60,7 +60,7 @@ def train_model(params):
              else:
                 epoch_loss+=loss
           if(params['patch_use']==1):
-             ext=params["model_file"]+params["model"]+"_m_"+str(minibatch_index)+"_"+im_type+".hdf5"
+             ext=params["model_file"]+params["model"]+"_"+im_type+"_m_"+str(minibatch_index)+".hdf5"
              model.save_weights(ext, overwrite=True)
 
           epoch_loss/=n_patch
@@ -68,7 +68,8 @@ def train_model(params):
           utils.log_write(s,params)
           if(run_mode==1):
               break
-
+      ext=params["model_file"]+params["model"]+"_"+im_type+"_e_"+str(epoch_counter % 10)+".hdf5"
+      model.save_weights(ext, overwrite=True)
       print("Validating model...")
       this_validation_loss = 0
       for i in xrange(n_valid_batches):
@@ -89,14 +90,11 @@ def train_model(params):
          if(run_mode==1):
               break
       this_validation_loss /=n_valid_batches
-
       s ='VAL--> epoch %i | error %f | data mean/abs %f/%f'%(epoch_counter, this_validation_loss,y_val_mean,y_val_abs_mean)
       utils.log_write(s,params)
-      ext=params["model_file"]+params["model"]+"_"+str(epoch_counter % 10)+"_"+im_type+".hdf5"
-      model.save_weights(ext, overwrite=True)
       if this_validation_loss < best_validation_loss:
           best_validation_loss = this_validation_loss
-          ext=params["model_file"]+params["model"]+"_"+str(rn_id)+"_best_"+str(epoch_counter)+"_"+im_type+".hdf5"
+          ext=params["model_file"]+params["model"]+"_"+im_type+"_"+"_best_"+str(rn_id)+"_"+str(epoch_counter)+".hdf5"
           model.save_weights(ext, overwrite=True)
 
       #We are shuffling data at each epoch
