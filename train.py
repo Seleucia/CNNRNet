@@ -40,14 +40,22 @@ def train_model(params):
   best_validation_loss=np.inf
   epoch_counter = 0
   n_patch=params["n_patch"]
+  n_repeat=params["n_repeat"]
   while (epoch_counter < n_epochs):
       epoch_counter = epoch_counter + 1
       print("Training model...")
-      for minibatch_index in xrange(n_train_batches):
-          iter = (epoch_counter - 1) * n_train_batches + minibatch_index
+      for index in xrange(n_train_batches*n_repeat):
+          minibatch_index=index%n_train_batches
+          #We are shuffling data at each batch, we are shufling here because we already finished one epoch just repeating for the extract different batch
+          if(index>0 and minibatch_index==0):#we are checking weather we finish all dataset
+             ext=params["model_file"]+params["model"]+"_"+im_type+"_m_"+str(index%5)+".hdf5"
+             model.save_weights(ext, overwrite=True)
+             X_train,y_train=dt_utils.shuffle_in_unison_inplace(X_train,y_train)
+
+          iter = (epoch_counter - 1) * n_train_batches + index
           if iter % 100 == 0:
               print 'training @ iter = ', iter
-          epoch_loss=0
+          batch_loss=0
           Fx = X_train[minibatch_index * batch_size: (minibatch_index + 1) * batch_size]
           data_y = y_train[minibatch_index * batch_size: (minibatch_index + 1) * batch_size]
           for patch_index in xrange(n_patch):
@@ -56,23 +64,23 @@ def train_model(params):
              data_Sx = dt_utils.load_batch_images(params,"S", Fx,patch_loc)
              loss =model.train_on_batch([data_Fx, data_Sx], data_y)
              if isinstance(loss,list):
-                epoch_loss+=loss[0]
+                batch_loss+=loss[0]
              else:
-                epoch_loss+=loss
-          if(params['patch_use']==1):
-             ext=params["model_file"]+params["model"]+"_"+im_type+"_m_"+str(minibatch_index)+".hdf5"
-             model.save_weights(ext, overwrite=True)
+                batch_loss+=loss
 
-          epoch_loss/=n_patch
-          s='TRAIN--> epoch %i | minibatch %i/%i | error %f'%(epoch_counter, minibatch_index + 1, n_train_batches,  epoch_loss)
+          batch_loss/=n_patch
+          s='TRAIN--> epoch %i | batch_index %i/%i | error %f'%(epoch_counter, index + 1, n_train_batches*n_repeat,  batch_loss)
           utils.log_write(s,params)
           if(run_mode==1):
               break
+      #we are shufling for to be sure
+      X_train,y_train=dt_utils.shuffle_in_unison_inplace(X_train,y_train)
       ext=params["model_file"]+params["model"]+"_"+im_type+"_e_"+str(epoch_counter % 10)+".hdf5"
       model.save_weights(ext, overwrite=True)
       print("Validating model...")
       this_validation_loss = 0
-      for i in xrange(n_valid_batches):
+      for index in xrange(n_valid_batches*n_repeat):
+         i = index%n_valid_batches
          epoch_loss=0
          Fx = X_val[i * batch_size: (i + 1) * batch_size]
          data_y = y_val[i * batch_size: (i + 1) * batch_size]
@@ -89,16 +97,13 @@ def train_model(params):
          this_validation_loss +=epoch_loss
          if(run_mode==1):
               break
-      this_validation_loss /=n_valid_batches
+      this_validation_loss /= (n_valid_batches*n_repeat)
       s ='VAL--> epoch %i | error %f | data mean/abs %f/%f'%(epoch_counter, this_validation_loss,y_val_mean,y_val_abs_mean)
       utils.log_write(s,params)
       if this_validation_loss < best_validation_loss:
           best_validation_loss = this_validation_loss
           ext=params["model_file"]+params["model"]+"_"+im_type+"_"+"_best_"+str(rn_id)+"_"+str(epoch_counter)+".hdf5"
           model.save_weights(ext, overwrite=True)
-
-      #We are shuffling data at each epoch
-      X_train,y_train=dt_utils.shuffle_in_unison_inplace(X_train,y_train)
       if(run_mode==1):
               break
   utils.log_write("Training ended",params)

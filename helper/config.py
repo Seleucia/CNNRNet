@@ -10,7 +10,8 @@ def get_params():
    params["notes"]="Renew test" #running id
    params["model"]="pcnnr"#kccnr,dccnr
    params['patch_use']= 1
-   params['n_patch']= 300
+   params['n_patch']= 1
+   params['n_repeat']= 300
 
    params['shufle_data']=1
    params['gray_mean']=114.33767967 #114.151092572
@@ -18,7 +19,7 @@ def get_params():
    params['pre_depth_mean']=9505.32929609 #9515.98643977
    params['rgb_mean']=[138.28382874, 128.78469849 ,124.75618744] #[138.18440247,128.58282471 ,124.65019226]
    params['hha_depth_fc6_mean']=1.43717336397
-   params['batch_size']=1200
+   params['batch_size']=1000
    params['im_type']="gray"
    params['step_size']=[1,5,7,10,12,14,15,17,19,21,23,25]
    params['n_output']=7
@@ -53,6 +54,8 @@ def get_params():
        params["caffe"]="/home/coskun/sftpkg/caffe/python"
        params['batch_size']=10
        params["WITH_GPU"]=False
+       params['n_patch']= 1
+       params['n_repeat']= 3
 
    if(platform.node()=="milletari-workstation"):
        params["caffe"]="/usr/local/caffe/python"
@@ -90,7 +93,8 @@ def update_params(params):
    params['log_file']=params["wd"]+"/logs/"+params["model"]+"_"+params["rn_id"]+"_"+str(params['run_mode'])+"_"+utils.get_time()+".txt"
    if(params['run_mode']==1):
        params['step_size']=[10]
-       params['n_patch']= 2
+       params['n_patch']= 1
+       params['n_repeat']= 3
 
    if(params['run_mode']==2):
        params['step_size']=[1,10,25]
