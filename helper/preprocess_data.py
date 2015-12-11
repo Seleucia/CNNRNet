@@ -29,7 +29,8 @@ def depth_meansubtract(params):
                 arr2=np.zeros_like(arr1)
                 arr2[arr1.nonzero()]=sbt
                 arr1=(arr1-arr2)/normalizer
-                np.save(new_dir+os.path.basename(f),arr1)
+                f=new_dir+os.path.basename(f).replace(".png","")
+                np.save(f,arr1)
             print("data set converted %s"%(dir[0]))
         else:
             print("data set has already proccessed %s"%(dir[0]))
