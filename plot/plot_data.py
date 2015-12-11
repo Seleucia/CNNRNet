@@ -153,3 +153,27 @@ def plot_ms(data,dir,name):
    plt.savefig(dir.replace(name+"/","")+name)
    plt.grid(True)
    plt.show()
+
+
+
+def plot_patch(pred_mat):
+   import matplotlib
+   matplotlib.use('Agg')
+   import matplotlib.pyplot as plt
+
+   for i in range(len(pred_mat)):
+      fig = plt.figure()
+      ax = fig.add_subplot(111, projection='3d')
+      for k in range(len(pred_mat[i])):
+         xs = pred_mat[i][k][0]
+         ys = pred_mat[i][k][1]
+         zs = pred_mat[i][k][2]
+         ax.scatter(xs, ys, zs)
+
+      ax.set_xlabel('X Label')
+      ax.set_ylabel('Y Label')
+      ax.set_zlabel('Z Label')
+      #plt.show()
+      plt.savefig("/home/coskun/Desktop/sil/1/"+str(i)+".jpg")
+      print "Look image"
+

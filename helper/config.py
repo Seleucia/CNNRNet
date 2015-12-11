@@ -8,25 +8,30 @@ def get_params():
    params['run_mode']=1 #0,full,1:only for check, 2: very small ds, 3:only ICL data
    params["rn_id"]="drd" #running id
    params["notes"]="drop rate dro" #running id
-   params["model"]="dcnnr"#kccnr,dccnr
-   params['patch_use']= 0
-   params['n_patch']= 1
-   params['n_repeat']= 1
+   params["model"]="pcnnr"#kccnr,dccnr
+   params['im_type']="gray"
+   params['patch_use']= 1
 
+   params['batch_size']=240
    params['shufle_data']=1
    params['gray_mean']=114.33767967 #114.151092572
    params['depth_mean']=13797.3639853 #13746.3784954
    params['pre_depth_mean']=9505.32929609 #9515.98643977
    params['rgb_mean']=[138.28382874, 128.78469849 ,124.75618744] #[138.18440247,128.58282471 ,124.65019226]
    params['hha_depth_fc6_mean']=1.43717336397
-   params['batch_size']=240
-   params['im_type']="pre_depth"
    params['step_size']=[1,5,7,10,12,14,15,17,19,21,23,25]
    params['n_output']=7
    params['orijinal_size']=[640,460]
+   params['size']=[160, 120] #[width,height], fore others: 160,120
 
+   #in case patch use, we will update these parameters
+   params['n_patch']= 1
+   params['n_repeat']= 1
    if(params['patch_use']== 1):
       params['step_size']=[1,5,8,10,12,15]
+      params['n_patch']= 1
+      params['n_repeat']= 300
+      params['size']=[64, 46] #[width,height], fore others: 160,120
    #system settings
    wd=os.path.dirname(os.path.realpath(__file__))
    wd=os.path.dirname(wd)
@@ -67,7 +72,6 @@ def get_params():
        params["caffe"]="/home/coskun/sftpkg/caffe/python"
 
    #params['step_size']=[10]
-   params['size']=[160, 120] #[width,height], fore others: 160,120
    params['nc']=1 #number of dimensions
    params['multi']=10 #ground truth location differences will be multiplied with this number
    params['test_size']=0.20 #Test size
@@ -91,6 +95,7 @@ def get_params():
 
 def update_params(params):
    params['log_file']=params["wd"]+"/logs/"+params["model"]+"_"+params["rn_id"]+"_"+str(params['run_mode'])+"_"+utils.get_time()+".txt"
+
    if(params['run_mode']==1):
        params['step_size']=[10]
        params['n_patch']= 1

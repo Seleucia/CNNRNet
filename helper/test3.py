@@ -13,4 +13,4 @@ dl.load_data(params)
 #dt.check_missin_values(params)
 #tdl.compute_mean(params)
 #print "Gray scale conver started...."
-#utils.convert_to_grayscale(params)
+utils.convert_to_grayscale(params)

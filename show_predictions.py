@@ -6,15 +6,17 @@ from helper import config, model_saver, utils
 from plot import plot_data
 
 params= config.get_params()
+
 is_test=1
 cm_mul=10
 id=17 #data will be loaded according to this id
 params['step_size']=[10]
 step=params['step_size'][0]
 
-params['model_name']="dcnnr_dr_best_1_gray.hdf5"
-params['model']="dcnnr"
+params['model_name']="pcnnr_gray_m_0.hdf5"
+params['model']="pcnnr"
 params['im_type']="gray"
+
 prediction_name= params['model_name'].replace("/", " ").split()[-1] .replace(".h5","")
 ext_raw_data=prediction_name+"raw_data"+"_"+str(step)+".pkl"
 ext_err=prediction_name+"err"+"_"+str(step)+".pkl"
@@ -58,6 +60,8 @@ mean_error=np.mean(np.abs(err))
 print "Mean Error:"+str(mean_error)
 print "Mean of gt values:"+str(np.mean(y_delta_test_step))
 print "Mean of pred values:"+str(np.mean(y_delta_pred))
+print "Mean of abs gt values:"+str(np.mean(np.abs(y_delta_test_step)))
+print "Mean of abs pred values:"+str(np.mean(np.abs(y_delta_pred)))
 
 #camera location restored from augmented data
 yy_test_step= utils.up_sample(overlaps_test_step, y_delta_test_step, step)
