@@ -1,5 +1,5 @@
 import tables
-import gzip
+import helper.glb as glb
 import os
 import numpy
 import theano
@@ -52,7 +52,7 @@ def load_batch_images(params, direction, x, patch_loc):
     pool_img.daemon=True
     results = pool_img.map(load_image_wrapper,map_arg)
     pool_img.close()
-    if(params["is_exit"]==1):
+    if(glb.is_exit==1):
         pool_img.terminate()
     else:
         pool_img.join()
@@ -102,7 +102,8 @@ def asyn_load_batch_images(args):
     results = pool.map(load_batch_wrapper,args)
     pool.close()
     params=args[0][0]
-    if(params["is_exit"]==1):
+    print glb.is_exit
+    if(glb.is_exit==1):
         pool.terminate()
     else:
         pool.join()

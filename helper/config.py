@@ -4,6 +4,7 @@ import platform
 import set_ds_list as sdl
 
 def get_params():
+   global params
    params={}
    params['run_mode']=1 #0,full,1:only for check, 2: very small ds, 3:only ICL data
    params["rn_id"]="drd" #running id

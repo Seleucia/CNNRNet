@@ -2,11 +2,12 @@ import sys
 import numpy as np
 import argparse
 import helper.data_loader as data_loader
-from helper import config, utils, dt_utils
+from helper import config, utils, dt_utils,glb
 from models import model_provider
 
-sys.setrecursionlimit(50000)
 
+sys.setrecursionlimit(50000)
+is_exit=0
 def train_model(params):
   rn_id=params["rn_id"]
   im_type=params["im_type"]
@@ -61,6 +62,9 @@ def train_model(params):
           for patch_index in xrange(n_patch):
              patch_loc=utils.get_patch_loc(params)
              argu= [(params,"F", Fx,patch_loc),(params,"S", Fx,patch_loc)]
+             if is_exit==1:
+                print "Exiting....."
+                return
              results = dt_utils.asyn_load_batch_images(argu)
              data_Fx = results[0]
              data_Sx = results[1]
@@ -79,7 +83,6 @@ def train_model(params):
       X_train,y_train=dt_utils.shuffle_in_unison_inplace(X_train,y_train)
       ext=params["model_file"]+params["model"]+"_"+im_type+"_e_"+str(epoch_counter % 10)+".hdf5"
       model.save_weights(ext, overwrite=True)
-
       if params['validate']==0:
          print("Validation skipped...")
          if(run_mode==1):
@@ -119,6 +122,7 @@ def train_model(params):
   utils.log_write("Training ended",params)
 
 if __name__ == "__main__":
+  global params
   params= config.get_params()
   parser = argparse.ArgumentParser(description='Training the module')
   parser.add_argument('-rm','--run_mode',type=int, help='Training mode:0 full train, 1 system check, 2 simle train',
@@ -137,6 +141,7 @@ if __name__ == "__main__":
      train_model(params)
   except KeyboardInterrupt:
      utils.log_write("Exiting program",params)
+     is_exit=1
      params["is_exit"]=1
   except Exception, e:
         utils.log_write('got exception: %r, terminating the pool' % (e,),params)
