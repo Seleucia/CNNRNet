@@ -116,4 +116,11 @@ def update_params(params):
             if params["dataset"][i][1]!="ICL":
                params["dataset"][i]=-1
 
+   if params['run_mode']==4:#only 17
+      for i in range(len(params["dataset"])):
+         if params["dataset"][i]!=-1:
+            if params["dataset"][i][1]!="ICL":
+               params["dataset"][i]=-1
+            if i>17:
+               params["dataset"][i]=-1
    return params
