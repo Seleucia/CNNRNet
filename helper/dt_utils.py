@@ -7,6 +7,8 @@ import plot.plot_data as pd
 import glob
 from theano import config
 from PIL import Image
+from multiprocessing import Pool
+from multiprocessing.pool import ThreadPool
 
 def shared_dataset(data_xx, data_yy, borrow=True):
         shared_x = theano.shared(numpy.asarray(data_xx,
@@ -17,10 +19,11 @@ def shared_dataset(data_xx, data_yy, borrow=True):
                                  borrow=borrow)
         return shared_x, shared_y
 
-def load_batch_images(params,dir, x,patch_loc):
+def load_batch_images(params, direction, x, patch_loc):
     #We should modify this function to load images with different number of channels
     size=params["size"]
     im_type=params["im_type"]
+    patch_use=params['patch_use']
 
     sbt=1
     if(im_type=="depth"):
@@ -38,39 +41,66 @@ def load_batch_images(params,dir, x,patch_loc):
     if(im_type=="hha_depth_fc6"):
         normalizer=47.2940864563
         sbt=params["hha_depth_fc6_mean"]
-
     if(im_type=="rgb"):
         normalizer=255
         sbt=params["rgb_mean"]
-
-    batch_l=[]
-    i = 0
-    for (dImg1, dImg2) in x:
-        dImg=""
-        if dir=="F":
-            dImg=dImg1
-        else:
-            dImg=dImg2
-        if(im_type.find("fc")>0):
-            arr1=numpy.load(dImg)
-        else:
-            img = Image.open(dImg)
-            if(params['patch_use']==1):
-                img=img.crop(patch_loc)
-            else:
-                img=img.resize(size)
-            arr1= numpy.array(img,theano.config.floatX)
-
-        arr1=(arr1-sbt)/normalizer
-        l=[]
-        l.append([])
-        l[0]=arr1
-        n_l=numpy.array(l)
-        batch_l.append([])
-        batch_l[i]=n_l
-        i+=1
-#    batch_l=numpy.squeeze(batch_l)
+    im_order=0
+    if(direction=="S"):
+        im_order=1
+    map_arg=[(direction, im_type, normalizer, patch_loc, patch_use, sbt, size, im[im_order]) for im in x]
+    pool_img = ThreadPool(100)
+    results = pool_img.map(load_image_wrapper,map_arg)
+    pool_img.close()
+    pool_img.join()
+    batch_l=convert_set(results)
     return numpy.array(batch_l)
+
+def convert_set(res):
+    batch_l = []
+    i = 0
+    for arr1 in res:
+        l = []
+        l.append([])
+        l[0] = arr1
+        n_l = numpy.array(l)
+        batch_l.append([])
+        batch_l[i] = n_l
+        i += 1
+    #    batch_l=numpy.squeeze(batch_l)
+    return batch_l
+
+def load_image(direction, im_type, normalizer, patch_loc, patch_use, sbt, size, dImg):
+
+    if (im_type.find("fc") > 0):
+            arr1 = numpy.load(dImg)
+    else:
+            img = Image.open(dImg)
+            if (patch_use == 1):
+                img = img.crop(patch_loc)
+            else:
+                img = img.resize(size)
+            arr1 = numpy.array(img, theano.config.floatX)
+
+    if (im_type == "depth"):
+        arr2 = numpy.zeros_like(arr1)
+        arr2[arr1.nonzero()] = sbt
+        arr1 = (arr1 - arr2) / normalizer
+    else:
+        arr1 = (arr1 - sbt) / normalizer
+    return arr1
+
+def load_image_wrapper(args):
+   return load_image(*args)
+
+def asyn_load_batch_images(args):
+    pool = Pool(2)
+    results = pool.map(load_batch_wrapper,args)
+    pool.close()
+    pool.join()
+    return results
+
+def load_batch_wrapper(args):
+   return load_batch_images(*args)
 
 def write_features(ndarr, fl_ls,parent_dir):
     for i in range(ndarr.shape[1]):

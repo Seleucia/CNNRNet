@@ -4,6 +4,7 @@ import argparse
 import helper.data_loader as data_loader
 from helper import config, utils, dt_utils
 from models import model_provider
+from multiprocessing import Pool
 
 sys.setrecursionlimit(50000)
 
@@ -79,12 +80,6 @@ def train_model(params):
       X_train,y_train=dt_utils.shuffle_in_unison_inplace(X_train,y_train)
       ext=params["model_file"]+params["model"]+"_"+im_type+"_e_"+str(epoch_counter % 10)+".hdf5"
       model.save_weights(ext, overwrite=True)
-
-      if params['validate']==0:
-         print("Validation skipped...")
-         if(run_mode==1):
-              break
-         continue
       print("Validating model...")
       this_validation_loss = 0
       for index in xrange(n_valid_batches*n_repeat):
@@ -94,10 +89,8 @@ def train_model(params):
          data_y = y_val[i * batch_size: (i + 1) * batch_size]
          for patch_index in xrange(n_patch):
             patch_loc=utils.get_patch_loc(params)
-            argu= [(params,"F", Fx,patch_loc),(params,"S", Fx,patch_loc)]
-            results = dt_utils.asyn_load_batch_images(argu)
-            data_Fx = results[0]
-            data_Sx = results[1]
+            data_Fx = dt_utils.load_batch_images(params,"F", Fx,patch_loc)
+            data_Sx = dt_utils.load_batch_images(params,"S", Fx,patch_loc)
             loss= model.test_on_batch([data_Fx, data_Sx],data_y)
             if isinstance(loss,list):
                 epoch_loss+=loss[0]

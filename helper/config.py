@@ -11,6 +11,7 @@ def get_params():
    params["model"]="pcnnr"#kccnr,dccnr
    params['im_type']="gray"
    params['patch_use']= 1
+   params['validate']= 0
 
    params['batch_size']=240
    params['shufle_data']=1

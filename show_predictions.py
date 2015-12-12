@@ -13,7 +13,7 @@ id=17 #data will be loaded according to this id
 params['step_size']=[10]
 step=params['step_size'][0]
 
-params['model_name']="pcnnr_gray_m_0.hdf5"
+params['model_name']="pcnnr_gray_m_2.hdf5"
 params['model']="pcnnr"
 params['im_type']="gray"
 

@@ -30,8 +30,10 @@ def predict_on_fullimage(test_set_x,params):
     patch_loc=u.get_patch_loc(params) #we are not using this for image
     for i in xrange(n_test_batches):
         Fx = test_set_x[i * batch_size: (i + 1) * batch_size]
-        data_Fx = du.load_batch_images(params, "F", Fx,patch_loc)
-        data_Sx = du.load_batch_images(params,"S", Fx,patch_loc)
+        argu= [(params,"F", Fx,patch_loc),(params,"S", Fx,patch_loc)]
+        results = du.asyn_load_batch_images(argu)
+        data_Fx = results[0]
+        data_Sx = results[1]
         if(len(y_pred)==0):
             y_pred= model.predict([data_Fx, data_Sx])
         else:
@@ -64,7 +66,7 @@ def predict_on_patch(test_set_x,params):
         n_repeat=params["n_repeat"]
         n=n_patch*n_repeat
 
-        n=500
+        n=800
         pred_mat[0]=np.zeros((n,params['n_output']))
         for k in range(batch_size): pred_mat[k+i]=np.zeros((n,params['n_output']))
         for patch_index in xrange(n):
