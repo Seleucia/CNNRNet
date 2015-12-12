@@ -131,6 +131,7 @@ if __name__ == "__main__":
   params["run_mode"]=args["run_mode"]
   params["model"]=args["model"]
   params["im_type"]=args["im_type"]
+  params["is_exit"]=0
   params=config.update_params(params)
   try:
      train_model(params)
