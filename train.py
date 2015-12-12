@@ -132,4 +132,11 @@ if __name__ == "__main__":
   params["model"]=args["model"]
   params["im_type"]=args["im_type"]
   params=config.update_params(params)
-  train_model(params)
+  try:
+     train_model(params)
+  except KeyboardInterrupt:
+     utils.log_write("Exiting program",params)
+     params["is_exit"]=1
+  except Exception, e:
+        utils.log_write('got exception: %r, terminating the pool' % (e,),params)
+        params["is_exit"]=1
