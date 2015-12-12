@@ -48,7 +48,8 @@ def load_batch_images(params, direction, x, patch_loc):
     if(direction=="S"):
         im_order=1
     map_arg=[(direction, im_type, normalizer, patch_loc, patch_use, sbt, size, im[im_order]) for im in x]
-    pool_img = ThreadPool(100)
+    pool_img = ThreadPool(params["n_procc"])
+    pool_img.daemon=True
     results = pool_img.map(load_image_wrapper,map_arg)
     pool_img.close()
     pool_img.join()
@@ -94,6 +95,7 @@ def load_image_wrapper(args):
 
 def asyn_load_batch_images(args):
     pool = Pool(2)
+    pool.daemon=True
     results = pool.map(load_batch_wrapper,args)
     pool.close()
     pool.join()

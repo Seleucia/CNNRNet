@@ -24,6 +24,7 @@ def get_params():
    params['n_output']=7
    params['orijinal_size']=[640,460]
    params['size']=[160, 120] #[width,height], fore others: 160,120
+   params["n_procc"]=200
 
    #in case patch use, we will update these parameters
    params['n_patch']= 1
