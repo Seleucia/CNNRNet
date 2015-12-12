@@ -1,5 +1,4 @@
 import tables
-import helper.glb as glb
 import os
 import numpy
 import theano
@@ -52,10 +51,7 @@ def load_batch_images(params, direction, x, patch_loc):
     pool_img.daemon=True
     results = pool_img.map(load_image_wrapper,map_arg)
     pool_img.close()
-    if(glb.is_exit==1):
-        pool_img.terminate()
-    else:
-        pool_img.join()
+    pool_img.join()
     batch_l=convert_set(results)
     return numpy.array(batch_l)
 
@@ -101,12 +97,7 @@ def asyn_load_batch_images(args):
     pool.daemon=True
     results = pool.map(load_batch_wrapper,args)
     pool.close()
-    params=args[0][0]
-    print glb.is_exit
-    if(glb.is_exit==1):
-        pool.terminate()
-    else:
-        pool.join()
+    pool.join()
     return results
 
 def load_batch_wrapper(args):

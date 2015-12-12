@@ -2,7 +2,7 @@ import sys
 import numpy as np
 import argparse
 import helper.data_loader as data_loader
-from helper import config, utils, dt_utils,glb
+from helper import config, utils, dt_utils
 from models import model_provider
 
 
@@ -62,9 +62,6 @@ def train_model(params):
           for patch_index in xrange(n_patch):
              patch_loc=utils.get_patch_loc(params)
              argu= [(params,"F", Fx,patch_loc),(params,"S", Fx,patch_loc)]
-             if is_exit==1:
-                print "Exiting....."
-                return
              results = dt_utils.asyn_load_batch_images(argu)
              data_Fx = results[0]
              data_Sx = results[1]
