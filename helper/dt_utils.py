@@ -104,6 +104,7 @@ def load_image(direction, im_type, normalizer, patch_loc,map_loc, patch_use, sbt
         arr1 = (arr1 - arr2) / normalizer
     else:
         arr1 = (arr1 - sbt) / normalizer
+    print("Reading completed")
     return arr1
 
 def load_image_wrapper(args):
