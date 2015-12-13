@@ -113,8 +113,9 @@ def load_image_wrapper(args):
    return load_image(*args)
 
 def asyn_load_batch_images(args):
+    params=args[0][0]
     print("two pool starting")
-    pool = Pool(2)
+    pool = Pool(params["n_pool"])
     pool.daemon=True
     results = pool.map(load_batch_wrapper,args)
     pool.close()

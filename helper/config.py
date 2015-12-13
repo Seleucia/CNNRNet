@@ -29,6 +29,7 @@ def get_params():
    params['orijinal_size']=[640,460]
    params['size']=[160, 120] #[width,height], fore others: 160,120
    params["n_procc"]=200
+   params["n_pool"]=2
    params["is_exit"]=0
 
    #in case patch use, we will update these parameters
@@ -81,7 +82,8 @@ def get_params():
 
    if(platform.node()=="cmp-comp"):
        params['batch_size']=500
-       params["n_procc"]=10
+       params["n_procc"]=1
+       params["n_pool"]=1
        params['n_patch']= 1
        params["WITH_GPU"]=True
        params["caffe"]="/home/coskun/sftpkg/caffe/python"
