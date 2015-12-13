@@ -70,10 +70,10 @@ def get_params():
 
    if(platform.node()=="hc"):
        params["caffe"]="/home/coskun/sftpkg/caffe/python"
-       params['batch_size']=10
+       params['batch_size']=500
        params["WITH_GPU"]=False
        params['n_patch']= 1
-       params['n_repeat']= 3
+       params['n_repeat']= 512
 
    if(platform.node()=="milletari-workstation"):
        params["caffe"]="/usr/local/caffe/python"
