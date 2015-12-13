@@ -87,7 +87,9 @@ def load_image(direction, im_type, normalizer, patch_loc,map_loc, patch_use, sbt
     if (im_type.find("fc") > 0):
             arr1 = numpy.load(dImg)
     elif (im_type.find("conv")>0):
+        print dImg
         arr1=read_hdf(dImg)
+        print "Array loaded"
         arr1=arr1[map_loc]
         arr1= numpy.squeeze(arr1.reshape(arr1.shape[0]*arr1.shape[1]))
     else:
