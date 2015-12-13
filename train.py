@@ -69,6 +69,7 @@ def train_model(params):
              results = dt_utils.asyn_load_batch_images(argu)
              data_Fx = results[0]
              data_Sx = results[1]
+             print("Multiplacation started")
              loss =model.train_on_batch([data_Fx, data_Sx], data_y)
              if isinstance(loss,list):
                 batch_loss+=loss[0]

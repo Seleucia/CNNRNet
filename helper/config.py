@@ -81,6 +81,7 @@ def get_params():
 
    if(platform.node()=="cmp-comp"):
        params['batch_size']=500
+       params['n_patch']= 1
        params["WITH_GPU"]=True
        params["caffe"]="/home/coskun/sftpkg/caffe/python"
 
