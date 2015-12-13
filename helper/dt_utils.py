@@ -18,7 +18,7 @@ def shared_dataset(data_xx, data_yy, borrow=True):
                                  borrow=borrow)
         return shared_x, shared_y
 
-def load_batch_images(params, direction, x, patch_loc):
+def load_batch_images(params, direction, x, patch_loc,map_loc):
     #We should modify this function to load images with different number of channels
     size=params["size"]
     im_type=params["im_type"]
@@ -37,25 +37,35 @@ def load_batch_images(params, direction, x, patch_loc):
         normalizer=255
         sbt=params["gray_mean"]
 
-    if(im_type=="hha_depth_fc6"):
-        normalizer=47.2940864563
-        sbt=params["hha_depth_fc6_mean"]
     if(im_type=="rgb"):
         normalizer=255
         sbt=params["rgb_mean"]
+
+    if(im_type=="hha_depth_fc6"):
+        normalizer=47.2940864563
+        sbt=params["hha_depth_fc6_mean"]
+
+    if(im_type=="rgb_conv4_2"):
+        normalizer=8010.15771484
+        sbt=params["rgb_conv4_2_mean"]
+
+    if(im_type=="rgb_conv5_2"):
+        normalizer=1042.07519531
+        sbt=params["rgb_conv5_2_mean"]
+
     im_order=0
     if(direction=="S"):
         im_order=1
-    map_arg=[(direction, im_type, normalizer, patch_loc, patch_use, sbt, size, im[im_order]) for im in x]
+    map_arg=[(direction, im_type, normalizer, patch_loc,map_loc, patch_use, sbt, size, im[im_order]) for im in x]
     pool_img = ThreadPool(params["n_procc"])
     pool_img.daemon=True
     results = pool_img.map(load_image_wrapper,map_arg)
     pool_img.close()
     pool_img.join()
-    batch_l=convert_set(results)
+    batch_l=convert_set(results,im_type)
     return numpy.array(batch_l)
 
-def convert_set(res):
+def convert_set(res,im_type):
     batch_l = []
     i = 0
     for arr1 in res:
@@ -66,13 +76,19 @@ def convert_set(res):
         batch_l.append([])
         batch_l[i] = n_l
         i += 1
-    #    batch_l=numpy.squeeze(batch_l)
+
+    if (im_type.find("fc") > 0) or (im_type.find("conv")>0):
+        batch_l=numpy.squeeze(batch_l)
     return batch_l
 
-def load_image(direction, im_type, normalizer, patch_loc, patch_use, sbt, size, dImg):
+def load_image(direction, im_type, normalizer, patch_loc,map_loc, patch_use, sbt, size, dImg):
 
     if (im_type.find("fc") > 0):
             arr1 = numpy.load(dImg)
+    elif (im_type.find("conv")>0):
+        arr1=read_hdf(dImg)
+        arr1=arr1[map_loc]
+        arr1= numpy.squeeze(arr1.reshape(arr1.shape[0]*arr1.shape[1]))
     else:
             img = Image.open(dImg)
             if (patch_use == 1):

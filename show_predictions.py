@@ -9,13 +9,13 @@ params= config.get_params()
 
 is_test=1
 cm_mul=10
-id=17 #data will be loaded according to this id
+id=24 #data will be loaded according to this id
 params['step_size']=[10]
 step=params['step_size'][0]
 
-params['model_name']="pcnnr_gray_m_2.hdf5"
-params['model']="pcnnr"
-params['im_type']="gray"
+params['model_name']="conv4mlpr_rgb_conv4_2__best_conv4_test_2.hdf5"
+params['model']="conv4mlpr"
+params['im_type']="rgb_conv4_2"
 
 prediction_name= params['model_name'].replace("/", " ").split()[-1] .replace(".h5","")
 ext_raw_data=prediction_name+"raw_data"+"_"+str(step)+".pkl"

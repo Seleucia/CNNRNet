@@ -49,6 +49,8 @@ def load_data(dataset,im_type,n_output):
     ext=".png"
     if(im_type.find("fc")>0):
         ext=".npy"
+    if(im_type.find("conv")>0):
+        ext=".hdf"
     dir_f=dataset[0]+im_type+'/'
     full_path=dataset[0]+im_type+'/*'+ext
     lst=glob.glob(full_path)

@@ -129,6 +129,9 @@ def start_log(datasets,params):
 def get_time():
     return str(datetime.datetime.now().time()).replace(":","-").replace(".","-")
 
+def get_map_loc():
+    ind=randint(0,512)
+    return ind
 def get_patch_loc(params):
     patch_margin=params["patch_margin"]
     orijinal_size=params['orijinal_size']

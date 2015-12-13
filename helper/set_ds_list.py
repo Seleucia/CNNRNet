@@ -19,6 +19,7 @@ def set_list(params):
 
        #ICL
        params['dataset'][17]=["living_room_traj0_frei_png","ICL"]
+       params['dataset'][24]=["traj3_frei_png","ICL"]
 
 
    if(platform.node()=="milletari-workstation"):

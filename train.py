@@ -1,4 +1,5 @@
 import sys
+import random
 import numpy as np
 import argparse
 import helper.data_loader as data_loader
@@ -45,8 +46,11 @@ def train_model(params):
   while (epoch_counter < n_epochs):
       epoch_counter = epoch_counter + 1
       print("Training model...")
+      map_list=range(n_train_batches*n_repeat)
+      random.shuffle(map_list)
       for index in xrange(n_train_batches*n_repeat):
           minibatch_index=index%n_train_batches
+          map_index=map_list[index]%n_repeat
           #We are shuffling data at each batch, we are shufling here because we already finished one epoch just repeating for the extract different batch
           if(index>0 and minibatch_index==0):#we are checking weather we finish all dataset
              ext=params["model_file"]+params["model"]+"_"+im_type+"_m_"+str(index%5)+".hdf5"
@@ -61,7 +65,7 @@ def train_model(params):
           data_y = y_train[minibatch_index * batch_size: (minibatch_index + 1) * batch_size]
           for patch_index in xrange(n_patch):
              patch_loc=utils.get_patch_loc(params)
-             argu= [(params,"F", Fx,patch_loc),(params,"S", Fx,patch_loc)]
+             argu= [(params,"F", Fx,patch_loc,map_index),(params,"S", Fx,patch_loc,map_index)]
              results = dt_utils.asyn_load_batch_images(argu)
              data_Fx = results[0]
              data_Sx = results[1]
@@ -87,14 +91,17 @@ def train_model(params):
          continue
       print("Validating model...")
       this_validation_loss = 0
+      map_list=range(n_valid_batches*n_repeat)
+      random.shuffle(map_list)
       for index in xrange(n_valid_batches*n_repeat):
          i = index%n_valid_batches
+         map_index=map_list[index]%n_repeat
          epoch_loss=0
          Fx = X_val[i * batch_size: (i + 1) * batch_size]
          data_y = y_val[i * batch_size: (i + 1) * batch_size]
          for patch_index in xrange(n_patch):
             patch_loc=utils.get_patch_loc(params)
-            argu= [(params,"F", Fx,patch_loc),(params,"S", Fx,patch_loc)]
+            argu= [(params,"F", Fx,patch_loc,map_index),(params,"S", Fx,patch_loc,map_index)]
             results = dt_utils.asyn_load_batch_images(argu)
             data_Fx = results[0]
             data_Sx = results[1]
