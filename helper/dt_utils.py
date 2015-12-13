@@ -59,7 +59,6 @@ def load_batch_images(params, direction, x, patch_loc,map_loc):
     map_arg=[(direction, im_type, normalizer, patch_loc,map_loc, patch_use, sbt, size, im[im_order]) for im in x]
     pool_img = ThreadPool(params["n_procc"])
     pool_img.daemon=True
-    print("many thread starting")
     results = pool_img.map(load_image_wrapper,map_arg)
     pool_img.close()
     pool_img.join()
@@ -83,7 +82,6 @@ def convert_set(res,im_type):
     return batch_l
 
 def load_image(direction, im_type, normalizer, patch_loc,map_loc, patch_use, sbt, size, dImg):
-    print("many thread started")
     if (im_type.find("fc") > 0):
             arr1 = numpy.load(dImg)
     elif (im_type.find("conv")>0):
@@ -114,7 +112,6 @@ def load_image_wrapper(args):
 
 def asyn_load_batch_images(args):
     params=args[0][0]
-    print("two pool starting")
     pool = Pool(params["n_pool"])
     pool.daemon=True
     results = pool.map(load_batch_wrapper,args)
