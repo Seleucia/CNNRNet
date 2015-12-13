@@ -7,8 +7,8 @@ def get_params():
    global params
    params={}
    params['run_mode']=1 #0,full,1:only for check, 2: very small ds, 3:only ICL data
-   params["rn_id"]="conv4_test" #running id
-   params["notes"]="convtest" #running id
+   params["rn_id"]="conv4_test" #running id, model
+   params["notes"]="Model running for conv4 output" #running id
    params["model"]="conv4mlpr"#kccnr,dccnr
    params['im_type']="rgb_conv4_2"
    params['patch_use']= 0
@@ -80,7 +80,7 @@ def get_params():
        params["WITH_GPU"]=True
 
    if(platform.node()=="cmp-comp"):
-       params['batch_size']=60
+       params['batch_size']=500
        params["WITH_GPU"]=True
        params["caffe"]="/home/coskun/sftpkg/caffe/python"
 
