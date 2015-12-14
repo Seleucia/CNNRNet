@@ -7,18 +7,18 @@ from plot import plot_data
 
 params= config.get_params()
 
-is_load=1
+is_load=0
 is_test=1
 cm_mul=10
 id=17 #data will be loaded according to this id
 params['step_size']=[10]
 step=params['step_size'][0]
 
-params['patch_use']= 1
+params['patch_use']= 0
 params['conv_use']= 0
-params['model_name']="pcnnr_depth_m_0.hdf5"
-params['model']="pcnnr"
-params['im_type']="depth"
+params['model_name']="schcnnr_gray__best_sch_2.hdf5"
+params['model']="schcnnr"
+params['im_type']="gray"
 
 prediction_name= params['model_name'].replace("/", " ").split()[-1] .replace(".h5","")
 ext_raw_data=prediction_name+"_"+str(is_test)+"_"+"raw_data"+"_"+str(step)+".pkl"

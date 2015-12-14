@@ -70,7 +70,7 @@ def train_model(params):
              results = dt_utils.asyn_load_batch_images(argu)
              data_Fx = results[0]
              data_Sx = results[1]
-             if(params["model"]=="schcnnr"):
+             if(params["model_type"]==4):
                 data=data_Sx-data_Fx
                 loss =model.train_on_batch(data, data_y)
              else:
@@ -110,7 +110,7 @@ def train_model(params):
             results = dt_utils.asyn_load_batch_images(argu)
             data_Fx = results[0]
             data_Sx = results[1]
-            if(params["model"]=="schcnnr"):
+            if(params["model_type"]==4):
                 data=data_Sx-data_Fx
                 loss =model.test_on_batch(data, data_y)
             else:

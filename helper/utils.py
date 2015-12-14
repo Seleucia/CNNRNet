@@ -214,3 +214,52 @@ def log_read_train(params):
                 list.append((epoch,batch_index,error))
     #numpy.array([[b, c, d] for (b, c, d) in list_val if b==1 ])[:,2] #first epoch all error
     return list
+
+
+def huber(p, y, epsilon=0.1):
+    """Huber regression loss
+    Variant of the SquaredLoss that is robust to outliers (quadratic near zero,
+    linear in for large errors).
+    http://en.wikipedia.org/wiki/Huber_Loss_Function
+    """
+    abs_r = np.abs(p - y)
+    loss = 0.5 * abs_r ** 2
+    idx = abs_r <= epsilon
+    loss[idx] = epsilon * abs_r[idx] - 0.5 * epsilon ** 2
+    return loss
+
+def alpha_huber(p, y, alpha=0.9):
+    """ sets the epislon in huber loss equal to a percentile of the residuals
+    """
+    abs_r = np.abs(p - y)
+    loss = 0.5 * abs_r ** 2
+    epsilon = np.percentile(loss, alpha * 100)
+    idx = abs_r <= epsilon
+    loss[idx] = epsilon * abs_r[idx] - 0.5 * epsilon ** 2
+    return loss
+
+epsilon = 1.0e-9
+def custom_objective(y_true, y_pred):
+    '''Just another crossentropy'''
+    y_pred = T.clip(y_pred, epsilon, 1.0 - epsilon)
+    y_pred /= y_pred.sum(axis=-1, keepdims=True)
+    cce = T.nnet.categorical_crossentropy(y_pred, y_true)
+    return cce
+
+
+def epsilon_insensitive(y_true,y_pred, epsilon=0.1):
+    """Epsilon-Insensitive loss (used by SVR).
+    loss = max(0, |y - p| - epsilon)
+    """
+    loss = T.maximum(T.abs_(y_true-y_pred)-epsilon,0)
+    return loss
+
+
+def mean_squared_epislon_insensitive(y_true, y_pred):
+    """Epsilon-Insensitive loss.
+    loss = max(0, |y - p| - epsilon)^2
+    """
+    epsilon=0.1
+    return T.mean(T.sqr(epsilon_insensitive(y_true, y_pred, epsilon)))
+
+msei=mean_squared_epislon_insensitive
