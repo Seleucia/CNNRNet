@@ -1,5 +1,5 @@
 from keras.layers.convolutional import Convolution2D, MaxPooling2D
-from keras.layers.core import Dense, Activation, Flatten
+from keras.layers.core import Dense, Activation, Flatten,Dropout
 from keras.layers.advanced_activations import PReLU
 from keras.layers.core import Merge
 from keras.models import Sequential
@@ -16,7 +16,7 @@ def build_model(params):
    l2_out=regularizers.l2(0.001)
 
    model = Sequential()
-   model.add(Convolution2D(params["nkerns"][0], 3, 3, border_mode='valid', input_shape=(params["nc"], params["size"][1], params["size"][0]),init='he_normal', W_regularizer=l2))
+   model.add(Convolution2D(params["nkerns"][0], 7, 7,subsample=params['stride_mat'], border_mode='valid', input_shape=(params["nc"], params["size"][1], params["size"][0]),init='he_normal', W_regularizer=l2))
    model.add(PReLU())
    model.add(MaxPooling2D(pool_size=(2, 2)))
 
@@ -28,6 +28,7 @@ def build_model(params):
    model.add(PReLU())
    model.add(MaxPooling2D(pool_size=(2, 2)))
    model.add(Flatten())
+   model.add(Dropout(0.5))
 
    model.add(Dense(400,init='he_normal', W_regularizer=l2))
    model.add(PReLU())
