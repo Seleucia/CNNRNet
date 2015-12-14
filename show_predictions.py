@@ -7,6 +7,7 @@ from plot import plot_data
 
 params= config.get_params()
 
+is_load=1
 is_test=1
 cm_mul=10
 id=17 #data will be loaded according to this id
@@ -80,8 +81,11 @@ def load_predictions():
    yy_test_step=model_saver.load_pred(ext_yy_test_aug,params)
    y_test_delta_gt=model_saver.load_pred(ext_y_test_gt,params)
 
-compute_predictions()
-load_predictions()
+if is_load==1:
+   load_predictions()
+else:
+   compute_predictions()
+
 
 
 #Print and plot error with different axes
