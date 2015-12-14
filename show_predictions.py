@@ -89,8 +89,6 @@ if is_load==1:
 else:
    compute_predictions()
 
-
-
 #Print and plot error with different axes
 err= y_delta_pred - np.squeeze(np.asarray(y_delta_test_step))
 plot_data.plot_err(err, fig_namexyz)
@@ -106,5 +104,3 @@ yy_test_step=yy_test_step[:,0:3]
 yy_pred=yy_pred[:,0:3]
 yy_test_1=np.asarray(yy_test_1)[:,0:3]
 plot_data.plot_y([yy_test_step, np.array(yy_pred)], fig_name3d)
-
-

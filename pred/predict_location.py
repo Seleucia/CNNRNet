@@ -38,7 +38,7 @@ def predict_on_fullimage(test_set_x,params):
         data_Sx = results[1]
         if(params["model"]=="schcnnr"):
             data=data_Sx-data_Fx
-            loss =model.predict(data)
+            res =model.predict(data)
         else:
             res=model.predict([data_Fx, data_Sx])
 
