@@ -14,7 +14,6 @@ def predict(test_set_x,params):
         y_pred=predict_on_fullimage(test_set_x,params)
     return y_pred
 
-
 def predict_on_fullimage(test_set_x,params):
     model= model_provider.get_model_pretrained(params)
     # learning parameters
@@ -30,9 +29,10 @@ def predict_on_fullimage(test_set_x,params):
     print("Number of parameters: %s"%(model.count_params()))
     print "Prediction on test images"
     patch_loc=u.get_patch_loc(params) #we are not using this for image
+    map_index=0
     for i in xrange(n_test_batches):
         Fx = test_set_x[i * batch_size: (i + 1) * batch_size]
-        argu= [(params,"F", Fx,patch_loc),(params,"S", Fx,patch_loc)]
+        argu= [(params,"F", Fx,patch_loc,map_index),(params,"S", Fx,patch_loc,map_index)]
         results = du.asyn_load_batch_images(argu)
         data_Fx = results[0]
         data_Sx = results[1]
@@ -41,8 +41,6 @@ def predict_on_fullimage(test_set_x,params):
             res =model.predict(data)
         else:
             res=model.predict([data_Fx, data_Sx])
-
-        res=model.predict([data_Fx, data_Sx])
         if(len(y_pred)==0):
             y_pred= res
         else:
@@ -50,7 +48,6 @@ def predict_on_fullimage(test_set_x,params):
     if(ash>0):
         y_pred= y_pred[0:-(batch_size-ash)]
     return y_pred
-
 
 def predict_on_multi_input(test_set_x,params):
     model= model_provider.get_model_pretrained(params)

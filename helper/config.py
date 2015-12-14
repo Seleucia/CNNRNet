@@ -10,7 +10,7 @@ def get_params():
    params["rn_id"]="sch" #running id, model
    params["notes"]="Single channel" #running id
    params["model"]="schcnnr"#kccnr,dccnr
-   params['im_type']="depth"
+   params['im_type']="gray"
    params['patch_use']= 0
    params['conv_use']= 0
    params['validate']= 1
@@ -81,7 +81,7 @@ def get_params():
        params["WITH_GPU"]=True
 
    if(platform.node()=="cmp-comp"):
-       params['batch_size']=500
+       params['batch_size']=60
        params["n_procc"]=1
        params["n_pool"]=2
        params['n_patch']= 1
