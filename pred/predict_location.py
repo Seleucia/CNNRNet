@@ -116,13 +116,13 @@ def predict_on_patch(test_set_x,params):
         n_repeat=params["n_repeat"]
         n=n_patch*n_repeat
 
-        n=800
+        n=1600
         pred_mat[0]=np.zeros((n,params['n_output']))
         for k in range(batch_size): pred_mat[k+i]=np.zeros((n,params['n_output']))
         for patch_index in xrange(n):
             patch_loc=u.get_patch_loc(params)
-            data_Fx = du.load_batch_images(params, "F", Fx,patch_loc)
-            data_Sx = du.load_batch_images(params,"S", Fx,patch_loc)
+            data_Fx = du.load_batch_images(params, "F", Fx,patch_loc,patch_index)
+            data_Sx = du.load_batch_images(params,"S", Fx,patch_loc,patch_index)
             prd=model.predict([data_Fx, data_Sx])
             for j in range(len(prd)):
                 pred_mat[i+j][patch_index]=prd[j]
@@ -134,7 +134,7 @@ def predict_on_patch(test_set_x,params):
             y_pred= pred
         else:
             y_pred=np.concatenate((y_pred,pred))
-    pd.plot_patch(pred_mat)
+    #pd.plot_patch(pred_mat)
     if(ash>0):
         y_pred= y_pred[0:-(batch_size-ash)]
     return y_pred

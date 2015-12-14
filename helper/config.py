@@ -11,8 +11,8 @@ def get_params():
    params["notes"]="Model running for conv4 output" #running id
    params["model"]="conv4mlpr"#kccnr,dccnr
    params['im_type']="rgb_conv4_2"
-   params['patch_use']= 0
-   params['conv_use']= 1
+   params['patch_use']= 1
+   params['conv_use']= 0
    params['validate']= 1
 
    params['batch_size']=240

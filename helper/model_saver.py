@@ -18,8 +18,8 @@ def save_model(ext,params):
 
 
 def save_pred(ext,pred,params):
-    pred=params["wd"]+"/"+"pred/ds/"+str(ext)
-    with file(pred, 'wb') as f:
+    path=params["wd"]+"/"+"pred/ds/"+str(ext)
+    with file(path, 'wb') as f:
         p = cPickle.Pickler(f,protocol=cPickle.HIGHEST_PROTOCOL)
         p.fast = True
         p.dump(pred)
