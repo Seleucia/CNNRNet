@@ -42,5 +42,6 @@ def build_model(params):
    model.add(Dense(params['n_output'],init='he_normal'))
 
    adagrad=Adagrad(lr=params['initial_learning_rate'], epsilon=1e-6)
-   model.compile(loss=u.msei, optimizer=adagrad)
+   if(params["errf"]=="msei"):
+      model.compile(loss=u.msei, optimizer=adagrad)
    return model

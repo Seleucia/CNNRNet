@@ -10,6 +10,7 @@ def get_params():
    params["rn_id"]="sch" #running id, model
    params["notes"]="Single channel" #running id
    params["model"]="schcnnr_in"#kccnr,dccnr
+   params["errf"]="msei"#kccnr,dccnr
    params["model_type"]=4 #1=classic kcnnr, 2=patch, 3=conv, 4 =single channcel
    params['im_type']="depth"
    params['patch_use']= 0

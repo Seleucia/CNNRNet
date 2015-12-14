@@ -247,7 +247,7 @@ def custom_objective(y_true, y_pred):
     return cce
 
 
-def epsilon_insensitive(y_true,y_pred, epsilon=0.1):
+def epsilon_insensitive(y_true,y_pred, epsilon):
     """Epsilon-Insensitive loss (used by SVR).
     loss = max(0, |y - p| - epsilon)
     """
@@ -259,7 +259,7 @@ def mean_squared_epislon_insensitive(y_true, y_pred):
     """Epsilon-Insensitive loss.
     loss = max(0, |y - p| - epsilon)^2
     """
-    epsilon=0.1
+    epsilon=0.05
     return T.mean(T.sqr(epsilon_insensitive(y_true, y_pred, epsilon)))
 
 msei=mean_squared_epislon_insensitive
