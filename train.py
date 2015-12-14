@@ -87,7 +87,7 @@ def train_model(params):
               break
       #we are shufling for to be sure
       X_train,y_train=dt_utils.shuffle_in_unison_inplace(X_train,y_train)
-      ext=params["model_file"]+params["model"]+"_"+im_type+"_e_"+str(epoch_counter % 10)+".hdf5"
+      ext=params["model_file"]+params["model"]+"_"+im_type+"_e_"+str(rn_id)+"_"+str(epoch_counter % 10)+".hdf5"
       model.save_weights(ext, overwrite=True)
       if params['validate']==0:
          print("Validation skipped...")
