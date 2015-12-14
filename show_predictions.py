@@ -23,6 +23,7 @@ params['im_type']="depth"
 prediction_name= params['model_name'].replace("/", " ").split()[-1] .replace(".h5","")
 ext_raw_data=prediction_name+"_"+str(is_test)+"_"+"raw_data"+"_"+str(step)+".pkl"
 ext_err=prediction_name+"err"+"_"+str(is_test)+"_"+str(step)+".pkl"
+ext_y_delta_pred=prediction_name+"y_delta_pred"+"_"+str(is_test)+"_"+str(step)+".pkl"
 ext_y_pred=prediction_name+"y_pred"+"_"+str(is_test)+"_"+str(step)+".pkl"
 ext_yy_test=prediction_name+"yy_test"+"_"+str(is_test)+"_"+str(step)+".pkl"
 ext_yy_test_aug=prediction_name+"yy_test_aug"+"_"+str(is_test)+"_"+str(step)+".pkl"
@@ -68,6 +69,7 @@ def compute_predictions():
    #save generated data
    model_saver.save_pred(ext_raw_data, data_y_gt,params)
    model_saver.save_pred(ext_y_pred, yy_pred,params)
+   model_saver.save_pred(ext_y_delta_pred, y_delta_pred,params)
    model_saver.save_pred(ext_yy_test, yy_test_1,params)
    model_saver.save_pred(ext_yy_test_aug, yy_test_step,params)
    model_saver.save_pred(ext_y_test_gt, y_test_delta_gt,params)
@@ -77,6 +79,7 @@ def load_predictions():
    global data_y_gt, y_test_delta_gt, y_delta_test_1, y_delta_test_step, y_delta_pred, yy_test_step, yy_pred, yy_test_1
    data_y_gt=model_saver.load_pred(ext_raw_data,params)
    yy_pred=model_saver.load_pred(ext_y_pred,params)
+   y_delta_pred=model_saver.load_pred(ext_y_delta_pred,params)
    yy_test_1=model_saver.load_pred(ext_yy_test,params)
    yy_test_step=model_saver.load_pred(ext_yy_test_aug,params)
    y_test_delta_gt=model_saver.load_pred(ext_y_test_gt,params)

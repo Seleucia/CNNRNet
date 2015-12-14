@@ -36,10 +36,17 @@ def predict_on_fullimage(test_set_x,params):
         results = du.asyn_load_batch_images(argu)
         data_Fx = results[0]
         data_Sx = results[1]
-        if(len(y_pred)==0):
-            y_pred= model.predict([data_Fx, data_Sx])
+        if(params["model"]=="schcnnr"):
+            data=data_Sx-data_Fx
+            loss =model.predict(data)
         else:
-            y_pred=np.concatenate((y_pred,model.predict([data_Fx, data_Sx])))
+            res=model.predict([data_Fx, data_Sx])
+
+        res=model.predict([data_Fx, data_Sx])
+        if(len(y_pred)==0):
+            y_pred= res
+        else:
+            y_pred=np.concatenate((y_pred,res))
     if(ash>0):
         y_pred= y_pred[0:-(batch_size-ash)]
     return y_pred
