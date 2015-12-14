@@ -7,11 +7,11 @@ def get_params():
    global params
    params={}
    params['run_mode']=1 #0,full,1:only for check, 2: very small ds, 3:only ICL data
-   params["rn_id"]="conv4_test" #running id, model
-   params["notes"]="Model running for conv4 output" #running id
-   params["model"]="conv4mlpr"#kccnr,dccnr
-   params['im_type']="rgb_conv4_2"
-   params['patch_use']= 1
+   params["rn_id"]="sch" #running id, model
+   params["notes"]="Single channel" #running id
+   params["model"]="schcnnr"#kccnr,dccnr
+   params['im_type']="depth"
+   params['patch_use']= 0
    params['conv_use']= 0
    params['validate']= 1
 
@@ -71,10 +71,10 @@ def get_params():
 
    if(platform.node()=="hc"):
        params["caffe"]="/home/coskun/sftpkg/caffe/python"
-       params['batch_size']=500
+       params['batch_size']=10
        params["WITH_GPU"]=False
        params['n_patch']= 1
-       params['n_repeat']= 512
+       params['n_repeat']= 1
 
    if(platform.node()=="milletari-workstation"):
        params["caffe"]="/usr/local/caffe/python"

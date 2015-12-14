@@ -9,6 +9,7 @@ from models import model_provider
 
 sys.setrecursionlimit(50000)
 is_exit=0
+
 def train_model(params):
   rn_id=params["rn_id"]
   im_type=params["im_type"]
@@ -69,7 +70,11 @@ def train_model(params):
              results = dt_utils.asyn_load_batch_images(argu)
              data_Fx = results[0]
              data_Sx = results[1]
-             loss =model.train_on_batch([data_Fx, data_Sx], data_y)
+             if(params["model"]=="schcnnr"):
+                data=data_Sx-data_Fx
+                loss =model.train_on_batch(data, data_y)
+             else:
+                loss =model.train_on_batch([data_Fx, data_Sx], data_y)
              if isinstance(loss,list):
                 batch_loss+=loss[0]
              else:
@@ -105,7 +110,12 @@ def train_model(params):
             results = dt_utils.asyn_load_batch_images(argu)
             data_Fx = results[0]
             data_Sx = results[1]
-            loss= model.test_on_batch([data_Fx, data_Sx],data_y)
+            if(params["model"]=="schcnnr"):
+                data=data_Sx-data_Fx
+                loss =model.test_on_batch(data, data_y)
+            else:
+                loss= model.test_on_batch([data_Fx, data_Sx],data_y)
+
             if isinstance(loss,list):
                 epoch_loss+=loss[0]
             else:

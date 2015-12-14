@@ -7,6 +7,7 @@ import bnmlpr
 import dmlpr
 import thmlpr
 import conv4mlpr
+import schcnnr
 
 def get_model(params):
     if(params["model"]=="kcnnr"):
@@ -27,6 +28,9 @@ def get_model(params):
         model= pcnnr.build_model(params)
     if(params["model"]=="conv4mlpr"):
         model= conv4mlpr.build_model(params)
+    if(params["model"]=="schcnnr"):
+        model= schcnnr.build_model(params)
+
     return model
 
 def get_model_pretrained(params):
