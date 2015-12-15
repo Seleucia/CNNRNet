@@ -9,7 +9,7 @@ def get_params():
    params['run_mode']=1 #0,full,1:only for check, 2: very small ds, 3:only ICL data
    params["rn_id"]="sch" #running id, model
    params["notes"]="Single channel" #running id
-   params["model"]="schcnnr_in"#kccnr,dccnr
+   params["model"]="schcnnr_agr"#kccnr,dccnr
    params["errf"]="ah"#kccnr,dccnr
    params["model_type"]=4 #1=classic kcnnr, 2=patch, 3=conv, 4 =single channcel
    params['im_type']="depth"

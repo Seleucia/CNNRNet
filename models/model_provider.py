@@ -9,6 +9,7 @@ import thmlpr
 import conv4mlpr
 import schcnnr
 import schcnnr_in
+import schcnnr_agr
 
 def get_model(params):
     if(params["model"]=="kcnnr"):
@@ -33,6 +34,8 @@ def get_model(params):
         model= schcnnr.build_model(params)
     if(params["model"]=="schcnnr_in"):
         model= schcnnr_in.build_model(params)
+    if(params["model"]=="schcnnr_agr"):
+        model= schcnnr_agr.build_model(params)
     return model
 
 def get_model_pretrained(params):
