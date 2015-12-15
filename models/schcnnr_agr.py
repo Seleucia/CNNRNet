@@ -1,11 +1,10 @@
 from keras.layers.convolutional import Convolution2D, MaxPooling2D
 from keras.layers.core import Dense, Activation, Flatten,Dropout
 from keras.layers.advanced_activations import PReLU
-from keras.layers.core import Merge
 from keras.models import Sequential
 from keras.optimizers import Adagrad
-from keras.optimizers import SGD
 from keras import regularizers
+import helper.utils as u
 import sys
 
 sys.setrecursionlimit(50000)
@@ -39,5 +38,10 @@ def build_model(params):
    model.add(Dense(params['n_output'],init='he_normal'))
 
    adagrad=Adagrad(lr=params['initial_learning_rate'], epsilon=1e-6)
-   model.compile(loss='mean_squared_error', optimizer=adagrad)
+   if(params["errf"]=="msei"):
+      model.compile(loss=u.msei, optimizer=adagrad)
+   elif(params["errf"]=="ah"):
+      model.compile(loss=u.ah, optimizer=adagrad)
+   else:
+      model.compile(loss='mean_squared_error', optimizer=adagrad)
    return model

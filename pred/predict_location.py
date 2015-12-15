@@ -36,7 +36,7 @@ def predict_on_fullimage(test_set_x,params):
         results = du.asyn_load_batch_images(argu)
         data_Fx = results[0]
         data_Sx = results[1]
-        if(params["model"]=="schcnnr"):
+        if(params["model_type"]==4):
             data=data_Sx-data_Fx
             res =model.predict(data)
         else:
@@ -95,7 +95,6 @@ def predict_on_multi_input(test_set_x,params):
     if(ash>0):
         y_pred= y_pred[0:-(batch_size-ash)]
     return y_pred
-
 
 def predict_on_patch(test_set_x,params):
 
