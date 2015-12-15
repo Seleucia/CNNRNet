@@ -44,4 +44,7 @@ def build_model(params):
    adagrad=Adagrad(lr=params['initial_learning_rate'], epsilon=1e-6)
    if(params["errf"]=="msei"):
       model.compile(loss=u.msei, optimizer=adagrad)
+   else:
+      model.compile(loss=u.ah, optimizer=adagrad)
+
    return model

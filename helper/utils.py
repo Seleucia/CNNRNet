@@ -216,36 +216,33 @@ def log_read_train(params):
     return list
 
 
-def huber(p, y, epsilon=0.1):
+def huber(y_true, y_pred, epsilon=0.1):
     """Huber regression loss
     Variant of the SquaredLoss that is robust to outliers (quadratic near zero,
     linear in for large errors).
     http://en.wikipedia.org/wiki/Huber_Loss_Function
     """
-    abs_r = np.abs(p - y)
+    abs_r = T.abs_(y_pred - y_true)
     loss = 0.5 * abs_r ** 2
     idx = abs_r <= epsilon
     loss[idx] = epsilon * abs_r[idx] - 0.5 * epsilon ** 2
     return loss
 
-def alpha_huber(p, y, alpha=0.9):
+def alpha_huber(y_true, y_pred):
     """ sets the epislon in huber loss equal to a percentile of the residuals
     """
-    abs_r = np.abs(p - y)
-    loss = 0.5 * abs_r ** 2
-    epsilon = np.percentile(loss, alpha * 100)
-    idx = abs_r <= epsilon
-    loss[idx] = epsilon * abs_r[idx] - 0.5 * epsilon ** 2
+    # abs_r = T.abs_(y_pred - y_true)
+    # loss = 0.5 * T.sqr(abs_r)
+    # epsilon = np.percentile(loss, alpha * 100)
+    # idx = abs_r <= epsilon
+    # loss[idx] = epsilon * abs_r[idx] - 0.5 * T.sqr(epsilon)
+    #switch(cond, ift, iff)
+    alpha=0.95
+    abs_r = T.abs_(y_pred - y_true)
+    epsilon = np.percentile(0.5 * T.sqr(abs_r), alpha * 100)
+    loss =T.switch(T.le(abs_r,epsilon),epsilon * abs_r - 0.5 * T.sqr(epsilon),0.5 * T.sqr(abs_r))
+
     return loss
-
-epsilon = 1.0e-9
-def custom_objective(y_true, y_pred):
-    '''Just another crossentropy'''
-    y_pred = T.clip(y_pred, epsilon, 1.0 - epsilon)
-    y_pred /= y_pred.sum(axis=-1, keepdims=True)
-    cce = T.nnet.categorical_crossentropy(y_pred, y_true)
-    return cce
-
 
 def epsilon_insensitive(y_true,y_pred, epsilon):
     """Epsilon-Insensitive loss (used by SVR).
@@ -263,3 +260,4 @@ def mean_squared_epislon_insensitive(y_true, y_pred):
     return T.mean(T.sqr(epsilon_insensitive(y_true, y_pred, epsilon)))
 
 msei=mean_squared_epislon_insensitive
+ah=alpha_huber
