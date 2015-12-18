@@ -7,11 +7,11 @@ def get_params():
    global params
    params={}
    params['run_mode']=1 #0,full,1:only for check, 2: very small ds, 3:only ICL data
-   params["rn_id"]="sch" #running id, model
-   params["notes"]="Single channel" #running id
-   params["model"]="schcnnr_agr"#kccnr,dccnr
+   params["rn_id"]="model_test" #running id, model
+   params["notes"]="Im testıng my data loadıng approach" #running id
+   params["model"]="dcnnr"#kccnr,dccnr
    params["errf"]="ah"#kccnr,dccnr
-   params["model_type"]=4 #1=classic kcnnr, 2=patch, 3=conv, 4 =single channcel
+   params["model_type"]=1 #1=classic kcnnr, 2=patch, 3=conv, 4 =single channcel
    params['im_type']="depth"
    params['patch_use']= 0
    params['conv_use']= 0
@@ -26,7 +26,7 @@ def get_params():
    params['hha_depth_fc6_mean']=1.43717336397
    params['rgb_conv4_2_mean']=0 #orijinal value: 3.34999854364
    params['rgb_conv5_2_mean']=0.387327206137
-   params['step_size']=[1,5,7,10,12,14,15,17,19,21,23,25]
+   params['step_size']=[5,7,10,12,14,15,17,19,21,23,25]
    params['n_output']=7
    params['orijinal_size']=[640,460]
    params['size']=[160, 120] #[width,height], fore others: 160,120
