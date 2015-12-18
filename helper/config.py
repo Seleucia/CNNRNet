@@ -8,9 +8,9 @@ def get_params():
    params={}
    params['run_mode']=1 #0,full,1:only for check, 2: very small ds, 3:only ICL data
    params["rn_id"]="model_test" #running id, model
-   params["notes"]="Im testıng my data loadıng approach" #running id
+   params["notes"]="Im testing my data loading approach" #running id
    params["model"]="dcnnr"#kccnr,dccnr
-   params["errf"]="ah"#kccnr,dccnr
+   params["errf"]="xxx"#kccnr,dccnr
    params["model_type"]=1 #1=classic kcnnr, 2=patch, 3=conv, 4 =single channcel
    params['im_type']="depth"
    params['patch_use']= 0

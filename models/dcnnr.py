@@ -13,12 +13,12 @@ sys.setrecursionlimit(50000)
 #########Model with droupout######################
 
 def build_model(params):
-   l2=regularizers.l2(0.001)
-   l2_out=regularizers.l2(0.0001)
+   l2=regularizers.l2(0.0005)
+   l2_out=regularizers.l2(0.00005)
 
    #########Left Stream######################
    lmodel = Sequential()
-   lmodel.add(Convolution2D(params["nkerns"][0], 3, 3, border_mode='valid', input_shape=(params["nc"], params["size"][1], params["size"][0]),init='he_normal', W_regularizer=l2))
+   lmodel.add(Convolution2D(params["nkerns"][0], 7, 7,subsample=params['stride_mat'], border_mode='valid', input_shape=(params["nc"], params["size"][1], params["size"][0]),init='he_normal', W_regularizer=l2))
    lmodel.add(PReLU())
    lmodel.add(MaxPooling2D(pool_size=(2, 2)))
 
@@ -29,18 +29,20 @@ def build_model(params):
    lmodel.add(Convolution2D(params["nkerns"][2], 2, 2,init='he_normal', W_regularizer=l2))
    lmodel.add(PReLU())
    lmodel.add(MaxPooling2D(pool_size=(2, 2)))
-
    lmodel.add(Flatten())
+   lmodel.add(Dropout(0.5))
+
+
    lmodel.add(Dense(200,init='he_normal', W_regularizer=l2))
    lmodel.add(PReLU())
-   lmodel.add(Dropout(0.5))
+
 
    lmodel.add(Dense(200,init='he_normal', W_regularizer=l2))
    lmodel.add(PReLU())
 
    #########Right Stream######################
    rmodel = Sequential()
-   rmodel.add(Convolution2D(params["nkerns"][0], 3, 3, border_mode='valid', input_shape=(params["nc"], params["size"][1], params["size"][0]),init='he_normal', W_regularizer=l2))
+   rmodel.add(Convolution2D(params["nkerns"][0], 7, 7,subsample=params['stride_mat'], border_mode='valid', input_shape=(params["nc"], params["size"][1], params["size"][0]),init='he_normal', W_regularizer=l2))
    rmodel.add(PReLU())
    rmodel.add(MaxPooling2D(pool_size=(2, 2)))
 
@@ -51,11 +53,12 @@ def build_model(params):
    rmodel.add(Convolution2D(params["nkerns"][3], 2, 2,init='he_normal', W_regularizer=l2))
    rmodel.add(PReLU())
    rmodel.add(MaxPooling2D(pool_size=(2, 2)))
-
    rmodel.add(Flatten())
+   rmodel.add(Dropout(0.5))
+
    rmodel.add(Dense(200,init='he_normal', W_regularizer=l2))
    rmodel.add(PReLU())
-   rmodel.add(Dropout(0.5))
+
 
    rmodel.add(Dense(200,init='he_normal', W_regularizer=l2))
    rmodel.add(PReLU())
@@ -63,10 +66,10 @@ def build_model(params):
    #########Merge Stream######################
    model = Sequential()
    model.add(Merge([lmodel, rmodel], mode='mul'))
-   model.add(Dense(400,init='he_normal', W_regularizer=l2_out))
+   model.add(Dense(200,init='he_normal', W_regularizer=l2_out))
    model.add(PReLU())
 
-   model.add(Dense(400,init='he_normal'))
+   model.add(Dense(200,init='he_normal'))
    model.add(Activation('linear'))
 
    model.add(Dense(params['n_output'],init='he_normal'))
