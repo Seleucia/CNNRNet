@@ -1,22 +1,22 @@
-import multiprocessing
-from multiprocessing.pool import ThreadPool
-import time
+import  numpy as np
+data=[
+[ 0., 2., 2., 0., 2., 0., 1.],
+[ 2., 1., 2., 2., 2., 0., 2.],
+[ 0., 0., 2., 0., 2., 2., 2.],
+[ 0., 2., 1., 0., 1., 2., 2.],
+[ 0., 2., 2., 0., 0., 0., 2.],
+[ 0., 2., 0., 0., 2., 0., 2.],
+[ 0., 2., 2., 0., 2., 0., 1.],
+[ 1., 2., 2., 1., 2., 1., 0.],
+[ 0., 0., 0., 0., 0., 0., 0.],
+[ 1., 2., 2., 1., 2., 1., 0.],
+]
+data_num = len(data)
 
-data = (
-    ['a', '2'], ['b', '4'], ['c', '6'], ['d', '8'],
-    ['e', '1'], ['f', '3'], ['g', '5'], ['h', '7']
-)
-
-def mp_worker((inputs, the_time)):
-    print " Processs %s\tWaiting %s seconds" % (inputs, the_time)
-    time.sleep(int(the_time))
-    print " Process %s\tDONE" % inputs
-    return the_time
-
-def mp_handler():
-    p = ThreadPool(100)
-    return p.map(mp_worker, data)
-
-if __name__ == '__main__':
-   res= mp_handler()
-   print "completed"
+one_hot_dat = np.zeros((data_num, 3**7))
+# vector for making indices
+vec = np.asarray([3**i for i in range(7)])
+# compute the corresponding index for each data point
+hot_idx = np.sum(np.asarray(data)*vec, axis=1).astype(int)
+one_hot_dat[range(data_num), hot_idx] = 1
+print(one_hot_dat)

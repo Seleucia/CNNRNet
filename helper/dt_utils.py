@@ -5,9 +5,11 @@ import theano
 import plot.plot_data as pd
 import glob
 from theano import config
+import theano.tensor as T
 from PIL import Image
 from multiprocessing import Pool
 from multiprocessing.pool import ThreadPool
+from theano.tensor.extra_ops import to_one_hot
 
 def shared_dataset(data_xx, data_yy, borrow=True):
         shared_x = theano.shared(numpy.asarray(data_xx,
@@ -64,6 +66,28 @@ def load_batch_images(params, direction, x, patch_loc,map_loc):
     pool_img.join()
     batch_l=convert_set(results,im_type)
     return numpy.array(batch_l)
+
+def convert_to_class(data_y):
+    tmp=numpy.zeros_like(data_y)
+    tmp[data_y > 0] = 2
+    tmp[data_y == 0] = 1
+    tmp[data_y < 0] = 0
+    numpy_1_of_k_1(tmp, 3)
+    res=theano.tensor.extra_ops.to_one_hot(tmp,3)
+    return restmp
+
+def class_idx_seq_to_1_of_k(seq, num_classes, dtype="float32"):
+  shape = [seq.shape[i] for i in range(seq.ndim)] + [num_classes]
+  eye = T.eye(num_classes, dtype=dtype)
+  m = eye[T.cast(seq, 'int32')].reshape(shape)
+  return m
+
+def numpy_1_of_k_1(seq, num_classes):
+    num_frames = len(seq)
+    m = numpy.zeros((num_frames, num_classes))
+    m[numpy.arange(num_frames), seq] = 1
+    return m
+
 
 def convert_set(res,im_type):
     batch_l = []

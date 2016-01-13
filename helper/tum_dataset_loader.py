@@ -214,7 +214,7 @@ def load_tum_data(params,id):
 
     overlaps_train=[]
     overlaps_val=[]
-
+    data_y=dt_utils.convert_to_class(data_y)
     rval = [(X_train, y_delta_train,overlaps_train), (X_val, y_delta_val,overlaps_val),
             (X_test, y_delta_test,overlaps_test)]
     return rval

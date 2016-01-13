@@ -250,7 +250,7 @@ if __name__ == '__main__':
    # parser.add_argument('-o',dest='out_directory',help='Output directory to store the generated features')
    #
    # args = parser.parse_args()
-   params['orijinal_img']="rgb"
+   params['orijinal_img']="gray"
    path_model_def_file = "model/VGG_ILSVRC_16_layers_deploy.prototxt"
    path_model  = "model/VGG_ILSVRC_16_layers.caffemodel"
    filter_path = None
@@ -287,11 +287,13 @@ if __name__ == '__main__':
        if (dir == -1):
            continue
        for i in fc_list:
+           break;
            new_dir= dir[0] + orijinal_img+"_"+i + "/"
            if(os.path.exists(new_dir)):
               shutil.rmtree(new_dir)
            os.makedirs(new_dir)
        for i in conv_list:
+           break;
            new_dir= dir[0] + orijinal_img+"_"+ i + "/"
            if(os.path.exists(new_dir)):
               shutil.rmtree(new_dir)
