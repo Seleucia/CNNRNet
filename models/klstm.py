@@ -3,18 +3,18 @@ from keras.layers.core import Dense, Dropout, Activation
 from keras.layers.embeddings import Embedding
 from keras.layers.recurrent import LSTM
 import helper.dt_utils as du
+import numpy
 
 maxlen=1024
+data = numpy.random.randint(1,12,(5000,12))
 
 # build the model: 2 stacked LSTM
 print('Build model...')
 model = Sequential()
-model.add(LSTM(512, return_sequences=True, input_shape=(maxlen,)))
-model.add(Dropout(0.2))
-model.add(LSTM(512, return_sequences=False))
+model.add(LSTM(2, return_sequences=False, input_shape=(maxlen,0)))
 model.add(Dropout(0.2))
 model.add(Dense(54))
-model.add(Activation('softmax'))
+model.add(Activation('linear'))
 
 model.compile(loss='mean_squared_error', optimizer='rmsprop')
 

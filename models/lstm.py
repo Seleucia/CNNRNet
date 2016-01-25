@@ -7,7 +7,7 @@ dtype=theano.config.floatX
 
 theano.config.exception_verbosity="high"
 
-train_data = reberGrammar.get_n_embedded_examples(1000)
+#train_data = reberGrammar.get_n_embedded_examples(1000)
 train_data=du.laod_pose()
 
 # squashing of the gates should result in values between 0 and 1
@@ -45,8 +45,8 @@ def sample_weights(sizeX, sizeY):
     return values
 
 
-n_in = 1014 # for embedded reber grammar
-n_hidden = n_i = n_c = n_o = n_f = 11
+n_in = 1024 # for embedded reber grammar
+n_hidden = n_i = n_c = n_o = n_f = 2
 n_y = 54 # for embedded reber grammar
 
 # initialize weights
@@ -92,7 +92,7 @@ target = T.matrix(dtype=dtype)
                                   non_sequences = [W_xi, W_hi, W_ci, b_i, W_xf, W_hf, W_cf, b_f, W_xc, W_hc, b_c, W_xo, W_ho, W_co, b_o, W_hy, b_y] )
 
 #cost = -T.mean(target * T.log(y_vals)+ (1.- target) * T.log(1. - y_vals))
-cost = -T.mean(T.sqrt((target  - y_vals)**2))
+cost = T.mean(T.sqrt((target  - y_vals)**2))
 
 # learning rate
 lr = np.cast[dtype](.1)
@@ -124,7 +124,6 @@ def train_rnn(train_data):
         index = np.random.randint(0, len(train_data))
         i, o = train_data[index]
         train_cost = learn_rnn_fn(i, o)
-        print(error)
         error += train_cost
     train_errors[x] = error
     print(error)
@@ -137,3 +136,4 @@ plt.plot(np.arange(nb_epochs), train_errors, 'b-')
 plt.xlabel('epochs')
 plt.ylabel('error')
 plt.ylim(0., 50)
+plt.show()

@@ -215,8 +215,8 @@ def laod_pose():
     k=0
     X_d=[]
     Y_d=[]
-    max_count=100
-    p_count=10
+    max_count=10000
+    p_count=20
     for vw in range(9,11,1):
         for sq in range(4,20,1):
             for sb in range(1,1000,1):
@@ -237,6 +237,7 @@ def laod_pose():
                             # Do stuff with the float value (i.e. sort into array).
                             data = f.read(4)
                             index=index+1
+
                         X_d.append([])
                         X_d[i]=numpy.asarray(x_d)
                         i=i+1
