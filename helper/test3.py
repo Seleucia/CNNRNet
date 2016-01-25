@@ -1,16 +1,13 @@
-import utils
-import config as config
-import tum_dataset_loader as tdl
-import data_loader as dl
-import dt_utils as dt
-import utils
-params=config.get_params()
+import struct
+import os
+import dt_utils
+#GTjoints_view1_seq4_subj2_frame15.txt
+#GTjoints_view1_seq4_subj2_frame1
+#"/home/coskun/PycharmProjects/data/rnn/train/view1_seq4_subj2_frame15.txt"
 
-#ds=dl.load_data_with_id(params,17)
-print("okayuu")
-print "Mean Compute Started...."
-dl.load_data(params)
-#dt.check_missin_values(params)
-#tdl.compute_mean(params)
-#print "Gray scale conver started...."
-utils.convert_to_grayscale(params)
+# to assign the right array size, or to read the correct number of values in one go, remember:
+# GT joints have 54 float elements,
+# features have 1024 float elements
+
+dt=dt_utils.laod_pose()
+print "ok"

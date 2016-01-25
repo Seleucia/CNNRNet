@@ -1,4 +1,5 @@
 import tables
+import struct
 import os
 import numpy
 import theano
@@ -195,3 +196,77 @@ def check_missin_values(params):
             ms[i]=p
             i+=1
         pd.plot_ms(ms,dir[0],os.path.basename(os.path.normpath(dir[0])))
+
+
+def laod_pose():
+    base_file="/home/coskun/PycharmProjects/data/rnn/train/"
+    #GTjoints_view1_seq4_subj2_frame15.txt
+    #GTjoints_view1_seq4_subj2_frame1
+    #"/home/coskun/PycharmProjects/data/rnn/train/view1_seq4_subj2_frame15.txt"
+
+    # to assign the right array size, or to read the correct number of values in one go, remember:
+    # GT joints have 54 float elements,
+    # features have 1024 float elements
+    X_D=[]
+    Y_D=[]
+    rVal=[]
+    p_index=0
+    i=0
+    k=0
+    X_d=[]
+    Y_d=[]
+    max_count=100
+    p_count=10
+    for vw in range(9,11,1):
+        for sq in range(4,20,1):
+            for sb in range(1,1000,1):
+                for fm in range(1,10000,1):
+                    if p_index>max_count:
+                        break
+                    fl=base_file+"view"+str(vw)+"_seq"+str(sq)+"_subj"+str(sb)+"_frame"+str(fm)+".txt"
+                    if not os.path.isfile(fl):
+                        continue
+                    with open(fl, "rb") as f:
+                        data = f.read(4)
+                        index=0
+                        x_d=[]
+                        while data != "":
+                            floatVal = struct.unpack('f', data)
+                            x_d.append([])
+                            x_d[index]=floatVal[0]
+                            # Do stuff with the float value (i.e. sort into array).
+                            data = f.read(4)
+                            index=index+1
+                        X_d.append([])
+                        X_d[i]=numpy.asarray(x_d)
+                        i=i+1
+                    gl=base_file+"GTjoints_view"+str(vw)+"_seq"+str(sq)+"_subj"+str(sb)+"_frame"+str(fm)+".txt"
+                    with open(gl, "rb") as f:
+                        data = f.read(4)
+                        index=0
+                        y_d=[]
+                        while data != "":
+                            floatVal = struct.unpack('f', data)
+                            y_d.append([])
+                            y_d[index]=floatVal[0]
+                            # Do stuff with the float value (i.e. sort into array).
+                            data = f.read(4)
+                            index=index+1
+                        Y_d.append([])
+                        Y_d[k]=numpy.asarray(y_d)
+                        k=k+1
+                    if i>p_count:
+                        i=0
+                        k=0
+                        rVal.append([X_d,Y_d])
+                        # X_D.append([])
+                        # X_D[p_index]=X_d
+                        # Y_D.append([])
+                        # Y_D[p_index]=Y_d
+                        X_d=[]
+                        Y_d=[]
+                        p_index=p_index+1
+
+    return rVal
+
+
