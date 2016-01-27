@@ -215,7 +215,7 @@ def laod_pose():
     k=0
     X_d=[]
     Y_d=[]
-    max_count=10000
+    max_count=1000
     p_count=20
     for vw in range(9,11,1):
         for sq in range(4,20,1):

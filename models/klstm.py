@@ -7,6 +7,7 @@ import numpy
 
 maxlen=1024
 data = numpy.random.randint(1,12,(5000,12))
+train_data=du.laod_pose()
 
 # build the model: 2 stacked LSTM
 print('Build model...')
