@@ -1,62 +1,32 @@
-import pandas as pd
-from random import random
-from keras.models import Sequential
-from keras.layers.core import Dense, Activation
-from keras.layers.recurrent import LSTM
+import theano
+import theano.tensor as T
 import numpy as np
-import helper.dt_utils as du
+import matplotlib.pyplot as plt
 
-flow = (list(range(1,10,1)) + list(range(10,1,-1)))*1000
-pdata = pd.DataFrame({"a":flow, "b":flow})
-pdata.b = pdata.b.shift(9)
-data = pdata.iloc[10:] * random()  # some noise
+theano.config.floatX = 'float32'
+#theano.config.optimizer='fast_compile'
+n=T.fscalar()
 
-
-
-def _load_data(data, n_prev = 100):
-    """
-    data should be pd.DataFrame()
-    """
-
-    docX, docY = [], []
-    for i in range(len(data)-n_prev):
-        docX.append(data.iloc[i:i+n_prev].as_matrix())
-        docY.append(data.iloc[i+n_prev].as_matrix())
-    alsX = np.array(docX)
-    alsY = np.array(docY)
-
-    return alsX, alsY
-
-def train_test_split(df, test_size=0.1):
-    """
-    This just splits data to training and testing parts
-    """
-    ntrn = round(len(df) * (1 - test_size))
-
-    X_train, y_train = _load_data(df.iloc[0:ntrn])
-    X_test, y_test = _load_data(df.iloc[ntrn:])
-
-    return (X_train, y_train), (X_test, y_test)
+def minus(x, y):
+    return x - y
 
 
-(X_train, y_train), (X_test, y_test) = train_test_split(data)  # retrieve data
-train_data=du.laod_pose()
+def add(x, y):
+    return x + y
 
-in_neurons = 2
-out_neurons = 2
-hidden_neurons = 20
+scan_ints_expr, updates = theano.scan(add,
+                                      sequences=T.arange(n),
+                                      outputs_info=np.float64(0))
+f_scan_integers = theano.function([n], scan_ints_expr)
 
-model = Sequential()
-model.add(LSTM(output_dim=hidden_neurons, input_dim=in_neurons, return_sequences=False))
-model.add(Dense(output_dim=out_neurons, input_dim=hidden_neurons))
-model.add(Activation("linear"))
-model.compile(loss="mean_squared_error", optimizer="rmsprop")
-model.fit(X_train, y_train, batch_size=1, nb_epoch=1)
+print f_scan_integers(10)
 
 
-predicted = model.predict(X_test)
-rmse = np.sqrt(((predicted - y_test) ** 2).mean(axis=0))
+another_alternating_expr, updates = theano.scan(
+        minus,
+        sequences=None,
+        outputs_info=[dict(initial=np.int32([1, 1]), taps=[-1, -2])],
+        n_steps=10)
 
-# and maybe plot it
-pd.DataFrame(predicted[:100]).to_csv("predicted.csv")
-pd.DataFrame(y_test[:100]).plot("test_data.csv")
+f_alternating2 = theano.function([], another_alternating_expr,allow_input_downcast=True)
+f_alternating2()
