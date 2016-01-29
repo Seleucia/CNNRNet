@@ -12,7 +12,7 @@ from theano import config
 import theano.tensor as tensor
 from theano.sandbox.rng_mrg import MRG_RandomStreams as RandomStreams
 
-import imdb
+import helper.imdb as imdb
 
 datasets = {'imdb': (imdb.load_data, imdb.prepare_data)}
 
@@ -204,7 +204,7 @@ def lstm_layer(tparams, state_below, options, prefix='lstm', mask=None):
 
 # ff: Feed Forward (normal neural net), only useful to put after lstm
 #     before the classifier.
-layers = {'lstm': (param_init_lstm, lstm_layer),'lstm': (param_init_lstm, lstm_layer)}
+layers = {'lstm': (param_init_lstm, lstm_layer)}
 
 
 def sgd(lr, tparams, grads, x, mask, y, cost):

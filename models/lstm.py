@@ -45,9 +45,9 @@ def sample_weights(sizeX, sizeY):
     return values
 
 
-n_in = 1024 # for embedded reber grammar
+n_in = 1024 # number of input
 n_hidden = n_i = n_c = n_o = n_f = 2
-n_y = 54 # for embedded reber grammar
+n_y = 54 # number of output
 
 # initialize weights
 # i_t and o_t should be "open" or "closed"

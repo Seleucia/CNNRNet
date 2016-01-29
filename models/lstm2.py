@@ -1,126 +1,186 @@
-import copy, numpy as np
-np.random.seed(0)
+import numpy as np
+import theano
+import theano.tensor as T
+from theano import shared
+from collections import OrderedDict
+from helper.utils import init_weight
+import helper.dt_utils as du
 
-# compute sigmoid nonlinearity
-def sigmoid(x):
-    output = 1/(1+np.exp(-x))
-    return output
+dtype=T.config.floatX
 
-# convert output of sigmoid function to its derivative
-def sigmoid_output_to_derivative(output):
-    return output*(1-output)
+print "loaded lstm.py"
 
-
-# training dataset generation
-int2binary = {}
-binary_dim = 8
-
-largest_number = pow(2,binary_dim)
-binary = np.unpackbits(
-    np.array([range(largest_number)],dtype=np.uint8).T,axis=1)
-for i in range(largest_number):
-    int2binary[i] = binary[i]
-
-
-# input variables
-alpha = 0.1
-input_dim = 2
-hidden_dim = 16
-output_dim = 1
-
-
-# initialize neural network weights
-synapse_0 = 2*np.random.random((input_dim,hidden_dim)) - 1
-synapse_1 = 2*np.random.random((hidden_dim,output_dim)) - 1
-synapse_h = 2*np.random.random((hidden_dim,hidden_dim)) - 1
-
-synapse_0_update = np.zeros_like(synapse_0)
-synapse_1_update = np.zeros_like(synapse_1)
-synapse_h_update = np.zeros_like(synapse_h)
-
-# training logic
-for j in range(10000):
-
-    # generate a simple addition problem (a + b = c)
-    a_int = np.random.randint(largest_number/2) # int version
-    a = int2binary[a_int] # binary encoding
-
-    b_int = np.random.randint(largest_number/2) # int version
-    b = int2binary[b_int] # binary encoding
-
-    # true answer
-    c_int = a_int + b_int
-    c = int2binary[c_int]
-
-    # where we'll store our best guess (binary encoded)
-    d = np.zeros_like(c)
-
-    overallError = 0
-
-    layer_2_deltas = list()
-    layer_1_values = list()
-    layer_1_values.append(np.zeros(hidden_dim))
-
-    # moving along the positions in the binary encoding
-    for position in range(binary_dim):
-
-        # generate input and output
-        X = np.array([[a[binary_dim - position - 1],b[binary_dim - position - 1]]])
-        y = np.array([[c[binary_dim - position - 1]]]).T
-
-        # hidden layer (input ~+ prev_hidden)
-        layer_1 = sigmoid(np.dot(X,synapse_0) + np.dot(layer_1_values[-1],synapse_h))
-
-        # output layer (new binary representation)
-        layer_2 = sigmoid(np.dot(layer_1,synapse_1))
-
-        # did we miss?... if so, by how much?
-        layer_2_error = y - layer_2
-        layer_2_deltas.append((layer_2_error)*sigmoid_output_to_derivative(layer_2))
-        overallError += np.abs(layer_2_error[0])
-
-        # decode estimate so we can print it out
-        d[binary_dim - position - 1] = np.round(layer_2[0][0])
-
-        # store hidden layer so we can use it in the next timestep
-        layer_1_values.append(copy.deepcopy(layer_1))
-
-    future_layer_1_delta = np.zeros(hidden_dim)
-
-    for position in range(binary_dim):
-
-        X = np.array([[a[position],b[position]]])
-        layer_1 = layer_1_values[-position-1]
-        prev_layer_1 = layer_1_values[-position-2]
-
-        # error at output layer
-        layer_2_delta = layer_2_deltas[-position-1]
-        # error at hidden layer
-        layer_1_delta = (future_layer_1_delta.dot(synapse_h.T) + layer_2_delta.dot(synapse_1.T)) * sigmoid_output_to_derivative(layer_1)
-
-        # let's update all our weights so we can try again
-        synapse_1_update += np.atleast_2d(layer_1).T.dot(layer_2_delta)
-        synapse_h_update += np.atleast_2d(prev_layer_1).T.dot(layer_1_delta)
-        synapse_0_update += X.T.dot(layer_1_delta)
-
-        future_layer_1_delta = layer_1_delta
+class Lstm:
+    def __init__(self, n_in, n_lstm, n_out, lr=0.05, single_output=True, output_activation=T.nnet.softmax, cost_function='nll'):
+        self.n_in = n_in
+        self.n_lstm = n_lstm
+        self.n_out = n_out
+        self.W_xi = init_weight((self.n_in, self.n_lstm),'W_xi')
+        self.W_hi = init_weight((self.n_lstm, self.n_lstm),'W_hi', 'svd')
+        self.W_ci = init_weight((self.n_lstm, self.n_lstm),'W_ci', 'svd')
+        self.b_i = shared(np.cast[dtype](np.random.uniform(-0.5,.5,size = n_lstm)))
+        self.W_xf = init_weight((self.n_in, self.n_lstm),'W_xf')
+        self.W_hf = init_weight((self.n_lstm, self.n_lstm),'W_hf', 'svd')
+        self.W_cf = init_weight((self.n_lstm, self.n_lstm),'W_cf', 'svd')
+        self.b_f = shared(np.cast[dtype](np.random.uniform(0, 1.,size = n_lstm)))
+        self.W_xc = init_weight((self.n_in, self.n_lstm),'W_xc')
+        self.W_hc = init_weight((self.n_lstm, self.n_lstm),'W_hc', 'svd')
+        self.b_c = shared(np.zeros(n_lstm, dtype=dtype))
+        self.W_xo = init_weight((self.n_in, self.n_lstm),'W_xo')
+        self.W_ho = init_weight((self.n_lstm, self.n_lstm),'W_ho', 'svd')
+        self.W_co = init_weight((self.n_lstm, self.n_lstm),'W_co', 'svd')
+        self.b_o = shared(np.cast[dtype](np.random.uniform(-0.5,.5,size = n_lstm)))
+        self.W_hy = init_weight((self.n_lstm, self.n_out),'W_hy')
+        self.b_y = shared(np.zeros(n_out, dtype=dtype))
+        self.params = [self.W_xi, self.W_hi, self.W_ci, self.b_i,
+                       self.W_xf, self.W_hf, self.W_cf, self.b_f,
+                       self.W_xc, self.W_hc, self.b_c,
+                       self.W_ho, self.W_co, self.W_co, self.b_o,
+                       self.W_hy, self.b_y]
 
 
-    synapse_0 += synapse_0_update * alpha
-    synapse_1 += synapse_1_update * alpha
-    synapse_h += synapse_h_update * alpha
+        def step_lstm(x_t, h_tm1, c_tm1):
+            i_t = T.nnet.sigmoid(T.dot(x_t, self.W_xi) + T.dot(h_tm1, self.W_hi) + T.dot(c_tm1, self.W_ci) + self.b_i)
+            f_t = T.nnet.sigmoid(T.dot(x_t, self.W_xf) + T.dot(h_tm1, self.W_hf) + T.dot(c_tm1, self.W_cf) + self.b_f)
+            c_t = f_t * c_tm1 + i_t * T.tanh(T.dot(x_t, self.W_xc) + T.dot(h_tm1, self.W_hc) + self.b_c)
+            o_t = T.nnet.sigmoid(T.dot(x_t, self.W_xo)+ T.dot(h_tm1, self.W_ho) + T.dot(c_t, self.W_co)  + self.b_o)
+            h_t = o_t * T.tanh(c_t)
+            y_t = T.nnet.softmax(T.dot(h_t, self.W_hy) + self.b_y)
+            return [h_t, c_t, y_t]
 
-    synapse_0_update *= 0
-    synapse_1_update *= 0
-    synapse_h_update *= 0
+        X = T.matrix() # batch of sequence of vector
+        Y = T.matrix() # batch of sequence of vector (should be 0 when X is not null)
+        if single_output:
+            Y = T.vector()
+        h0 = shared(np.zeros(shape=self.n_lstm, dtype=dtype)) # initial hidden state
+        c0 = shared(np.zeros(shape=self.n_lstm, dtype=dtype)) # initial hidden state
+        lr = shared(np.cast[dtype](lr))
 
-    # print out progress
-    if(j % 1000 == 0):
-        print "Error:" + str(overallError)
-        print "Pred:" + str(d)
-        print "True:" + str(c)
-        out = 0
-        for index,x in enumerate(reversed(d)):
-            out += x*pow(2,index)
-        print str(a_int) + " + " + str(b_int) + " = " + str(out)
-        print "------------"
+        [h_vals, c_vals, y_vals], _ = theano.scan(fn=step_lstm,
+                                          sequences=X,
+                                          outputs_info=[h0, c0, None])
+
+        if single_output:
+            self.output = y_vals[-1]
+        else:
+            self.output = y_vals
+
+        cxe = T.mean(T.nnet.binary_crossentropy(self.output, Y))
+        nll = -T.mean(Y * T.log(self.output)+ (1.- Y) * T.log(1. - self.output))
+        mse = T.mean((self.output - Y) ** 2)
+
+        cost = 0
+        if cost_function == 'mse':
+            cost = mse
+        elif cost_function == 'cxe':
+            cost = cxe
+        else:
+            cost = nll
+
+        gparams = T.grad(cost, self.params)
+        updates = OrderedDict()
+        for param, gparam in zip(self.params, gparams):
+            updates[param] = param - gparam * lr
+
+        self.loss = theano.function(inputs = [X, Y], outputs = cost)
+        self.train = theano.function(inputs = [X, Y], outputs = cost, updates=updates)
+        self.predictions = theano.function(inputs = [X], outputs = self.output)
+        self.debug = theano.function(inputs = [X, Y], outputs = [X.shape, Y.shape, y_vals.shape, cost.shape])
+
+
+class LstmMiniBatch:
+    def __init__(self, n_in, n_lstm, n_out, lr=0.05, batch_size=64, single_output=True, output_activation=T.nnet.softmax, cost_function='nll'):        
+        self.n_in = n_in
+        self.n_lstm = n_lstm
+        self.n_out = n_out
+        self.W_xi = init_weight((self.n_in, self.n_lstm),'W_xi') 
+        self.W_hi = init_weight((self.n_lstm, self.n_lstm),'W_hi', 'svd') 
+        self.W_ci = init_weight((self.n_lstm, self.n_lstm),'W_ci', 'svd') 
+        self.b_i = shared(np.cast[dtype](np.random.uniform(-0.5,.5,size = n_lstm)))
+        self.W_xf = init_weight((self.n_in, self.n_lstm),'W_xf') 
+        self.W_hf = init_weight((self.n_lstm, self.n_lstm),'W_hf', 'svd') 
+        self.W_cf = init_weight((self.n_lstm, self.n_lstm),'W_cf', 'svd') 
+        self.b_f = shared(np.cast[dtype](np.random.uniform(0, 1.,size = n_lstm)))
+        self.W_xc = init_weight((self.n_in, self.n_lstm),'W_xc') 
+        self.W_hc = init_weight((self.n_lstm, self.n_lstm),'W_hc', 'svd') 
+        self.b_c = shared(np.zeros(n_lstm, dtype=dtype))
+        self.W_xo = init_weight((self.n_in, self.n_lstm),'W_xo') 
+        self.W_ho = init_weight((self.n_lstm, self.n_lstm),'W_ho', 'svd') 
+        self.W_co = init_weight((self.n_lstm, self.n_lstm),'W_co', 'svd') 
+        self.b_o = shared(np.cast[dtype](np.random.uniform(-0.5,.5,size = n_lstm)))
+        self.W_hy = init_weight((self.n_lstm, self.n_out),'W_hy') 
+        self.b_y = shared(np.zeros(n_out, dtype=dtype))
+        self.params = [self.W_xi, self.W_hi, self.W_ci, self.b_i, 
+                       self.W_xf, self.W_hf, self.W_cf, self.b_f, 
+                       self.W_xc, self.W_hc, self.b_c, 
+                       self.W_ho, self.W_co, self.W_co, self.b_o, 
+                       self.W_hy, self.b_y]
+                
+
+        def step_lstm(x_t, h_tm1, c_tm1):
+            i_t = T.nnet.sigmoid(T.dot(x_t, self.W_xi) + T.dot(h_tm1, self.W_hi) + T.dot(c_tm1, self.W_ci) + self.b_i)
+            f_t = T.nnet.sigmoid(T.dot(x_t, self.W_xf) + T.dot(h_tm1, self.W_hf) + T.dot(c_tm1, self.W_cf) + self.b_f)
+            c_t = f_t * c_tm1 + i_t * T.tanh(T.dot(x_t, self.W_xc) + T.dot(h_tm1, self.W_hc) + self.b_c) 
+            o_t = T.nnet.sigmoid(T.dot(x_t, self.W_xo)+ T.dot(h_tm1, self.W_ho) + T.dot(c_t, self.W_co)  + self.b_o)
+            h_t = o_t * T.tanh(c_t)
+            y_t = T.nnet.softmax(T.dot(h_t, self.W_hy) + self.b_y) 
+            return [h_t, c_t, y_t]
+
+        X = T.tensor3() # batch of sequence of vector
+        Y = T.tensor3() # batch of sequence of vector (should be 0 when X is not null) 
+        h0 = shared(np.zeros(shape=(batch_size,self.n_lstm), dtype=dtype)) # initial hidden state         
+        c0 = shared(np.zeros(shape=(batch_size,self.n_lstm), dtype=dtype)) # initial hidden state         
+        lr = shared(np.cast[dtype](lr))
+        
+        [h_vals, c_vals, y_vals], _ = theano.scan(fn=step_lstm,        
+                                          sequences=X.dimshuffle(1,0,2),
+                                          outputs_info=[h0, c0, None])
+
+        if single_output:
+            self.output = y_vals[-1]            
+        else:
+            self.output = y_vals.dimshuffle(1,0,2)
+        
+        cxe = T.mean(T.nnet.binary_crossentropy(self.output, Y))
+        nll = -T.mean(Y * T.log(self.output)+ (1.- Y) * T.log(1. - self.output))     
+        mse = T.mean((self.output - Y) ** 2)
+
+        cost = 0
+        if cost_function == 'mse':
+            cost = mse
+        elif cost_function == 'cxe':
+            cost = cxe
+        else:
+            cost = nll 
+        
+        gparams = T.grad(cost, self.params)
+        updates = OrderedDict()
+        for param, gparam in zip(self.params, gparams):
+            updates[param] = param - gparam * lr
+        
+        self.loss = theano.function(inputs = [X, Y], outputs = [cxe, mse, cost])
+        self.train = theano.function(inputs = [X, Y], outputs = cost, updates=updates)
+        self.predictions = theano.function(inputs = [X], outputs = y_vals.dimshuffle(1,0,2))
+        self.debug = theano.function(inputs = [X, Y], outputs = [X.shape, Y.shape, y_vals.shape, cxe.shape])
+
+train_data=du.laod_pose()
+
+print "Data loaded"
+
+model = Lstm(1024, 2, 54)
+
+print("Model loaded")
+
+nb_epochs=250
+train_errors = np.ndarray(nb_epochs)
+def train_rnn(train_data):
+  for x in range(nb_epochs):
+    error = 0.
+    for j in range(len(train_data)):
+        index = np.random.randint(0, len(train_data))
+        i, o = train_data[index]
+        train_cost = model.train(i, o)
+        error += train_cost
+    train_errors[x] = error
+    print(error)
+train_rnn(train_data)
