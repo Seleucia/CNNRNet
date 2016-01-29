@@ -163,7 +163,7 @@ class LstmMiniBatch:
         self.predictions = theano.function(inputs = [X], outputs = y_vals.dimshuffle(1,0,2))
         self.debug = theano.function(inputs = [X, Y], outputs = [X.shape, Y.shape, y_vals.shape, cxe.shape])
 
-train_data=du.laod_pose()
+(train_X_D,train_Y_D)=du.laod_pose()
 
 print "Data loaded"
 

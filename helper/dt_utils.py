@@ -218,9 +218,9 @@ def laod_pose():
     max_count=1000
     p_count=20
     for vw in range(9,11,1):
-        for sq in range(4,20,1):
-            for sb in range(1,1000,1):
-                for fm in range(1,10000,1):
+        for sq in range(4,10,1):
+            for sb in range(1,10,1):
+                for fm in range(1,250,1):
                     if p_index>max_count:
                         break
                     fl=base_file+"view"+str(vw)+"_seq"+str(sq)+"_subj"+str(sb)+"_frame"+str(fm)+".txt"
@@ -259,7 +259,8 @@ def laod_pose():
                     if i>p_count:
                         i=0
                         k=0
-                        rVal.append([X_d,Y_d])
+                        X_D.append(X_d)
+                        Y_D.append(Y_d)
                         # X_D.append([])
                         # X_D[p_index]=X_d
                         # Y_D.append([])
@@ -268,6 +269,6 @@ def laod_pose():
                         Y_d=[]
                         p_index=p_index+1
 
-    return rVal
+    return (numpy.asarray(X_D),numpy.asarray(Y_D))
 
 
