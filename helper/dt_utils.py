@@ -198,25 +198,64 @@ def check_missin_values(params):
        pd.plot_ms(ms,dir[0],os.path.basename(os.path.normpath(dir[0])))
 
 
-def laod_pose():
-   base_file="/home/coskun/PycharmProjects/data/rnn/train/"
-   #GTjoints_view1_seq4_subj2_frame15.txt
-   #GTjoints_view1_seq4_subj2_frame1
-   #"/home/coskun/PycharmProjects/data/rnn/train/view1_seq4_subj2_frame15.txt"
 
-   # to assign the right array size, or to read the correct number of values in one go, remember:
-   # GT joints have 54 float elements,
-   # features have 1024 float elements
-   X_D=[]
-   Y_D=[]
-   rVal=[]
-   p_index=0
-   i=0
-   k=0
-   X_d=[]
-   Y_d=[]
+def laod_pose():
+   base_file="/home/coskun/PycharmProjects/data/rnn/"
    max_count=100
    p_count=20
+   X_test,Y_test=laod_test_pose(base_file,max_count,p_count)
+   X_train,Y_train=laod_train_pose(base_file,max_count,p_count)
+   return (X_train,Y_train,X_test,Y_test)
+
+def laod_test_pose(base_file,max_count,p_count):
+   base_file=base_file+"test/"
+   X_D=[]
+   Y_D=[]
+   p_index=0
+   X_d=[]
+   Y_d=[]
+   for vw in range(1,12,1):
+       for sq in range(1,4,1):
+           for sb in range(1,2,1):
+               for fm in range(1,1200,1):
+                   if len(X_D)>max_count:
+                       return (numpy.asarray(X_D),numpy.asarray(Y_D))
+                   fl=base_file+"view"+str(vw)+"_seq"+str(sq)+"_subj"+str(sb)+"_frame"+str(fm)+".txt"
+                   gl=base_file+"GTjoints_view"+str(vw)+"_seq"+str(sq)+"_subj"+str(sb)+"_frame"+str(fm)+".txt"
+                   if not os.path.isfile(fl):
+                       continue
+                   with open(fl, "rb") as f:
+                       data = f.read(4)
+                       x_d=[]
+                       while data != "":
+                           floatVal = struct.unpack('f', data)
+                           x_d.append(floatVal[0])
+                           data = f.read(4)
+                       X_d.append(numpy.asarray(x_d))
+                   with open(gl, "rb") as f:
+                       data = f.read(4)
+                       y_d=[]
+                       while data != "":
+                           floatVal = struct.unpack('f', data)
+                           y_d.append(floatVal[0])
+                           data = f.read(4)
+                       Y_d.append(numpy.asarray(y_d))
+                   if len(X_d)>p_count:
+                       X_D.append(X_d)
+                       Y_D.append(Y_d)
+                       X_d=[]
+                       Y_d=[]
+                       p_index=p_index+1
+
+   return (numpy.asarray(X_D),numpy.asarray(Y_D))
+
+def laod_train_pose(base_file,max_count,p_count):
+   base_file=base_file+"train/"
+   X_D=[]
+   Y_D=[]
+   p_index=0
+   X_d=[]
+   Y_d=[]
    for vw in range(1,12,1):
        for sq in range(4,8,1):
            for sb in range(2,9,1):
@@ -224,47 +263,28 @@ def laod_pose():
                    if len(X_D)>max_count:
                        return (numpy.asarray(X_D),numpy.asarray(Y_D))
                    fl=base_file+"view"+str(vw)+"_seq"+str(sq)+"_subj"+str(sb)+"_frame"+str(fm)+".txt"
+                   gl=base_file+"GTjoints_view"+str(vw)+"_seq"+str(sq)+"_subj"+str(sb)+"_frame"+str(fm)+".txt"
                    if not os.path.isfile(fl):
                        continue
                    with open(fl, "rb") as f:
                        data = f.read(4)
-                       index=0
                        x_d=[]
                        while data != "":
                            floatVal = struct.unpack('f', data)
-                           x_d.append([])
-                           x_d[index]=floatVal[0]
-                           # Do stuff with the float value (i.e. sort into array).
+                           x_d.append(floatVal[0])
                            data = f.read(4)
-                           index=index+1
-
-                       X_d.append([])
-                       X_d[i]=numpy.asarray(x_d)
-                       i=i+1
-                   gl=base_file+"GTjoints_view"+str(vw)+"_seq"+str(sq)+"_subj"+str(sb)+"_frame"+str(fm)+".txt"
+                       X_d.append(numpy.asarray(x_d))
                    with open(gl, "rb") as f:
                        data = f.read(4)
-                       index=0
                        y_d=[]
                        while data != "":
                            floatVal = struct.unpack('f', data)
-                           y_d.append([])
-                           y_d[index]=floatVal[0]
-                           # Do stuff with the float value (i.e. sort into array).
+                           y_d.append(floatVal[0])
                            data = f.read(4)
-                           index=index+1
-                       Y_d.append([])
-                       Y_d[k]=numpy.asarray(y_d)
-                       k=k+1
-                   if i>p_count:
-                       i=0
-                       k=0
+                       Y_d.append(numpy.asarray(y_d))
+                   if len(X_d)>p_count:
                        X_D.append(X_d)
                        Y_D.append(Y_d)
-                       # X_D.append([])
-                       # X_D[p_index]=X_d
-                       # Y_D.append([])
-                       # Y_D[p_index]=Y_d
                        X_d=[]
                        Y_d=[]
                        p_index=p_index+1

@@ -232,9 +232,6 @@ class LstmMiniBatch:
            cost = cxe
        else:
            cost = nll
-
-
-
        optimizer = RMSprop(
             cost,
             self.params,
@@ -253,10 +250,13 @@ class LstmMiniBatch:
        self.predictions = theano.function(inputs = [X], outputs = y_vals.dimshuffle(1,0,2))
        self.debug = theano.function(inputs = [X, Y], outputs = [X.shape, Y.shape, y_vals.shape, cxe.shape])
 
-(X_train,Y_train)=du.laod_pose()
+(X_train,Y_train,X_test,Y_test)=du.laod_pose()
 batch_size=64
 n_train_batches = len(X_train)
 n_train_batches /= batch_size
+
+n_test_batches = len(X_test)
+n_test_batches /= batch_size
 
 print "Number of batches: "+str(n_train_batches)
 print "Training size: "+str(len(X_train))
@@ -274,10 +274,23 @@ def train_rnn():
        x=X_train[minibatch_index * batch_size: (minibatch_index + 1) * batch_size]
        y=Y_train[minibatch_index * batch_size: (minibatch_index + 1) * batch_size]
        loss = model.train(x, y)
-       #loss = model.train(i, o)
        batch_loss += loss
    train_errors[i] = batch_loss
    batch_loss/=n_train_batches
-   print(batch_loss)
+   if(i%5==0):
+       print("Model testing")
+       test_rnn()
+   print("Train Epoch loss(%s): %s"%(i,batch_loss))
+
+def test_rnn():
+    batch_loss = 0.
+    for minibatch_index in range(n_test_batches):
+       x=X_test[minibatch_index * batch_size: (minibatch_index + 1) * batch_size]
+       y=Y_test[minibatch_index * batch_size: (minibatch_index + 1) * batch_size]
+       pred = model.predictions(x)
+       loss=np.mean((pred - y) ** 2)
+       batch_loss += loss
+    batch_loss/=n_test_batches
+    print("Test Epoch loss: %s"%(batch_loss))
 
 train_rnn()
