@@ -10,6 +10,9 @@ from random import randint
 from theano import shared
 dtype = T.config.floatX
 
+def numpy_floatX(data):
+    return numpy.asarray(data, dtype=T.config.floatX)
+
 def init_weight(shape, name, sample='uni', seed=None):
     rng = np.random.RandomState(seed)
 
