@@ -247,7 +247,7 @@ class LstmMiniBatch:
        # self.loss = theano.function(inputs = [X, Y], outputs = [cxe, mse, cost])
        # self.train = theano.function(inputs = [X, Y], outputs = cost, updates=updates,allow_input_downcast=True)
 
-       self.train = theano.function(inputs=[X, Y],outputs=cost,updates=optimizer.getUpdates())
+       self.train = theano.function(inputs=[X, Y],outputs=cost,updates=optimizer.getUpdates(),allow_input_downcast=True)
 
        #self.train = theano.function(inputs = [X, Y], outputs = cost, updates=updates,allow_input_downcast=True)
        self.predictions = theano.function(inputs = [X], outputs = y_vals.dimshuffle(1,0,2))
